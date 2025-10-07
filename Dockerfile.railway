@@ -1,0 +1,72 @@
+# Multi-stage Dockerfile optimized for Railway deployment
+# Phase 0.3 - Production-ready build
+# Security: Non-root user, minimal image, no dev dependencies in runtime
+
+# ============================================================================
+# Stage 1: Builder - Install dependencies and build TypeScript
+# ============================================================================
+FROM node:22-alpine AS builder
+
+# Install build dependencies (required for native modules like pg, redis)
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    git
+
+WORKDIR /app
+
+# Copy package files for dependency installation
+COPY package*.json ./
+COPY packages/broker/package.json ./packages/broker/
+COPY packages/core/package.json ./packages/core/
+COPY packages/sdk/package.json ./packages/sdk/
+
+# Install ALL dependencies (including devDependencies for build)
+RUN npm ci
+
+# Copy source files
+COPY . .
+
+# Build all packages (TypeScript -> JavaScript)
+RUN npm run build
+
+# Remove devDependencies to reduce image size
+RUN npm prune --production
+
+# ============================================================================
+# Stage 2: Runtime - Minimal image with only production dependencies
+# ============================================================================
+FROM node:22-alpine AS runtime
+
+# Install runtime dependencies only
+RUN apk add --no-cache \
+    dumb-init \
+    curl
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+WORKDIR /app
+
+# Copy built artifacts from builder stage
+COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodejs:nodejs /app/packages ./packages
+
+# Expose port (Railway sets PORT env var dynamically)
+EXPOSE 8080
+
+# Switch to non-root user
+USER nodejs
+
+# Health check (Railway uses this for readiness checks)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:${PORT:-8080}/health/ready || exit 1
+
+# Use dumb-init to handle signals properly (PID 1 problem)
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start broker service
+CMD ["node", "packages/broker/dist/server.js"]

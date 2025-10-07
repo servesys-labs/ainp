@@ -1,0 +1,31 @@
+# Railway Configuration for AINP Broker
+# This file configures build and deployment settings for Railway
+# Documentation: https://docs.railway.app/deploy/config-as-code
+
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm ci && npm run build"
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/health/ready"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[deploy.env]
+NODE_ENV = "production"
+PORT = "$PORT"
+# Database connections (provided by Railway plugins)
+DATABASE_URL = "$DATABASE_URL"
+REDIS_URL = "$REDIS_URL"
+# NATS connection (internal service URL)
+NATS_URL = "$NATS_URL"
+# OpenAI API key (user must provide via Railway dashboard)
+OPENAI_API_KEY = "$OPENAI_API_KEY"
+
+[deploy.resources]
+# Initial resource allocation (Phase 0.3)
+# Scale up in production based on load
+memory = 512  # MB
+replicas = 1

@@ -1,0 +1,28 @@
+# NATS JetStream Docker Configuration for Railway
+# This Dockerfile creates a NATS server with JetStream enabled
+# Optimized for Railway deployment with persistent storage
+
+FROM nats:2.10-alpine
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Create data directory for JetStream persistence
+RUN mkdir -p /data && chown -R nats:nats /data
+
+# Expose ports
+# 4222: Client connections
+# 6222: Cluster routing
+# 8222: HTTP monitoring/health checks
+EXPOSE 4222 6222 8222
+
+# Health check endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+    CMD curl -f http://localhost:8222/healthz || exit 1
+
+# Start NATS with JetStream enabled
+# -js: Enable JetStream
+# -sd /data: Store directory for JetStream
+# -m 8222: HTTP monitoring port
+# -DV: Enable debug and trace logging (remove in production if too verbose)
+CMD ["nats-server", "-js", "-sd", "/data", "-m", "8222", "--name", "ainp-nats", "--max_payload", "10MB"]
