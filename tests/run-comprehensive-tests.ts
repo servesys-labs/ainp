@@ -470,6 +470,48 @@ async function main() {
   });
 
   await runTest(2, 'ROUTE-002', 'Route with discovery (broadcast)', async () => {
+    // Register a fresh agent with calendar capability for discovery
+    const calendarAgentDID = generateTestDID();
+    const calendarEmb = await getTestEmbedding('Schedule meetings and manage calendar');
+
+    const calendarAddress = {
+      did: calendarAgentDID,
+      capabilities: [{
+        description: 'Schedule meetings and manage calendar',
+        embedding: calendarEmb,
+        tags: ['calendar', 'scheduling'],
+        version: '1.0.0'
+      }],
+      trust: {
+        score: 0.85,
+        dimensions: {
+          reliability: 0.85,
+          honesty: 0.85,
+          competence: 0.85,
+          timeliness: 0.85
+        },
+        decay_rate: 0.977,
+        last_updated: Date.now()
+      }
+    };
+
+    const regResponse = await fetch(`${API_BASE}/api/agents/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-AINP-DID': calendarAgentDID
+      },
+      body: JSON.stringify({ address: calendarAddress, ttl: 3600 })
+    });
+
+    if (regResponse.status !== 200) {
+      throw new Error('Failed to register calendar agent for broadcast test');
+    }
+
+    // Small delay to ensure indexing completes
+    await new Promise(r => setTimeout(r, 300));
+
+    // Now attempt broadcast routing with discovery
     const envelope = {
       id: 'intent-bcast-' + Date.now(),
       trace_id: 'trace-bcast-' + Date.now(),
@@ -502,6 +544,9 @@ async function main() {
       const text = await response.text();
       throw new Error(`Status: ${response.status}, Response: ${text.slice(0, 200)}`);
     }
+
+    const data: any = await response.json();
+    if (data.status !== 'routed') throw new Error('Expected status "routed"');
   });
 
   console.log();
