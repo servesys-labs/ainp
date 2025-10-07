@@ -1,0 +1,4 @@
+{
+  "mcpServers": {},
+  "_comment": "NOT USED - All MCP servers are configured globally in ~/.claude.json. Project-level MCP configs are disabled for this user's workflow."
+}

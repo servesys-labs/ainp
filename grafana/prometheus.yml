@@ -1,0 +1,32 @@
+# Prometheus Configuration for AINP
+# Phase 0.1 - Foundation
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'ainp-dev'
+    environment: 'development'
+
+scrape_configs:
+  # NATS Monitoring
+  - job_name: 'nats'
+    static_configs:
+      - targets: ['nats:8222']
+    metrics_path: /metrics
+
+  # PostgreSQL Exporter (if added later)
+  # - job_name: 'postgres'
+  #   static_configs:
+  #     - targets: ['postgres-exporter:9187']
+
+  # Redis Exporter (if added later)
+  # - job_name: 'redis'
+  #   static_configs:
+  #     - targets: ['redis-exporter:9121']
+
+  # AINP Services (add when services are implemented)
+  # - job_name: 'ainp-agent'
+  #   static_configs:
+  #     - targets: ['agent:8080']
+  #   metrics_path: /metrics

@@ -1,0 +1,27 @@
+{
+  "name": "@ainp/sdk",
+  "version": "0.1.0",
+  "description": "AINP SDK for building agents and clients",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@ainp/core": "file:../core",
+    "eventemitter3": "^5.0.1",
+    "json-canonicalize": "^1.0.6",
+    "uuid": "^9.0.1",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "@types/uuid": "^9.0.7",
+    "@types/ws": "^8.5.10",
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,55 @@
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# Dependencies (will be installed in container)
+node_modules/
+npm-debug.log
+
+# Build artifacts (will be built in container)
+dist/
+build/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+
+# Documentation (except README)
+docs/
+*.md
+!README.md
+
+# Test files
+*.test.ts
+*.spec.ts
+__tests__/
+coverage/
+.nyc_output/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+.tmp/
+temp/
+*.tmp

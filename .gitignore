@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+# Environment files
+.env
+.env.local
+.env.*.local
+!.env.example
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+# Coverage reports
+coverage/
+.nyc_output/
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+# OS files
+.DS_Store
+Thumbs.db
+# Temporary files
+.tmp/
+temp/
+*.tmp
+# Test artifacts
+.coverage/
+# Package manager files
+.pnpm-debug.log
+.yarn/install-state.gz
+# TypeScript cache
+.tscache/
+
+# Claude orchestration framework
+.claude/logs/
+.envrc

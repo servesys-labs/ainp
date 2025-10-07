@@ -1,0 +1,515 @@
+/**
+ * Tests for AINP Agent core functionality
+ * Testing agent initialization, intent handling, WebSocket communication, and reconnection
+ */
+
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { AINPAgent } from './agent';
+import { generateKeyPair } from './crypto';
+import { createDID } from './did';
+import { AINPEnvelope, AINPIntent } from '@ainp/core/src/types';
+import { AgentConfig } from './types';
+import WebSocket from 'ws';
+import { v4 as uuidv4 } from 'uuid';
+
+// Mock WebSocket
+vi.mock('ws', () => {
+  return {
+    default: vi.fn(),
+  };
+});
+
+describe('AINP Agent', () => {
+  let agent: AINPAgent;
+  let config: AgentConfig;
+  let keyPair: { publicKey: Buffer; privateKey: Buffer };
+  let mockWs: any;
+
+  beforeEach(() => {
+    keyPair = generateKeyPair();
+    const did = createDID(keyPair.publicKey);
+
+    config = {
+      did,
+      privateKey: keyPair.privateKey.toString('base64'),
+      discoveryUrl: 'ws://localhost:8080',
+    };
+
+    // Create mock WebSocket instance
+    mockWs = {
+      on: vi.fn(),
+      send: vi.fn(),
+      close: vi.fn(),
+      readyState: 1, // WebSocket.OPEN constant value
+    };
+
+    // Mock WebSocket constructor
+    (WebSocket as any).mockImplementation(() => mockWs);
+
+    agent = new AINPAgent(config);
+  });
+
+  afterEach(async () => {
+    if (agent.isAgentRunning()) {
+      await agent.stop();
+    }
+  });
+
+  describe('Initialization', () => {
+    it('should initialize agent with DID', () => {
+      expect(agent).toBeDefined();
+      expect(agent.isAgentRunning()).toBe(false);
+    });
+
+    it('should create agent with valid configuration', () => {
+      const stats = agent.getStats();
+
+      expect(stats).toHaveProperty('intents_processed', 0);
+      expect(stats).toHaveProperty('negotiation_success_rate', 0);
+      expect(stats).toHaveProperty('avg_response_time_ms', 0);
+      expect(stats).toHaveProperty('total_credits_earned', 0);
+    });
+  });
+
+  describe('Connection Management', () => {
+    it('should connect to broker on start', async () => {
+      const connectPromise = agent.start();
+
+      // Simulate WebSocket open event
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+
+      await connectPromise;
+
+      expect(agent.isAgentRunning()).toBe(true);
+      expect(WebSocket).toHaveBeenCalledWith('ws://localhost:8080');
+    });
+
+    it('should not start if already running', async () => {
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      // Try to start again
+      await agent.start();
+
+      // Should only connect once
+      expect(WebSocket).toHaveBeenCalledTimes(1);
+    });
+
+    it('should disconnect on stop', async () => {
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      await agent.stop();
+
+      expect(agent.isAgentRunning()).toBe(false);
+      expect(mockWs.close).toHaveBeenCalled();
+    });
+
+    it('should emit connected event on connection', async () => {
+      const connectedHandler = vi.fn();
+      agent.on('connected', connectedHandler);
+
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      expect(connectedHandler).toHaveBeenCalled();
+    });
+
+    it('should emit disconnected event on disconnection', async () => {
+      const disconnectedHandler = vi.fn();
+      agent.on('disconnected', disconnectedHandler);
+
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      // Simulate disconnection
+      const closeHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'close')[1];
+      closeHandler();
+
+      expect(disconnectedHandler).toHaveBeenCalled();
+    });
+
+    it('should handle WebSocket errors', async () => {
+      const errorHandler = vi.fn();
+      agent.on('error', errorHandler);
+
+      const connectPromise = agent.start();
+
+      // Simulate error
+      const wsErrorHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'error')[1];
+      const testError = new Error('Connection failed');
+      wsErrorHandler(testError);
+
+      await expect(connectPromise).rejects.toThrow('Connection failed');
+      expect(errorHandler).toHaveBeenCalledWith(testError);
+    });
+  });
+
+  describe('Envelope Creation and Signing', () => {
+    it('should create signed envelope with signature', async () => {
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      // Register intent handler
+      agent.onIntent('test.intent', async () => ({ success: true }));
+
+      // Create test intent envelope
+      const intent: AINPIntent = {
+        '@type': 'test.intent',
+        data: { value: 'test' },
+      };
+
+      const envelope: AINPEnvelope = {
+        id: uuidv4(),
+        trace_id: uuidv4(),
+        from_did: config.did,
+        to_did: config.did,
+        msg_type: 'INTENT',
+        ttl: 60000,
+        timestamp: Date.now(),
+        sig: '',
+        payload: intent,
+      };
+
+      // Trigger message handler
+      const messageHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'message')[1];
+      await messageHandler(JSON.stringify(envelope));
+
+      // Check that response was sent with signature
+      expect(mockWs.send).toHaveBeenCalled();
+      const sentData = JSON.parse(mockWs.send.mock.calls[0][0]);
+      expect(sentData).toHaveProperty('sig');
+      expect(sentData.sig).toBeTruthy();
+      expect(sentData.sig.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Intent Handling', () => {
+    it('should register intent handler', async () => {
+      const handler = vi.fn(async () => ({ result: 'success' }));
+      agent.onIntent('test.intent', handler);
+
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      // Simulate incoming intent
+      const intent: AINPIntent = {
+        '@type': 'test.intent',
+        data: {},
+      };
+
+      const envelope: AINPEnvelope = {
+        id: uuidv4(),
+        trace_id: uuidv4(),
+        from_did: config.did,
+        to_did: config.did,
+        msg_type: 'INTENT',
+        ttl: 60000,
+        timestamp: Date.now(),
+        sig: '',
+        payload: intent,
+      };
+
+      const messageHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'message')[1];
+      await messageHandler(JSON.stringify(envelope));
+
+      expect(handler).toHaveBeenCalled();
+    });
+
+    it('should handle wildcard intent handler', async () => {
+      const wildcardHandler = vi.fn(async () => ({ result: 'wildcard' }));
+      agent.onIntent('*', wildcardHandler);
+
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      // Send unknown intent type
+      const intent: AINPIntent = {
+        '@type': 'unknown.intent',
+        data: {},
+      };
+
+      const envelope: AINPEnvelope = {
+        id: uuidv4(),
+        trace_id: uuidv4(),
+        from_did: config.did,
+        to_did: config.did,
+        msg_type: 'INTENT',
+        ttl: 60000,
+        timestamp: Date.now(),
+        sig: '',
+        payload: intent,
+      };
+
+      const messageHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'message')[1];
+      await messageHandler(JSON.stringify(envelope));
+
+      expect(wildcardHandler).toHaveBeenCalled();
+    });
+
+    it('should send error response when no handler found', async () => {
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      const intent: AINPIntent = {
+        '@type': 'unknown.intent',
+        data: {},
+      };
+
+      const envelope: AINPEnvelope = {
+        id: uuidv4(),
+        trace_id: uuidv4(),
+        from_did: config.did,
+        to_did: config.did,
+        msg_type: 'INTENT',
+        ttl: 60000,
+        timestamp: Date.now(),
+        sig: '',
+        payload: intent,
+      };
+
+      const messageHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'message')[1];
+      await messageHandler(JSON.stringify(envelope));
+
+      expect(mockWs.send).toHaveBeenCalled();
+      const response = JSON.parse(mockWs.send.mock.calls[0][0]);
+      expect(response.msg_type).toBe('ERROR');
+      expect(response.payload.error_code).toBe('NOT_IMPLEMENTED');
+    });
+
+    it('should update stats on intent processing', async () => {
+      agent.onIntent('test.intent', async () => ({ result: 'ok' }));
+
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      const intent: AINPIntent = {
+        '@type': 'test.intent',
+        data: {},
+      };
+
+      const envelope: AINPEnvelope = {
+        id: uuidv4(),
+        trace_id: uuidv4(),
+        from_did: config.did,
+        to_did: config.did,
+        msg_type: 'INTENT',
+        ttl: 60000,
+        timestamp: Date.now(),
+        sig: '',
+        payload: intent,
+      };
+
+      const messageHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'message')[1];
+      await messageHandler(JSON.stringify(envelope));
+
+      const stats = agent.getStats();
+      expect(stats.intents_processed).toBe(1);
+    });
+  });
+
+  describe('Negotiation Handling', () => {
+    it('should register negotiation handler', () => {
+      const handler = vi.fn();
+      agent.onNegotiate(handler);
+
+      // Verify handler was registered (indirect check through behavior)
+      expect(agent).toBeDefined();
+    });
+  });
+
+  describe('WebSocket Reconnection', () => {
+    it('should attempt reconnection on disconnect', async () => {
+      vi.useFakeTimers();
+
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      // Simulate disconnection while running
+      const closeHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'close')[1];
+      closeHandler();
+
+      // Fast-forward time to trigger reconnection
+      vi.advanceTimersByTime(1000);
+
+      // Should attempt to create new WebSocket
+      expect(WebSocket).toHaveBeenCalledTimes(2);
+
+      vi.useRealTimers();
+    });
+
+    it('should use exponential backoff for reconnection', async () => {
+      vi.useFakeTimers();
+
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      // First disconnection
+      const closeHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'close')[1];
+      closeHandler();
+
+      vi.advanceTimersByTime(1000); // First retry at 1s
+      expect(WebSocket).toHaveBeenCalledTimes(2);
+
+      // Second disconnection (should wait 2s)
+      closeHandler();
+      vi.advanceTimersByTime(2000);
+      expect(WebSocket).toHaveBeenCalledTimes(3);
+
+      vi.useRealTimers();
+    });
+
+    it('should not reconnect when stopped', async () => {
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      await agent.stop();
+
+      // Simulate disconnection after stop
+      const closeHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'close')[1];
+      closeHandler();
+
+      // Should not attempt reconnection
+      expect(WebSocket).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Edge Cases', () => {
+    it('should handle malformed JSON messages', async () => {
+      const errorHandler = vi.fn();
+      agent.on('error', errorHandler);
+
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      const messageHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'message')[1];
+      await messageHandler('invalid json');
+
+      // Should not crash, just log error
+      expect(agent.isAgentRunning()).toBe(true);
+    });
+
+    it('should handle ACK messages', async () => {
+      const ackHandler = vi.fn();
+      agent.on('ack', ackHandler);
+
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      const ackEnvelope: AINPEnvelope = {
+        id: uuidv4(),
+        trace_id: uuidv4(),
+        from_did: config.did,
+        to_did: config.did,
+        msg_type: 'ACK',
+        ttl: 60000,
+        timestamp: Date.now(),
+        sig: '',
+        payload: {},
+      };
+
+      const messageHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'message')[1];
+      await messageHandler(JSON.stringify(ackEnvelope));
+
+      expect(ackHandler).toHaveBeenCalledWith(ackEnvelope);
+    });
+
+    it('should handle unknown message types', async () => {
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      const unknownEnvelope: AINPEnvelope = {
+        id: uuidv4(),
+        trace_id: uuidv4(),
+        from_did: config.did,
+        to_did: config.did,
+        msg_type: 'UNKNOWN' as any,
+        ttl: 60000,
+        timestamp: Date.now(),
+        sig: '',
+        payload: {},
+      };
+
+      const messageHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'message')[1];
+      await messageHandler(JSON.stringify(unknownEnvelope));
+
+      // Should not crash
+      expect(agent.isAgentRunning()).toBe(true);
+    });
+  });
+
+  describe('Negative Cases', () => {
+    it('should handle intent handler errors', async () => {
+      const failingHandler = vi.fn(async () => {
+        throw new Error('Handler failed');
+      });
+      agent.onIntent('test.intent', failingHandler);
+
+      const connectPromise = agent.start();
+      const openHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'open')[1];
+      openHandler();
+      await connectPromise;
+
+      const intent: AINPIntent = {
+        '@type': 'test.intent',
+        data: {},
+      };
+
+      const envelope: AINPEnvelope = {
+        id: uuidv4(),
+        trace_id: uuidv4(),
+        from_did: config.did,
+        to_did: config.did,
+        msg_type: 'INTENT',
+        ttl: 60000,
+        timestamp: Date.now(),
+        sig: '',
+        payload: intent,
+      };
+
+      const messageHandler = mockWs.on.mock.calls.find((call: any) => call[0] === 'message')[1];
+      await messageHandler(JSON.stringify(envelope));
+
+      expect(mockWs.send).toHaveBeenCalled();
+      const response = JSON.parse(mockWs.send.mock.calls[0][0]);
+      expect(response.msg_type).toBe('ERROR');
+    });
+
+    it('should handle stop when not running', async () => {
+      await agent.stop();
+
+      expect(agent.isAgentRunning()).toBe(false);
+    });
+  });
+});

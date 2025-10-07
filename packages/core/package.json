@@ -1,0 +1,30 @@
+{
+  "name": "@ainp/core",
+  "version": "0.1.0",
+  "description": "Core infrastructure clients for AINP (NATS, pgvector, Redis)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@qdrant/js-client-rest": "^1.15.1",
+    "nats": "^2.19.0",
+    "pg": "^8.11.3",
+    "redis": "^4.6.12"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.10.9",
+    "typescript": "^5.3.3"
+  }
+}
