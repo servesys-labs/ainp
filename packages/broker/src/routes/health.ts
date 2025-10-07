@@ -16,13 +16,28 @@ export function createHealthRoutes(
 
   router.get('/health', async (req, res) => {
     try {
-      res.json({
-        status: 'healthy',
-        timestamp: Date.now(),
-        uptime: process.uptime(),
+      // Check all three connections in parallel
+      const [db, redis, nats] = await Promise.all([
+        dbClient.isConnected().catch(() => false),
+        redisClient.isConnected().catch(() => false),
+        natsClient.isConnected().catch(() => false),
+      ]);
+
+      const healthy = db && redis && nats;
+      const status = healthy ? 'healthy' : 'unhealthy';
+
+      res.status(healthy ? 200 : 503).json({
+        status,
+        connections: { db, redis, nats },
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      res.status(503).json({ status: 'unhealthy', error: String(error) });
+      res.status(503).json({
+        status: 'unhealthy',
+        connections: { db: false, redis: false, nats: false },
+        timestamp: new Date().toISOString(),
+        error: String(error)
+      });
     }
   });
 

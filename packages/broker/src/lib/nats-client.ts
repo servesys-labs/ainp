@@ -161,6 +161,26 @@ export class NATSClient {
   }
 
   /**
+   * Health check for this client instance
+   * @returns true if connected, false otherwise
+   */
+  async isConnected(): Promise<boolean> {
+    try {
+      if (!this.nc) {
+        return false;
+      }
+      // Check if connection is closed
+      if (this.nc.isClosed()) {
+        return false;
+      }
+      // If not closed and exists, it's connected
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Close NATS connection
    */
   async close(): Promise<void> {
