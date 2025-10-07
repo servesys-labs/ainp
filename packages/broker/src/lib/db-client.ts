@@ -8,16 +8,101 @@
 import { Pool, PoolClient } from 'pg';
 import { SemanticAddress, TrustVector, Capability } from '@ainp/core';
 
-export class DatabaseClient {
-  private pool: Pool;
+/**
+ * Validate DATABASE_URL environment variable
+ * @throws {Error} If DATABASE_URL is not set
+ */
+function validateDatabaseUrl(): void {
+  if (!process.env.DATABASE_URL) {
+    throw new Error(
+      'DATABASE_URL environment variable is required. ' +
+      'Example: postgres://user:pass@host:5432/dbname'
+    );
+  }
+}
 
-  constructor(connectionString: string) {
+/**
+ * Connect to database with retry logic
+ * Handles Railway connection failures gracefully
+ */
+async function connectWithRetry(pool: Pool, retries: number = 3): Promise<void> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const client = await pool.connect();
+      client.release();
+      console.log('✅ Database connected');
+      return;
+    } catch (err) {
+      console.error(`Database connection attempt ${i + 1}/${retries} failed:`, err);
+      if (i === retries - 1) {
+        throw err;
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
+}
+
+/**
+ * Health check for database connection
+ * @param pool Database connection pool
+ * @returns true if connected, false otherwise
+ */
+export async function isConnected(pool: Pool): Promise<boolean> {
+  try {
+    const client = await pool.connect();
+    await client.query('SELECT 1');
+    client.release();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export class DatabaseClient {
+  public pool: Pool; // Expose pool for transaction access
+
+  constructor(connectionString?: string) {
+    // Validate DATABASE_URL if no connectionString provided
+    if (!connectionString) {
+      validateDatabaseUrl();
+    }
+
     this.pool = new Pool({
-      connectionString,
+      connectionString: connectionString || process.env.DATABASE_URL,
       max: 20,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
+      connectionTimeoutMillis: 5000, // Railway timeout (increased from 2000)
     });
+  }
+
+  /**
+   * Connect to database (for testing)
+   * Uses retry logic for Railway connection failures
+   */
+  async connect(): Promise<void> {
+    await connectWithRetry(this.pool);
+  }
+
+  /**
+   * Health check for this client instance
+   * @returns true if connected, false otherwise
+   */
+  async isConnected(): Promise<boolean> {
+    return isConnected(this.pool);
+  }
+
+  /**
+   * Disconnect from database (for testing)
+   */
+  async disconnect(): Promise<void> {
+    await this.pool.end();
+  }
+
+  /**
+   * Execute a query (convenience method)
+   */
+  async query(text: string, params?: any[]): Promise<any> {
+    return this.pool.query(text, params);
   }
 
   /**
@@ -130,6 +215,7 @@ export class DatabaseClient {
   /**
    * Search agents by embedding similarity
    * Uses normalized schema with JOIN between capabilities and agents
+   * Web4 POU-lite: Returns usefulness_score_cached for ranking
    */
   async searchAgentsByEmbedding(
     queryEmbedding: string,
@@ -146,6 +232,8 @@ export class DatabaseClient {
           a.id,
           a.did,
           a.public_key,
+          a.usefulness_score_cached,
+          a.usefulness_last_updated,
           ts.score,
           ts.reliability,
           ts.honesty,
@@ -175,7 +263,7 @@ export class DatabaseClient {
       FROM capability_matches cm
       JOIN agents a ON cm.id = a.id
       JOIN capabilities c ON a.id = c.agent_id
-      GROUP BY cm.id, cm.did, cm.public_key, cm.score, cm.reliability, cm.honesty, cm.competence, cm.timeliness, cm.decay_rate, cm.last_updated, cm.distance
+      GROUP BY cm.id, cm.did, cm.public_key, cm.usefulness_score_cached, cm.usefulness_last_updated, cm.score, cm.reliability, cm.honesty, cm.competence, cm.timeliness, cm.decay_rate, cm.last_updated, cm.distance
       ORDER BY cm.distance ASC
       LIMIT $3
       `,
@@ -197,6 +285,9 @@ export class DatabaseClient {
         decay_rate: row.decay_rate || 0.977,
         last_updated: row.last_updated ? new Date(row.last_updated).getTime() : Date.now(),
       },
+      usefulness_score_cached: row.usefulness_score_cached || 0,
+      usefulness_last_updated: row.usefulness_last_updated ? new Date(row.usefulness_last_updated).getTime() : undefined,
+      similarity: 1 - row.distance, // Convert distance to similarity for ranking
     }));
   }
 

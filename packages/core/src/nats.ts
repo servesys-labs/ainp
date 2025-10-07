@@ -308,3 +308,82 @@ export class NATSClient {
 export function createNATSClient(config?: NATSConfig): NATSClient {
   return new NATSClient(config)
 }
+
+/**
+ * Health check for NATS connection
+ * @param client NATS client instance
+ * @returns true if connected or reconnecting, false otherwise
+ */
+export async function isConnected(client: NATSClient): Promise<boolean> {
+  try {
+    // Access the private connection through the client
+    const connection = (client as any).connection as NatsConnection | null
+    if (!connection) {
+      return false
+    }
+    // Check if connection is closed
+    if (connection.isClosed()) {
+      return false
+    }
+    // If not closed and exists, it's connected
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Ensure JetStream streams exist (idempotent)
+ * Creates required streams if they don't exist
+ * @param client NATS client instance
+ */
+export async function ensureStreamsExist(client: NATSClient): Promise<void> {
+  const jsm = (client as any).jsm as JetStreamManager | null
+  if (!jsm) {
+    throw new Error('JetStream manager not initialized - call connect() first')
+  }
+
+  const streamConfigs: Partial<StreamConfig>[] = [
+    {
+      name: 'AINP_INTENTS',
+      subjects: ['ainp.agent.*.intents'],
+      retention: RetentionPolicy.Limits,
+      max_age: 7 * 24 * 60 * 60 * 1e9, // 7 days in nanoseconds
+      max_bytes: 10 * 1024 * 1024 * 1024, // 10GB
+      storage: StorageType.File,
+      duplicate_window: 2 * 60 * 1e9, // 2 minutes
+    },
+    {
+      name: 'AINP_NEGOTIATIONS',
+      subjects: ['ainp.negotiations.*'],
+      retention: RetentionPolicy.Limits,
+      max_age: 7 * 24 * 60 * 60 * 1e9, // 7 days
+      max_bytes: 5 * 1024 * 1024 * 1024, // 5GB
+      storage: StorageType.File,
+      duplicate_window: 2 * 60 * 1e9,
+    },
+    {
+      name: 'AINP_RESULTS',
+      subjects: ['ainp.agent.*.results'],
+      retention: RetentionPolicy.Limits,
+      max_age: 7 * 24 * 60 * 60 * 1e9, // 7 days
+      max_bytes: 10 * 1024 * 1024 * 1024, // 10GB
+      storage: StorageType.File,
+      duplicate_window: 2 * 60 * 1e9,
+    },
+  ]
+
+  for (const config of streamConfigs) {
+    try {
+      await jsm.streams.info(config.name!)
+      logger.debug('NATS stream exists', { stream: config.name })
+    } catch (error: any) {
+      if (error.code === '404' || error.message?.includes('stream not found')) {
+        await jsm.streams.add(config)
+        logger.info('Created NATS stream', { stream: config.name })
+      } else {
+        throw error
+      }
+    }
+  }
+}
