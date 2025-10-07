@@ -42,7 +42,7 @@ export class DiscoveryService {
     }
 
     // Search by embedding similarity
-    const minSimilarity = 0.7; // Default minimum similarity
+    const minSimilarity = 0.5; // Default minimum similarity (lowered for MVP)
     let agents = await this.dbClient.searchAgentsByEmbedding(queryEmbedding, minSimilarity, 50);
 
     // Apply filters

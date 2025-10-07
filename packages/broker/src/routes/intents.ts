@@ -9,9 +9,12 @@ import { AINPEnvelope, DiscoveryQuery } from '@ainp/core';
 export function createIntentRoutes(routingService: RoutingService): Router {
   const router = Router();
 
-  router.post('/intents/send', async (req, res) => {
+  router.post('/send', async (req, res) => {
     try {
-      const { envelope, query } = req.body as { envelope: AINPEnvelope; query: DiscoveryQuery };
+      // Extract envelope and query from request body
+      // Support both formats: root envelope or nested {envelope, query}
+      const envelope = (req.body as any).envelope || req.body as AINPEnvelope;
+      const query = (req.body as any).query;
 
       const count = await routingService.routeIntent(envelope, query);
 

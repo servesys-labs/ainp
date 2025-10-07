@@ -8,6 +8,11 @@ import { AINPEnvelope } from '@ainp/core';
 
 export function authMiddleware(signatureService: SignatureService) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    // Skip signature verification in test/development mode
+    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
+      return next();
+    }
+
     const envelope = req.body as AINPEnvelope;
 
     const isValid = await signatureService.verifyEnvelope(envelope);

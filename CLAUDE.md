@@ -1,21 +1,63 @@
 <project_status>
-Project: ainp | Last Update: 2025-10-06 23:45:48 CDT | Data: fresh (queue=0)
+Project: ainp | Last Update: 2025-10-07 01:19:32 CDT | Data: fresh (queue=0)
 Summary:
 - Phase: Integrating — Status snapshot from vector digests + local logs
-Last Digest: agent=Main, task=ainp-phase-0.2-complete, decisions=4, files=6
+Last Digest: agent=Database Modeler, task=schema-code-mismatch-fix, decisions=6, files=8
 Milestones:
-- Done: Added embedding model registry (Section 4.3) - supports OpenAI, Sentence Transformer…
-- Next: Deploy to staging environment with docker-compose up
+- Done: Created comprehensive .gitignore excluding node_modules, build artifacts, .env files…
+- Next: Apply migration: bash packages/db/migrations/APPLY_FIX.sh
 Next Steps:
-- Deploy to staging environment with docker-compose up
-- Run integration tests with real infrastructure (NATS, Redis, PostgreSQL)
-- Configure production environment variables
+- Apply migration: bash packages/db/migrations/APPLY_FIX.sh
+- Run integration tests: cd packages/broker && npm test -- test/db-client.integration.…
+- Test agent registration via API endpoint
 Decisions (recent):
-- Added Lite Mode specification (Section 3.7) - 7 required fields for IoT/mobile agents
-- Added configurable QoS weights (Section 3.4) - documented rationale and domain-speci…
+- Configured .gitattributes with LF line endings for all text files and union merge st…
+- Created .dockerignore to exclude development dependencies and artifacts from Docker …
 Activity Snapshot:
-- Components: 001-SPEC.md, 001-RATIONALE.md, docker-compose.dev.yml, schema.sql, vector.ts
+- Components: .gitignore, .gitattributes, .dockerignore, run-comprehensive-tests.ts, run-phase1.ts
 </project_status>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

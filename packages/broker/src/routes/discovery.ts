@@ -9,13 +9,13 @@ import { DiscoveryQuery } from '@ainp/core';
 export function createDiscoveryRoutes(discoveryService: DiscoveryService): Router {
   const router = Router();
 
-  router.post('/discovery/search', async (req, res) => {
+  router.post('/search', async (req, res) => {
     try {
       const query = req.body as DiscoveryQuery;
 
       const agents = await discoveryService.discover(query);
 
-      res.json({ agents, count: agents.length });
+      res.json(agents);
     } catch (error) {
       res.status(500).json({ error: String(error) });
     }

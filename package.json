@@ -14,8 +14,10 @@
   "devDependencies": {
     "@types/ws": "^8.18.1",
     "@vitest/coverage-v8": "^3.2.4",
+    "autocannon": "^8.0.0",
     "typescript": "^5.3.3",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "ws": "^8.18.3"
   },
   "engines": {
     "node": ">=18.0.0",

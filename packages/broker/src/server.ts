@@ -3,6 +3,7 @@
  * Main entry point
  */
 
+import 'dotenv/config';
 import express from 'express';
 import WebSocket from 'ws';
 import { Logger } from '@ainp/sdk';
@@ -67,21 +68,29 @@ async function main() {
 
   // Routes
   app.use(createHealthRoutes(dbClient, redisClient, natsClient));
+
+  // Agent routes: no envelope validation required (public API, IP-based rate limiting)
   app.use(
-    '/api',
-    rateLimitMiddleware(redisClient),
-    validateEnvelope,
-    authMiddleware(signatureService),
+    '/api/agents',
+    rateLimitMiddleware(redisClient, 100, false), // requireDID=false for public endpoints
     createAgentRoutes(discoveryService)
   );
+
+  // Discovery routes: no envelope validation required (public API, IP-based rate limiting)
   app.use(
-    '/api',
-    rateLimitMiddleware(redisClient),
+    '/api/discovery',
+    rateLimitMiddleware(redisClient, 100, false), // requireDID=false for public endpoints
+    createDiscoveryRoutes(discoveryService)
+  );
+
+  // Intent routes: require envelope validation + auth (security-critical, DID-based rate limiting)
+  app.use(
+    '/api/intents',
+    rateLimitMiddleware(redisClient, 100, true), // requireDID=true for authenticated endpoints
     validateEnvelope,
     authMiddleware(signatureService),
     createIntentRoutes(routingService)
   );
-  app.use('/api', createDiscoveryRoutes(discoveryService));
 
   // Start HTTP server
   const server = app.listen(PORT, () => {

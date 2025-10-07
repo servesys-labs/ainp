@@ -1,10 +1,12 @@
 /**
  * Database Client for AINP Broker
  * PostgreSQL + pgvector operations
+ *
+ * Updated to match normalized schema (agents + capabilities tables)
  */
 
 import { Pool, PoolClient } from 'pg';
-import { SemanticAddress, TrustVector } from '@ainp/core';
+import { SemanticAddress, TrustVector, Capability } from '@ainp/core';
 
 export class DatabaseClient {
   private pool: Pool;
@@ -19,7 +21,24 @@ export class DatabaseClient {
   }
 
   /**
+   * Convert embedding to PostgreSQL vector format
+   * Handles both base64-encoded and array formats
+   */
+  private embeddingToVector(embedding: string | number[]): string {
+    if (Array.isArray(embedding)) {
+      // Already an array, convert to PostgreSQL vector format
+      return `[${embedding.join(',')}]`;
+    }
+
+    // Base64 string - decode to Float32Array then convert
+    const buffer = Buffer.from(embedding, 'base64');
+    const float32Array = new Float32Array(buffer.buffer);
+    return `[${Array.from(float32Array).join(',')}]`;
+  }
+
+  /**
    * Register agent in discovery index
+   * Uses normalized schema: agents + capabilities tables
    */
   async registerAgent(address: SemanticAddress, ttl: number): Promise<void> {
     const client = await this.pool.connect();
@@ -27,33 +46,75 @@ export class DatabaseClient {
     try {
       await client.query('BEGIN');
 
+      // Calculate expiration timestamp
+      const expiresAt = new Date(Date.now() + ttl);
+
       // Insert or update agent
-      await client.query(
+      const agentResult = await client.query(
         `
-        INSERT INTO agents (did, capabilities, credentials, ttl, expires_at)
-        VALUES ($1, $2, $3, $4, NOW() + INTERVAL '1 millisecond' * $4)
+        INSERT INTO agents (did, public_key, ttl, expires_at, last_seen_at)
+        VALUES ($1, $2, $3, $4, NOW())
         ON CONFLICT (did) DO UPDATE SET
-          capabilities = $2,
-          credentials = $3,
-          ttl = $4,
-          expires_at = NOW() + INTERVAL '1 millisecond' * $4,
-          updated_at = NOW()
+          ttl = $3,
+          expires_at = $4,
+          last_seen_at = NOW()
+        RETURNING id
         `,
-        [address.did, JSON.stringify(address.capabilities), address.credentials || [], ttl]
+        [address.did, address.credentials?.[0] || 'placeholder-public-key', ttl, expiresAt]
+      );
+
+      const agentId = agentResult.rows[0].id;
+
+      // Delete existing capabilities for this agent (will be re-inserted)
+      await client.query(
+        `DELETE FROM capabilities WHERE agent_id = $1`,
+        [agentId]
       );
 
       // Insert capability embeddings for vector search
       for (const capability of address.capabilities) {
+        const vectorStr = this.embeddingToVector(capability.embedding);
+
         await client.query(
           `
-          INSERT INTO capability_embeddings (did, capability_description, embedding, tags)
-          VALUES ($1, $2, $3, $4)
-          ON CONFLICT (did, capability_description) DO UPDATE SET
-            embedding = $3,
-            tags = $4,
-            updated_at = NOW()
+          INSERT INTO capabilities (agent_id, description, embedding, tags, version, evidence_vc)
+          VALUES ($1, $2, $3::vector, $4, $5, $6)
           `,
-          [address.did, capability.description, capability.embedding, capability.tags]
+          [
+            agentId,
+            capability.description,
+            vectorStr,
+            capability.tags,
+            capability.version,
+            capability.evidence || null,
+          ]
+        );
+      }
+
+      // Insert or update trust score
+      if (address.trust) {
+        await client.query(
+          `
+          INSERT INTO trust_scores (agent_id, score, reliability, honesty, competence, timeliness, decay_rate, last_updated)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+          ON CONFLICT (agent_id) DO UPDATE SET
+            score = $2,
+            reliability = $3,
+            honesty = $4,
+            competence = $5,
+            timeliness = $6,
+            decay_rate = $7,
+            last_updated = NOW()
+          `,
+          [
+            agentId,
+            address.trust.score,
+            address.trust.dimensions.reliability,
+            address.trust.dimensions.honesty,
+            address.trust.dimensions.competence,
+            address.trust.dimensions.timeliness,
+            address.trust.decay_rate,
+          ]
         );
       }
 
@@ -68,41 +129,63 @@ export class DatabaseClient {
 
   /**
    * Search agents by embedding similarity
+   * Uses normalized schema with JOIN between capabilities and agents
    */
   async searchAgentsByEmbedding(
     queryEmbedding: string,
     minSimilarity: number = 0.7,
     limit: number = 10
   ): Promise<SemanticAddress[]> {
+    // Convert base64 embedding to PostgreSQL vector format
+    const vectorStr = this.embeddingToVector(queryEmbedding);
+
     const result = await this.pool.query(
       `
-      SELECT DISTINCT ON (a.did)
-        a.did,
-        a.capabilities,
-        a.credentials,
-        ts.score,
-        ts.reliability,
-        ts.honesty,
-        ts.competence,
-        ts.timeliness,
-        ts.decay_rate,
-        ts.last_updated,
-        (ce.embedding <=> $1::vector) AS similarity
-      FROM agents a
-      JOIN capability_embeddings ce ON a.did = ce.did
-      LEFT JOIN trust_scores ts ON a.did = ts.did
-      WHERE a.expires_at > NOW()
-        AND (ce.embedding <=> $1::vector) <= $2
-      ORDER BY a.did, similarity ASC
+      WITH capability_matches AS (
+        SELECT DISTINCT ON (a.id)
+          a.id,
+          a.did,
+          a.public_key,
+          ts.score,
+          ts.reliability,
+          ts.honesty,
+          ts.competence,
+          ts.timeliness,
+          ts.decay_rate,
+          ts.last_updated,
+          (c.embedding <=> $1::vector) AS distance
+        FROM agents a
+        JOIN capabilities c ON a.id = c.agent_id
+        LEFT JOIN trust_scores ts ON a.id = ts.agent_id
+        WHERE (a.expires_at IS NULL OR a.expires_at > NOW())
+          AND (c.embedding <=> $1::vector) <= $2
+        ORDER BY a.id, distance ASC
+      )
+      SELECT
+        cm.*,
+        json_agg(
+          json_build_object(
+            'description', c.description,
+            'embedding', c.embedding::text,
+            'tags', c.tags,
+            'version', c.version,
+            'evidence', c.evidence_vc
+          )
+        ) AS capabilities
+      FROM capability_matches cm
+      JOIN agents a ON cm.id = a.id
+      JOIN capabilities c ON a.id = c.agent_id
+      GROUP BY cm.id, cm.did, cm.public_key, cm.score, cm.reliability, cm.honesty, cm.competence, cm.timeliness, cm.decay_rate, cm.last_updated, cm.distance
+      ORDER BY cm.distance ASC
       LIMIT $3
       `,
-      [queryEmbedding, 1 - minSimilarity, limit]
+      [vectorStr, 1 - minSimilarity, limit]
     );
 
     return result.rows.map((row) => ({
       did: row.did,
-      capabilities: row.capabilities,
-      credentials: row.credentials || [],
+      capabilities: row.capabilities as Capability[],
+      credentials: [row.public_key],
       trust: {
         score: row.score || 0.5,
         dimensions: {
@@ -112,21 +195,43 @@ export class DatabaseClient {
           timeliness: row.timeliness || 0.5,
         },
         decay_rate: row.decay_rate || 0.977,
-        last_updated: row.last_updated || Date.now(),
+        last_updated: row.last_updated ? new Date(row.last_updated).getTime() : Date.now(),
       },
     }));
   }
 
   /**
    * Get agent by DID
+   * Uses normalized schema with JOIN
    */
   async getAgent(did: string): Promise<SemanticAddress | null> {
     const result = await this.pool.query(
       `
-      SELECT a.did, a.capabilities, a.credentials, ts.*
+      SELECT
+        a.id,
+        a.did,
+        a.public_key,
+        ts.score,
+        ts.reliability,
+        ts.honesty,
+        ts.competence,
+        ts.timeliness,
+        ts.decay_rate,
+        ts.last_updated,
+        json_agg(
+          json_build_object(
+            'description', c.description,
+            'embedding', c.embedding::text,
+            'tags', c.tags,
+            'version', c.version,
+            'evidence', c.evidence_vc
+          )
+        ) FILTER (WHERE c.id IS NOT NULL) AS capabilities
       FROM agents a
-      LEFT JOIN trust_scores ts ON a.did = ts.did
-      WHERE a.did = $1 AND a.expires_at > NOW()
+      LEFT JOIN capabilities c ON a.id = c.agent_id
+      LEFT JOIN trust_scores ts ON a.id = ts.agent_id
+      WHERE a.did = $1 AND (a.expires_at IS NULL OR a.expires_at > NOW())
+      GROUP BY a.id, a.did, a.public_key, ts.score, ts.reliability, ts.honesty, ts.competence, ts.timeliness, ts.decay_rate, ts.last_updated
       `,
       [did]
     );
@@ -139,8 +244,8 @@ export class DatabaseClient {
 
     return {
       did: row.did,
-      capabilities: row.capabilities,
-      credentials: row.credentials || [],
+      capabilities: row.capabilities || [],
+      credentials: [row.public_key],
       trust: {
         score: row.score || 0.5,
         dimensions: {
@@ -150,27 +255,30 @@ export class DatabaseClient {
           timeliness: row.timeliness || 0.5,
         },
         decay_rate: row.decay_rate || 0.977,
-        last_updated: row.last_updated || Date.now(),
+        last_updated: row.last_updated ? new Date(row.last_updated).getTime() : Date.now(),
       },
     };
   }
 
   /**
    * Update trust score
+   * Fixed: trust_scores uses agent_id (UUID), not did (TEXT)
    */
   async updateTrustScore(did: string, trust: TrustVector): Promise<void> {
     await this.pool.query(
       `
-      INSERT INTO trust_scores (did, score, reliability, honesty, competence, timeliness, decay_rate, last_updated)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      ON CONFLICT (did) DO UPDATE SET
+      INSERT INTO trust_scores (agent_id, score, reliability, honesty, competence, timeliness, decay_rate, last_updated)
+      SELECT id, $2, $3, $4, $5, $6, $7, NOW()
+      FROM agents
+      WHERE did = $1
+      ON CONFLICT (agent_id) DO UPDATE SET
         score = $2,
         reliability = $3,
         honesty = $4,
         competence = $5,
         timeliness = $6,
         decay_rate = $7,
-        last_updated = $8
+        last_updated = NOW()
       `,
       [
         did,
@@ -180,7 +288,6 @@ export class DatabaseClient {
         trust.dimensions.competence,
         trust.dimensions.timeliness,
         trust.decay_rate,
-        trust.last_updated,
       ]
     );
   }
@@ -191,7 +298,7 @@ export class DatabaseClient {
   async cleanupExpiredAgents(): Promise<number> {
     const result = await this.pool.query(
       `
-      DELETE FROM agents WHERE expires_at <= NOW()
+      DELETE FROM agents WHERE expires_at IS NOT NULL AND expires_at <= NOW()
       `
     );
 

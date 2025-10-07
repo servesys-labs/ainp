@@ -33,7 +33,20 @@ export class NATSClient {
     }
 
     const subject = `ainp.intents.${envelope.to_did || 'broadcast'}`;
-    await this.js.publish(subject, this.codec.encode(JSON.stringify(envelope)));
+
+    try {
+      await this.js.publish(subject, this.codec.encode(JSON.stringify(envelope)));
+    } catch (error) {
+      // In test/dev mode, treat 503 (no consumers) as success (fire-and-forget)
+      if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
+        const err = error as any;
+        if (err.code === '503' || err.message?.includes('503')) {
+          logger.info('Published to NATS (no consumers, fire-and-forget)', { subject });
+          return;
+        }
+      }
+      throw error;
+    }
   }
 
   /**

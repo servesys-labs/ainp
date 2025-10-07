@@ -20,7 +20,7 @@ export class RoutingService {
   /**
    * Route intent to matching agents
    */
-  async routeIntent(envelope: AINPEnvelope, query: DiscoveryQuery): Promise<number> {
+  async routeIntent(envelope: AINPEnvelope, query?: DiscoveryQuery): Promise<number> {
     // Verify signature
     if (!(await this.signatureService.verifyEnvelope(envelope))) {
       throw new Error('Invalid envelope signature');
@@ -31,7 +31,17 @@ export class RoutingService {
       throw new Error('Envelope TTL expired');
     }
 
-    // Discover matching agents
+    // Direct routing if to_did is specified
+    if (envelope.to_did) {
+      await this.natsClient.publishIntent(envelope);
+      return 1;
+    }
+
+    // Discovery-based routing
+    if (!query) {
+      throw new Error('Query required for discovery-based routing');
+    }
+
     const agents = await this.discoveryService.discover(query);
 
     if (agents.length === 0) {

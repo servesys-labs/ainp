@@ -9,9 +9,18 @@ import { SemanticAddress } from '@ainp/core';
 export function createAgentRoutes(discoveryService: DiscoveryService): Router {
   const router = Router();
 
-  router.post('/agents/register', async (req, res) => {
+  router.post('/register', async (req, res) => {
     try {
       const { address, ttl } = req.body as { address: SemanticAddress; ttl: number };
+
+      // Validate DID format (SQL injection prevention)
+      const didRegex = /^did:(key|web):[a-zA-Z0-9._-]+$/;
+      if (!address?.did || !didRegex.test(address.did)) {
+        return res.status(400).json({
+          error: "INVALID_DID",
+          message: "Invalid DID format"
+        });
+      }
 
       await discoveryService.registerAgent(address, ttl);
 
@@ -21,7 +30,7 @@ export function createAgentRoutes(discoveryService: DiscoveryService): Router {
     }
   });
 
-  router.get('/agents/:did', async (req, res) => {
+  router.get('/:did', async (req, res) => {
     try {
       const agent = await discoveryService.getAgent(req.params.did);
 

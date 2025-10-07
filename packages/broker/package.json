@@ -15,6 +15,7 @@
   "dependencies": {
     "@ainp/core": "file:../core",
     "@ainp/sdk": "file:../sdk",
+    "dotenv": "^17.2.3",
     "express": "^4.18.2",
     "json-canonicalize": "^1.0.6",
     "nats": "^2.19.0",
