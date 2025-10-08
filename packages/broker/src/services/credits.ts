@@ -231,4 +231,45 @@ export class CreditService {
       created_at: row.created_at
     }));
   }
+
+  /**
+   * Spend credits immediately (no reservation). Atomic check-and-debit.
+   */
+  async spend(agentDID: string, amount: bigint, intentId: string, reason?: string): Promise<void> {
+    const client = await this.db.pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const accountRes = await client.query(
+        'SELECT balance FROM credit_accounts WHERE agent_did = $1 FOR UPDATE',
+        [agentDID]
+      );
+      if (accountRes.rows.length === 0) {
+        throw new Error(`Account not found: ${agentDID}`);
+      }
+
+      const balance = BigInt(accountRes.rows[0].balance);
+      if (balance < amount) {
+        throw new Error(`Insufficient balance: need ${amount}, have ${balance}`);
+      }
+
+      await client.query(
+        `UPDATE credit_accounts SET balance = balance - $1, spent = spent + $1 WHERE agent_did = $2`,
+        [amount.toString(), agentDID]
+      );
+
+      await client.query(
+        `INSERT INTO credit_transactions (agent_did, tx_type, amount, intent_id, metadata)
+         VALUES ($1, 'spend', $2, $3, $4)`,
+        [agentDID, amount.toString(), intentId, reason ? JSON.stringify({ reason }) : null]
+      );
+
+      await client.query('COMMIT');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
+  }
 }

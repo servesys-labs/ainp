@@ -30,6 +30,12 @@ export enum FeatureFlag {
   // Future Phases (Phase 0.4+)
   NEGOTIATION_ENABLED = 'NEGOTIATION_ENABLED',
   MULTI_ROUND_NEGOTIATION_ENABLED = 'MULTI_ROUND_NEGOTIATION_ENABLED',
+
+  // Security & Anti-fraud (Email/General)
+  REPLAY_PROTECTION_ENABLED = 'REPLAY_PROTECTION_ENABLED',
+  EMAIL_POSTAGE_ENABLED = 'EMAIL_POSTAGE_ENABLED',
+  EMAIL_CONTENT_DEDUPE_ENABLED = 'EMAIL_CONTENT_DEDUPE_ENABLED',
+  EMAIL_GREYLIST_ENABLED = 'EMAIL_GREYLIST_ENABLED',
 }
 
 /**
@@ -108,6 +114,32 @@ const FEATURE_FLAG_REGISTRY: FeatureFlagConfig[] = [
     defaultValue: false,
     description: 'Enable multi-round negotiation state machine (Phase 0.4)',
     environments: ['preview', 'development'],
+  },
+
+  // Security & Anti-fraud (Email/General)
+  {
+    key: FeatureFlag.REPLAY_PROTECTION_ENABLED,
+    defaultValue: true,
+    description: 'Enable Redis-backed replay protection for envelopes',
+    environments: ['production', 'preview', 'development', 'test'],
+  },
+  {
+    key: FeatureFlag.EMAIL_POSTAGE_ENABLED,
+    defaultValue: false,
+    description: 'Require small credit spend for first-contact direct email (cold mail)',
+    environments: ['production', 'preview'],
+  },
+  {
+    key: FeatureFlag.EMAIL_CONTENT_DEDUPE_ENABLED,
+    defaultValue: true,
+    description: 'Enable content-hash deduplication window for email messages',
+    environments: ['production', 'preview', 'development'],
+  },
+  {
+    key: FeatureFlag.EMAIL_GREYLIST_ENABLED,
+    defaultValue: false,
+    description: 'Enable greylisting for first-contact email (delay initial delivery)',
+    environments: ['production', 'preview'],
   },
 ];
 

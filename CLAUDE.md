@@ -1,21 +1,33 @@
 <project_status>
-Project: ainp | Last Update: 2025-10-08 10:31:33 CDT | Data: stale (queue=2; queue>0; local mode)
+Project: ainp | Last Update: 2025-10-08 10:51:34 CDT | Data: stale (queue=3; queue>0; local mode)
 Summary:
 - Phase: Stabilizing Vector RAG — Status snapshot from vector digests + local logs
 Last Digest: agent=Main, task=honest-security-audit-correction, decisions=6, files=5
 Milestones:
-- Done: Successfully completed Phase 2A using orchestration framework: IPSA → CN → IE → TA →…
+- Done: CORRECTED ASSESSMENT: 4 of 5 issues actually fixed, 1 partially fixed
 - Next: Fix discovery.ts to use getDiscoveryWeights() instead of direct process.env reads
 Next Steps:
 - Fix discovery.ts to use getDiscoveryWeights() instead of direct process.env reads
 - Run comprehensive tests to verify all middleware ordering is correct
 - Deploy fixes to staging for validation
 Decisions (recent):
-- All quality gates passed: typecheck, tests (17/17), build, security
-- Production readiness: 92% confidence, GO decision from PRV
+- Issue 1 (middleware order): FIXED after correction
+- Issue 2 (auth bypass): VERIFIED FIXED (route-level middleware)
 Activity Snapshot:
-- Components: envelope.ts, validation.ts, usefulness-aggregator.ts, usefulness.ts, auth.ts
+- Components: server.ts, usefulness.ts, auth.ts, redis-client.ts, discovery.ts
 </project_status>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

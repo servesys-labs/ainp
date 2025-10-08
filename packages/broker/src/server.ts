@@ -32,6 +32,9 @@ import { UsefulnessAggregatorService } from './services/usefulness-aggregator';
 import { startUsefulnessAggregationJob } from './jobs/usefulness-aggregator-job';
 import { NegotiationService } from './services/negotiation';
 import { IncentiveDistributionService } from './services/incentive-distribution';
+import { AntiFraudService } from './services/anti-fraud';
+import { replayProtectionMiddleware } from './middleware/replay';
+import { emailGuardMiddleware } from './middleware/email-guard';
 
 const logger = new Logger({ serviceName: 'ainp-broker' });
 
@@ -66,6 +69,7 @@ async function main() {
   const usefulnessAggregator = new UsefulnessAggregatorService(dbClient);
   const incentiveDistribution = new IncentiveDistributionService(dbClient, creditService);
   const negotiationService = new NegotiationService(dbClient, creditService);
+  const antiFraud = new AntiFraudService(redisClient);
 
   // Start usefulness aggregation cron job
   startUsefulnessAggregationJob(usefulnessAggregator);
@@ -129,6 +133,8 @@ async function main() {
     '/api/intents',
     validateEnvelope,                            // ✅ 1. Validate envelope structure
     authMiddleware(signatureService),            // ✅ 2. Extract DID, set x-ainp-did header
+    replayProtectionMiddleware(antiFraud),       // ✅ 2b. Replay protection (id + trace)
+    emailGuardMiddleware(antiFraud, creditService), // ✅ 2c. Email anti-fraud (dedupe/postage/greylist)
     rateLimitMiddleware(redisClient, 100, true), // ✅ 3. DID-based rate limiting
     createIntentRoutes(routingService)
   );
