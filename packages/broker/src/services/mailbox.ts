@@ -47,7 +47,11 @@ export interface InboxQuery {
 }
 
 export class MailboxService {
-  constructor(private db: DatabaseClient) {}
+  private wsHandler?: any; // Optional WebSocketHandler for notifications
+
+  constructor(private db: DatabaseClient, wsHandler?: any) {
+    this.wsHandler = wsHandler;
+  }
 
   /**
    * Store a message in the mailbox
@@ -100,7 +104,29 @@ export class MailboxService {
       ]
     );
 
-    return result.rows[0].id;
+    const messageId = result.rows[0].id;
+
+    // Send WebSocket notification to recipients
+    if (this.wsHandler) {
+      for (const recipientDid of toDids) {
+        try {
+          await this.wsHandler.notifyNewMessage(recipientDid, {
+            type: 'new_message',
+            message_id: messageId,
+            conversation_id: conversationId,
+            from_did: envelope.from_did,
+            subject: semantics.subject,
+            preview: semantics.content.substring(0, 100),
+            timestamp: envelope.timestamp,
+          });
+        } catch (error) {
+          // Don't fail message storage if notification fails
+          console.error('[MailboxService] Failed to send notification:', error);
+        }
+      }
+    }
+
+    return messageId;
   }
 
   /**

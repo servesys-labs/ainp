@@ -50,4 +50,27 @@ export class WebSocketHandler {
       ws.send(JSON.stringify(envelope));
     }
   }
+
+  /**
+   * Send message notification to recipient
+   */
+  async notifyNewMessage(recipientDid: string, notification: {
+    type: 'new_message';
+    message_id: string;
+    conversation_id?: string;
+    from_did: string;
+    subject?: string;
+    preview?: string;
+    timestamp: number;
+  }): Promise<boolean> {
+    const ws = this.connections.get(recipientDid);
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        '@type': 'NOTIFICATION',
+        ...notification,
+      }));
+      return true;
+    }
+    return false; // Recipient not connected
+  }
 }

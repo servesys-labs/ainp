@@ -63,20 +63,13 @@ async function main() {
   const trustService = new TrustService(dbClient);
   const discoveryService = new DiscoveryService(dbClient, embeddingService, redisClient);
   const creditService = new CreditService(dbClient);
-  const mailboxService = new MailboxService(dbClient);
-  const contactService = new ContactService(dbClient);
-  const routingService = new RoutingService(
-    discoveryService,
-    natsClient,
-    signatureService,
-    trustService,
-    mailboxService,
-    contactService
-  );
   const usefulnessAggregator = new UsefulnessAggregatorService(dbClient);
   const incentiveDistribution = new IncentiveDistributionService(dbClient, creditService);
   const negotiationService = new NegotiationService(dbClient, creditService);
   const antiFraud = new AntiFraudService(redisClient);
+
+  // Note: MailboxService and RoutingService created after WebSocket initialization
+  // to enable real-time notifications
 
   // Start usefulness aggregation cron job
   startUsefulnessAggregationJob(usefulnessAggregator);
@@ -91,9 +84,31 @@ async function main() {
     });
   }
 
-  // Initialize WebSocket
-  const wsHandler = new WebSocketHandler(signatureService, routingService);
+  // Initialize WebSocket handler first
+  // Create temporary routing service without mailbox for WebSocket initialization
+  const tempRoutingService = new RoutingService(
+    discoveryService,
+    natsClient,
+    signatureService,
+    trustService
+  );
+  const wsHandler = new WebSocketHandler(signatureService, tempRoutingService);
   const deliveryService = new DeliveryService(wsHandler, natsClient);
+
+  // Now create services that need WebSocket notifications
+  const contactService = new ContactService(dbClient);
+  const mailboxService = new MailboxService(dbClient, wsHandler);
+  const routingService = new RoutingService(
+    discoveryService,
+    natsClient,
+    signatureService,
+    trustService,
+    mailboxService,
+    contactService
+  );
+
+  // Update WebSocket handler to use final routing service
+  (wsHandler as any).routingService = routingService;
 
   await deliveryService.startDeliveryLoop();
 

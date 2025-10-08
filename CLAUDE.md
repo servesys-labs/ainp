@@ -1,21 +1,49 @@
 <project_status>
-Project: ainp | Last Update: 2025-10-08 11:11:34 CDT | Data: stale (queue=5; queue>0; local mode)
+Project: ainp | Last Update: 2025-10-08 12:16:36 CDT | Data: stale (queue=1; queue>0; local mode)
 Summary:
 - Phase: Stabilizing Vector RAG — Status snapshot from vector digests + local logs
 Last Digest: agent=Main, task=honest-security-audit-correction, decisions=6, files=5
 Milestones:
-- Done: CORRECTED ASSESSMENT: 4 of 5 issues actually fixed, 1 partially fixed
+- Done: Removed multiformats ESM dependency from packages/sdk/src/crypto.ts
 - Next: Fix discovery.ts to use getDiscoveryWeights() instead of direct process.env reads
 Next Steps:
 - Fix discovery.ts to use getDiscoveryWeights() instead of direct process.env reads
 - Run comprehensive tests to verify all middleware ordering is correct
 - Deploy fixes to staging for validation
 Decisions (recent):
-- Issue 1 (middleware order): FIXED after correction
-- Issue 2 (auth bypass): VERIFIED FIXED (route-level middleware)
+- Implemented native Node.js base58 encoding/decoding using BigInt arithmetic
+- Fixed broken NegotiationConstraints imports in old SDK files (commented out, not use…
 Activity Snapshot:
-- Components: server.ts, usefulness.ts, auth.ts, redis-client.ts, discovery.ts
+- Components: crypto.ts, negotiation.ts, types.ts, usefulness-migration.test.ts
 </project_status>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
