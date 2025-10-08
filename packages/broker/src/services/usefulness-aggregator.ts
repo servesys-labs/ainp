@@ -153,8 +153,39 @@ export class UsefulnessAggregatorService {
       throw new ValidationError(`Agent not found: ${agentDID}`);
     }
 
+    // ✅ Duplicate detection: Check for same trace_id + agent_did
+    const duplicateCheck = await this.db.query(
+      `SELECT id FROM usefulness_proofs
+       WHERE trace_id = $1 AND agent_did = $2
+       LIMIT 1`,
+      [proof.trace_id, agentDID]
+    );
+    if (duplicateCheck.rows.length > 0) {
+      throw new ValidationError(
+        `Duplicate proof: trace_id ${proof.trace_id} already submitted by agent ${agentDID}`
+      );
+    }
+
+    // ✅ Rate limiting: Check proofs submitted in last hour
+    const rateCheck = await this.db.query(
+      `SELECT COUNT(*) as count FROM usefulness_proofs
+       WHERE agent_did = $1 AND created_at > NOW() - INTERVAL '1 hour'`,
+      [agentDID]
+    );
+    const proofsLastHour = parseInt(rateCheck.rows[0].count || '0');
+    const maxProofsPerHour = parseInt(process.env.MAX_PROOFS_PER_HOUR || '100');
+
+    if (proofsLastHour >= maxProofsPerHour) {
+      throw new ValidationError(
+        `Rate limit exceeded: ${proofsLastHour}/${maxProofsPerHour} proofs submitted in last hour`
+      );
+    }
+
     // Calculate score
     const score = this.calculateScore(proof);
+
+    // ✅ Fraud detection: Check for suspicious patterns
+    await this.detectFraud(agentDID, proof, score);
 
     // Insert proof
     const result = await this.db.query(
@@ -180,6 +211,84 @@ export class UsefulnessAggregatorService {
       usefulness_score: parseFloat(result.rows[0].usefulness_score),
       created_at: result.rows[0].created_at
     };
+  }
+
+  /**
+   * Detect fraudulent proof submission patterns
+   */
+  private async detectFraud(
+    agentDID: string,
+    proof: ProofSubmissionRequest,
+    calculatedScore: number
+  ): Promise<void> {
+    // ✅ Heuristic 1: Score suspiciously high (max score repeatedly)
+    if (calculatedScore >= 99) {
+      const recentMaxScores = await this.db.query(
+        `SELECT COUNT(*) as count FROM usefulness_proofs
+         WHERE agent_did = $1
+           AND usefulness_score >= 99
+           AND created_at > NOW() - INTERVAL '1 hour'`,
+        [agentDID]
+      );
+      const maxScoreCount = parseInt(recentMaxScores.rows[0].count || '0');
+
+      if (maxScoreCount >= 5) {
+        throw new ValidationError(
+          'Fraud detected: Too many maximum scores in short period'
+        );
+      }
+    }
+
+    // ✅ Heuristic 2: Temporal pattern - submissions too frequent (< 5 seconds apart)
+    const recentProof = await this.db.query(
+      `SELECT created_at FROM usefulness_proofs
+       WHERE agent_did = $1
+       ORDER BY created_at DESC
+       LIMIT 1`,
+      [agentDID]
+    );
+
+    if (recentProof.rows.length > 0) {
+      const lastProofTime = new Date(recentProof.rows[0].created_at).getTime();
+      const timeSinceLastProof = Date.now() - lastProofTime;
+
+      if (timeSinceLastProof < 5000) { // 5 seconds
+        throw new ValidationError(
+          'Fraud detected: Proof submissions too frequent (minimum 5s interval)'
+        );
+      }
+    }
+
+    // ✅ Heuristic 3: Metrics validation - values must be reasonable
+    const { metrics, work_type } = proof;
+
+    switch (work_type) {
+      case 'compute':
+        if (metrics.compute_ms && (metrics.compute_ms < 0 || metrics.compute_ms > 3600000)) {
+          throw new ValidationError('Invalid compute_ms: must be between 0 and 3600000 (1 hour)');
+        }
+        break;
+      case 'memory':
+        if (metrics.memory_bytes && (metrics.memory_bytes < 0 || metrics.memory_bytes > 1073741824)) {
+          throw new ValidationError('Invalid memory_bytes: must be between 0 and 1GB');
+        }
+        break;
+      case 'routing':
+        if (metrics.routing_hops && (metrics.routing_hops < 0 || metrics.routing_hops > 100)) {
+          throw new ValidationError('Invalid routing_hops: must be between 0 and 100');
+        }
+        break;
+      case 'validation':
+        if (metrics.validation_checks && (metrics.validation_checks < 0 || metrics.validation_checks > 10000)) {
+          throw new ValidationError('Invalid validation_checks: must be between 0 and 10000');
+        }
+        break;
+      case 'learning':
+        if (metrics.learning_samples && (metrics.learning_samples < 0 || metrics.learning_samples > 1000000)) {
+          throw new ValidationError('Invalid learning_samples: must be between 0 and 1000000');
+        }
+        break;
+    }
   }
 
   private calculateScore(proof: ProofSubmissionRequest): number {

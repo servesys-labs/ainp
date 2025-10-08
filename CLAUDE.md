@@ -1,21 +1,25 @@
 <project_status>
-Project: ainp | Last Update: 2025-10-08 12:16:36 CDT | Data: stale (queue=1; queue>0; local mode)
+Project: ainp | Last Update: 2025-10-08 12:21:36 CDT | Data: stale (queue=2; queue>0; local mode)
 Summary:
 - Phase: Stabilizing Vector RAG — Status snapshot from vector digests + local logs
-Last Digest: agent=Main, task=honest-security-audit-correction, decisions=6, files=5
+Last Digest: agent=Main, task=unified-messaging-ws-notifications, decisions=4, files=4
 Milestones:
 - Done: Removed multiformats ESM dependency from packages/sdk/src/crypto.ts
-- Next: Fix discovery.ts to use getDiscoveryWeights() instead of direct process.env reads
+- Next: Run database migrations (012_add_messages.sql, 013_add_threads.sql, 014_add_contacts…
 Next Steps:
-- Fix discovery.ts to use getDiscoveryWeights() instead of direct process.env reads
-- Run comprehensive tests to verify all middleware ordering is correct
-- Deploy fixes to staging for validation
+- Run database migrations (012_add_messages.sql, 013_add_threads.sql, 014_add_contacts…
+- Optional: Add notification retry logic
+- Optional: Add per-user notification preferences
 Decisions (recent):
 - Implemented native Node.js base58 encoding/decoding using BigInt arithmetic
 - Fixed broken NegotiationConstraints imports in old SDK files (commented out, not use…
 Activity Snapshot:
-- Components: crypto.ts, negotiation.ts, types.ts, usefulness-migration.test.ts
+- Components: crypto.ts, negotiation.ts, types.ts, usefulness-migration.test.ts, handler.ts
 </project_status>
+
+
+
+
 
 
 
