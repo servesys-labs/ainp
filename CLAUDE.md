@@ -1,21 +1,31 @@
 <project_status>
-Project: ainp | Last Update: 2025-10-08 10:16:09 CDT | Data: fresh (queue=0)
+Project: ainp | Last Update: 2025-10-08 10:31:33 CDT | Data: stale (queue=2; queue>0; local mode)
 Summary:
-- Phase: Integrating — Status snapshot from vector digests + local logs
-Last Digest: agent=Main, task=phase-2a-orchestration, decisions=4, files=7
+- Phase: Stabilizing Vector RAG — Status snapshot from vector digests + local logs
+Last Digest: agent=Main, task=honest-security-audit-correction, decisions=6, files=5
 Milestones:
-- Done: Completed Phase 1: Railway Deployment Infrastructure (all 6 sub-phases)
-- Next: Phase 2B: Validation Logic (duplicate detection, rate limiting, fraud detection)
+- Done: Successfully completed Phase 2A using orchestration framework: IPSA → CN → IE → TA →…
+- Next: Fix discovery.ts to use getDiscoveryWeights() instead of direct process.env reads
 Next Steps:
-- Phase 2B: Validation Logic (duplicate detection, rate limiting, fraud detection)
-- Phase 2C: Aggregation Engine (credit distribution, cron job)
-- Phase 2D: Discovery Integration (ranking weights, end-to-end tests)
+- Fix discovery.ts to use getDiscoveryWeights() instead of direct process.env reads
+- Run comprehensive tests to verify all middleware ordering is correct
+- Deploy fixes to staging for validation
 Decisions (recent):
-- Used orchestration framework (IPSA → RC → CN → IE) for test failure fixes
-- Achieved 93% test pass rate (up from 47%) by enabling DATABASE_URL
+- All quality gates passed: typecheck, tests (17/17), build, security
+- Production readiness: 92% confidence, GO decision from PRV
 Activity Snapshot:
-- Components: PHASE_0.3_COMPREHENSIVE_PLAN.md, negotiation.ts, feature-flags.ts, 009_add_credit_ledger.sql, envelope.ts
+- Components: envelope.ts, validation.ts, usefulness-aggregator.ts, usefulness.ts, auth.ts
 </project_status>
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -7,6 +7,7 @@ import { DiscoveryQuery, SemanticAddress } from '@ainp/core';
 import { DatabaseClient } from '../lib/db-client';
 import { EmbeddingService } from './embeddings';
 import { RedisClient } from '../lib/redis-client';
+import { getDiscoveryWeights } from '../lib/feature-flags';
 import { createHash } from 'crypto';
 
 export class DiscoveryService {
@@ -85,10 +86,11 @@ export class DiscoveryService {
    * @returns Combined score 0-1
    */
   private calculateCombinedScore(agent: SemanticAddress & { similarity?: number; usefulness_score_cached?: number }): number {
-    // Weights (configurable via env vars)
-    const SIMILARITY_WEIGHT = parseFloat(process.env.DISCOVERY_SIMILARITY_WEIGHT || '0.6');
-    const TRUST_WEIGHT = parseFloat(process.env.DISCOVERY_TRUST_WEIGHT || '0.3');
-    const USEFULNESS_WEIGHT = parseFloat(process.env.DISCOVERY_USEFULNESS_WEIGHT || '0.1');
+    // Weights (configured via feature flags with validation)
+    const weights = getDiscoveryWeights();
+    const SIMILARITY_WEIGHT = weights.similarity;
+    const TRUST_WEIGHT = weights.trust;
+    const USEFULNESS_WEIGHT = weights.usefulness;
 
     // Normalize scores to 0-1 range
     const similarity = agent.similarity || 0; // From database query (cosine similarity)

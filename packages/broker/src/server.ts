@@ -124,11 +124,12 @@ async function main() {
   );
 
   // Intent routes: require envelope validation + auth (security-critical, DID-based rate limiting)
+  // Middleware order: validateEnvelope → authMiddleware → rateLimitMiddleware (sets x-ainp-did before rate limit reads it)
   app.use(
     '/api/intents',
-    rateLimitMiddleware(redisClient, 100, true), // requireDID=true for authenticated endpoints
-    validateEnvelope,
-    authMiddleware(signatureService),
+    validateEnvelope,                            // ✅ 1. Validate envelope structure
+    authMiddleware(signatureService),            // ✅ 2. Extract DID, set x-ainp-did header
+    rateLimitMiddleware(redisClient, 100, true), // ✅ 3. DID-based rate limiting
     createIntentRoutes(routingService)
   );
 
