@@ -102,49 +102,71 @@ export class NegotiationService {
     // Use proposal's incentive split or default
     const incentiveSplit = initial_proposal.incentive_split || DEFAULT_INCENTIVE_SPLIT;
 
-    // Insert into database
-    const result = await this.dbClient.query(
-      `
-      INSERT INTO negotiations (
+    // Use explicit transaction for INSERT
+    const client = await this.dbClient.pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const result = await client.query(
+        `
+        INSERT INTO negotiations (
+          intent_id,
+          initiator_did,
+          responder_did,
+          state,
+          rounds,
+          convergence_score,
+          current_proposal,
+          incentive_split,
+          max_rounds,
+          expires_at
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING *
+        `,
+        [
+          intent_id,
+          initiator_did,
+          responder_did,
+          'initiated',
+          JSON.stringify([initialRound]),
+          0.0, // Initial convergence is 0 (no previous proposal to compare)
+          JSON.stringify(initial_proposal),
+          JSON.stringify(incentiveSplit),
+          max_rounds,
+          expiresAt,
+        ]
+      );
+
+      // Verify INSERT returned data
+      if (!result.rows || result.rows.length === 0) {
+        logger.error('Failed to persist negotiation session', {
+          intent_id,
+          initiator_did,
+          responder_did
+        });
+        throw new Error('Failed to create negotiation session in database');
+      }
+
+      await client.query('COMMIT');
+
+      const session = this.parseNegotiationRow(result.rows[0]);
+
+      logger.info('Negotiation initiated', {
+        negotiation_id: session.id,
         intent_id,
         initiator_did,
         responder_did,
-        state,
-        rounds,
-        convergence_score,
-        current_proposal,
-        incentive_split,
-        max_rounds,
-        expires_at
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING *
-      `,
-      [
-        intent_id,
-        initiator_did,
-        responder_did,
-        'initiated',
-        JSON.stringify([initialRound]),
-        0.0, // Initial convergence is 0 (no previous proposal to compare)
-        JSON.stringify(initial_proposal),
-        JSON.stringify(incentiveSplit),
-        max_rounds,
-        expiresAt,
-      ]
-    );
+        expires_at: expiresAt.toISOString(),
+      });
 
-    const session = this.parseNegotiationRow(result.rows[0]);
-
-    logger.info('Negotiation initiated', {
-      negotiation_id: session.id,
-      intent_id,
-      initiator_did,
-      responder_did,
-      expires_at: expiresAt.toISOString(),
-    });
-
-    return session;
+      return session;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   /**
@@ -169,6 +191,10 @@ export class NegotiationService {
   ): Promise<NegotiationSession> {
     const session = await this.getSession(negotiationId);
     if (!session) {
+      logger.error('Negotiation not found for propose', {
+        negotiation_id: negotiationId,
+        proposer_did: proposerDID
+      });
       throw new NegotiationNotFoundError(negotiationId);
     }
 
@@ -686,6 +712,11 @@ export class NegotiationService {
    * @returns Parsed negotiation session
    */
   private parseNegotiationRow(row: any): NegotiationSession {
+    // Validate row parameter
+    if (!row) {
+      throw new Error('Cannot parse null or undefined database row');
+    }
+
     return {
       id: row.id,
       intent_id: row.intent_id,
