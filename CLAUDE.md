@@ -1,21 +1,25 @@
 <project_status>
-Project: ainp | Last Update: 2025-10-08 12:23:42 CDT | Data: stale (queue=3; queue>0; local mode)
+Project: ainp | Last Update: 2025-10-08 12:26:39 CDT | Data: stale (queue=4; queue>0; local mode)
 Summary:
 - Phase: Stabilizing Vector RAG — Status snapshot from vector digests + local logs
-Last Digest: agent=Main, task=ainp-phase-2a-proof-validation, decisions=4, files=1
+Last Digest: agent=Main, task=ainp-phase-2b-credit-distribution, decisions=4, files=3
 Milestones:
-- Done: Removed multiformats ESM dependency from packages/sdk/src/crypto.ts
-- Next: Phase 2B: Aggregation engine with credit distribution
+- Done: Added WebSocket notifications for new messages
+- Next: Phase 2C: Discovery integration and end-to-end tests
 Next Steps:
-- Phase 2B: Aggregation engine with credit distribution
 - Phase 2C: Discovery integration and end-to-end tests
-- Write comprehensive tests for fraud detection
+- Optional: Add manual distribution endpoint for admin control
+- Optional: Add distribution history tracking
 Decisions (recent):
-- Implemented native Node.js base58 encoding/decoding using BigInt arithmetic
-- Fixed broken NegotiationConstraints imports in old SDK files (commented out, not use…
+- MailboxService accepts optional WebSocketHandler for real-time push
+- Server initialization order: WebSocket → MailboxService → RoutingService
 Activity Snapshot:
-- Components: crypto.ts, negotiation.ts, types.ts, usefulness-migration.test.ts, handler.ts
+- Components: handler.ts, mailbox.ts, server.ts, mail.test.ts, usefulness-aggregator.ts
 </project_status>
+
+
+
+
 
 
 

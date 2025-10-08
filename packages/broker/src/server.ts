@@ -25,6 +25,9 @@ import { createIntentRoutes } from './routes/intents';
 import { createDiscoveryRoutes } from './routes/discovery';
 import { createUsefulnessRoutes } from './routes/usefulness';
 import { createNegotiationRoutes } from './routes/negotiation';
+import { createPaymentsRoutes } from './routes/payments';
+import { PaymentService } from './services/payment';
+import { CoinbaseCommerceDriver } from './services/payments/coinbase-commerce';
 import { createMailRoutes } from './routes/mail';
 import { rateLimitMiddleware } from './middleware/rate-limit';
 import { validateEnvelope, validateProofSubmission } from './middleware/validation';
@@ -176,6 +179,21 @@ async function main() {
     authMiddleware(signatureService),
     rateLimitMiddleware(redisClient, 200, true), // Higher limit for message browsing
     createMailRoutes(mailboxService)
+  );
+
+  // Payments routes: create payment requests and handle webhooks
+  // Scaffold: mounted behind auth + rate limit; provider drivers configured in PaymentService
+  const paymentService = new PaymentService(dbClient, creditService, {
+    coinbase: new CoinbaseCommerceDriver(
+      process.env.COINBASE_COMMERCE_API_KEY,
+      process.env.COINBASE_COMMERCE_WEBHOOK_SECRET
+    )
+  });
+  app.use(
+    '/api/payments',
+    authMiddleware(signatureService),
+    rateLimitMiddleware(redisClient, 50, true),
+    createPaymentsRoutes(paymentService)
   );
 
   // Start HTTP server
