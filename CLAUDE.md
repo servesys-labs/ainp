@@ -1,21 +1,33 @@
 <project_status>
-Project: ainp | Last Update: 2025-10-08 09:36:57 CDT | Data: stale (queue=1; queue>0; local mode)
+Project: ainp | Last Update: 2025-10-08 10:16:09 CDT | Data: fresh (queue=0)
 Summary:
-- Phase: Stabilizing Vector RAG — Status snapshot from vector digests + local logs
-Last Digest: agent=Main, task=ainp-phase-1-railway-deployment-complete, decisions=5, files=4
+- Phase: Integrating — Status snapshot from vector digests + local logs
+Last Digest: agent=Main, task=phase-2a-orchestration, decisions=4, files=7
 Milestones:
-- Done: Enabled DATABASE_URL for integration tests - went from 47% to 93% pass rate
-- Next: Phase 1 COMPLETE ✅ - Ready for Phase 2 or Phase 3
+- Done: Completed Phase 1: Railway Deployment Infrastructure (all 6 sub-phases)
+- Next: Phase 2B: Validation Logic (duplicate detection, rate limiting, fraud detection)
 Next Steps:
-- Phase 1 COMPLETE ✅ - Ready for Phase 2 or Phase 3
-- Option 1: Phase 2 (Usefulness Proof Generation & Validation)
-- Option 2: Phase 3 (Frontend UI Dashboard with Next.js + shadcn/ui)
+- Phase 2B: Validation Logic (duplicate detection, rate limiting, fraud detection)
+- Phase 2C: Aggregation Engine (credit distribution, cron job)
+- Phase 2D: Discovery Integration (ranking weights, end-to-end tests)
 Decisions (recent):
-- Used orchestration framework (RC → CN → IE) to fix negotiation persistence issues
-- Fixed 4 critical bugs: migration references, idempotency, FK cleanup, RedisClient API
+- Used orchestration framework (IPSA → RC → CN → IE) for test failure fixes
+- Achieved 93% test pass rate (up from 47%) by enabling DATABASE_URL
 Activity Snapshot:
-- Components: negotiation.ts, negotiation-integration.test.ts, agents-credits.test.ts, 009_add_credit_ledger.sql, PHASE_0.3_COMPREHENSIVE_PLAN.md
+- Components: PHASE_0.3_COMPREHENSIVE_PLAN.md, negotiation.ts, feature-flags.ts, 009_add_credit_ledger.sql, envelope.ts
 </project_status>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

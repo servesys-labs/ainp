@@ -108,21 +108,18 @@ async function main() {
   );
 
   // Usefulness routes (mixed security requirements)
-  const usefulnessRouter = createUsefulnessRoutes(usefulnessAggregator);
-
-  // Protected POST /proofs route (requires validation + auth) - must be registered BEFORE the catch-all
-  app.post(
-    '/api/usefulness/proofs',
-    rateLimitMiddleware(redisClient, 100, true), // requireDID=true for authenticated endpoints
-    validateProofSubmission,
-    authMiddleware(signatureService),
-    usefulnessRouter
+  // Pass signatureService and redisClient for route-level middleware
+  const usefulnessRouter = createUsefulnessRoutes(
+    usefulnessAggregator,
+    signatureService,
+    redisClient
   );
 
-  // Public GET routes (no auth required) - catch-all for other usefulness routes
+  // Public GET routes (no auth required) - IP-based rate limiting before router
+  // Router handles route-specific middleware (auth + validation) internally for POST /proofs
   app.use(
     '/api/usefulness',
-    rateLimitMiddleware(redisClient, 100, false),
+    rateLimitMiddleware(redisClient, 100, false), // IP-based for public endpoints
     usefulnessRouter
   );
 

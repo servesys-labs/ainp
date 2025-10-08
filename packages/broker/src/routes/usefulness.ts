@@ -5,9 +5,24 @@
 
 import { Router } from 'express';
 import { UsefulnessAggregatorService } from '../services/usefulness-aggregator';
+import { SignatureService } from '../services/signature';
+import { RedisClient } from '../lib/redis-client';
+import { validateProofSubmission } from '../middleware/validation';
+import { authMiddleware } from '../middleware/auth';
+import { rateLimitMiddleware } from '../middleware/rate-limit';
 import { ProofSubmissionRequest, ValidationError } from '@ainp/core';
 
-export function createUsefulnessRoutes(aggregator: UsefulnessAggregatorService): Router {
+/**
+ * Create usefulness routes
+ * @param aggregator - Usefulness aggregation service
+ * @param signatureService - Signature verification service for auth middleware
+ * @param redisClient - Redis client for rate limiting
+ */
+export function createUsefulnessRoutes(
+  aggregator: UsefulnessAggregatorService,
+  signatureService: SignatureService,
+  redisClient: RedisClient
+): Router {
   const router = Router();
 
   /**
@@ -50,37 +65,50 @@ export function createUsefulnessRoutes(aggregator: UsefulnessAggregatorService):
   /**
    * POST /api/usefulness/proofs
    * Submit proof of useful work (requires authentication)
+   * ✅ Apply middleware at route level for correct ordering
    */
-  router.post('/proofs', async (req, res) => {
-    try {
-      // Extract DID from header (set by authMiddleware)
-      const agentDID = req.headers['x-ainp-did'] as string;
+  router.post('/proofs',
+    validateProofSubmission,                     // ✅ 1. Validate proof structure
+    authMiddleware(signatureService),            // ✅ 2. Extract DID, verify signature
+    rateLimitMiddleware(redisClient, 100, true), // ✅ 3. DID-based rate limiting
+    async (req, res) => {
+      try {
+        // Extract DID from header (set by authMiddleware)
+        const agentDID = req.headers['x-ainp-did'] as string;
 
-      if (!agentDID) {
-        return res.status(401).json({
-          error: 'MISSING_DID',
-          message: 'Agent DID not found in request headers'
+        if (!agentDID) {
+          return res.status(401).json({
+            error: 'MISSING_DID',
+            message: 'Agent DID not found in request headers'
+          });
+        }
+
+        const proof = req.body as ProofSubmissionRequest;
+        const result = await aggregator.submitProof(agentDID, proof);
+
+        res.status(201).json(result);
+      } catch (error) {
+        if (error instanceof ValidationError) {
+          return res.status(400).json({
+            error: 'VALIDATION_ERROR',
+            message: error.message
+          });
+        }
+
+        if (error instanceof Error && error.message.includes('disabled')) {
+          return res.status(503).json({
+            error: 'FEATURE_DISABLED',
+            message: error.message
+          });
+        }
+
+        res.status(500).json({
+          error: 'INTERNAL_ERROR',
+          message: error instanceof Error ? error.message : String(error)
         });
       }
-
-      const proof = req.body as ProofSubmissionRequest;
-      const result = await aggregator.submitProof(agentDID, proof);
-
-      res.status(201).json(result);
-    } catch (error) {
-      if (error instanceof ValidationError) {
-        return res.status(400).json({
-          error: 'VALIDATION_ERROR',
-          message: error.message
-        });
-      }
-
-      res.status(500).json({
-        error: 'INTERNAL_ERROR',
-        message: error instanceof Error ? error.message : String(error)
-      });
     }
-  });
+  );
 
   return router;
 }
