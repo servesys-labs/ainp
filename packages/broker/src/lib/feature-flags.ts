@@ -39,6 +39,12 @@ export enum FeatureFlag {
 
   // Messaging (Unified Agent-to-Agent Communication)
   MESSAGING_ENABLED = 'MESSAGING_ENABLED',
+
+  // Payments (Top-up and Settlement Rails)
+  PAYMENTS_ENABLED = 'PAYMENTS_ENABLED',
+  COINBASE_COMMERCE_ENABLED = 'COINBASE_COMMERCE_ENABLED',
+  LIGHTNING_ENABLED = 'LIGHTNING_ENABLED',
+  USDC_ONCHAIN_ENABLED = 'USDC_ONCHAIN_ENABLED',
 }
 
 /**
@@ -151,6 +157,32 @@ const FEATURE_FLAG_REGISTRY: FeatureFlagConfig[] = [
     defaultValue: true,
     description: 'Enable unified messaging (inbox, threads, mailbox storage)',
     environments: ['development', 'preview'], // false in production until launch
+  },
+
+  // Payments
+  {
+    key: FeatureFlag.PAYMENTS_ENABLED,
+    defaultValue: false,
+    description: 'Enable payments (402 challenges, payment requests, top-ups)',
+    environments: ['preview', 'development'],
+  },
+  {
+    key: FeatureFlag.COINBASE_COMMERCE_ENABLED,
+    defaultValue: false,
+    description: 'Enable Coinbase Commerce payment rail',
+    environments: ['preview', 'development'],
+  },
+  {
+    key: FeatureFlag.LIGHTNING_ENABLED,
+    defaultValue: false,
+    description: 'Enable Lightning (L402) payment rail',
+    environments: ['preview', 'development'],
+  },
+  {
+    key: FeatureFlag.USDC_ONCHAIN_ENABLED,
+    defaultValue: false,
+    description: 'Enable USDC (on-chain) payment rail',
+    environments: ['preview', 'development'],
   },
 ];
 

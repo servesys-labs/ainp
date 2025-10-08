@@ -142,4 +142,91 @@ export class IncentiveDistributionService {
 
     return result;
   }
+
+  /**
+   * Distribute credits based on usefulness scores (Phase 2B)
+   * Rewards agents proportionally based on their contribution to the network
+   *
+   * Formula: credits_per_agent = (agent_score / total_score) * reward_pool
+   *
+   * @param rewardPool - Total credits to distribute (in atomic units)
+   * @param minScore - Minimum usefulness score to qualify for rewards (default: 10)
+   * @returns Distribution result with agent allocations
+   */
+  async distributeUsefulnessRewards(
+    rewardPool: bigint,
+    minScore: number = 10
+  ): Promise<{
+    total_distributed: bigint;
+    recipients: Array<{ agent_did: string; amount: bigint; score: number }>;
+  }> {
+    // Get all agents with usefulness scores above threshold
+    const agentsResult = await this.db.query(
+      `SELECT did, usefulness_score_cached
+       FROM agents
+       WHERE usefulness_score_cached >= $1
+       ORDER BY usefulness_score_cached DESC`,
+      [minScore]
+    );
+
+    if (agentsResult.rows.length === 0) {
+      logger.info('No agents qualify for usefulness rewards', { minScore });
+      return { total_distributed: 0n, recipients: [] };
+    }
+
+    // Calculate total score
+    const totalScore = agentsResult.rows.reduce(
+      (sum: number, row: any) => sum + parseFloat(row.usefulness_score_cached || '0'),
+      0
+    );
+
+    if (totalScore === 0) {
+      logger.warn('Total usefulness score is zero, skipping distribution');
+      return { total_distributed: 0n, recipients: [] };
+    }
+
+    // Distribute rewards proportionally
+    const recipients: Array<{ agent_did: string; amount: bigint; score: number }> = [];
+    let totalDistributed = 0n;
+
+    for (const row of agentsResult.rows) {
+      const agentScore = parseFloat(row.usefulness_score_cached || '0');
+      const proportion = agentScore / totalScore;
+      const amount = BigInt(Math.floor(Number(rewardPool) * proportion));
+
+      if (amount > 0n) {
+        // Award credits with usefulness_reward reference
+        await this.creditService.earn(
+          row.did,
+          amount,
+          'usefulness_reward'
+          // No specific proof_id for aggregate rewards
+        );
+
+        recipients.push({
+          agent_did: row.did,
+          amount,
+          score: agentScore
+        });
+
+        totalDistributed += amount;
+
+        logger.info('Usefulness reward distributed', {
+          agent_did: row.did,
+          amount: amount.toString(),
+          score: agentScore,
+          proportion: (proportion * 100).toFixed(2) + '%'
+        });
+      }
+    }
+
+    logger.info('Usefulness rewards distribution complete', {
+      reward_pool: rewardPool.toString(),
+      total_distributed: totalDistributed.toString(),
+      recipients_count: recipients.length,
+      min_score: minScore
+    });
+
+    return { total_distributed: totalDistributed, recipients };
+  }
 }

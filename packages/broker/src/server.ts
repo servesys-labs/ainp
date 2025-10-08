@@ -71,8 +71,8 @@ async function main() {
   // Note: MailboxService and RoutingService created after WebSocket initialization
   // to enable real-time notifications
 
-  // Start usefulness aggregation cron job
-  startUsefulnessAggregationJob(usefulnessAggregator);
+  // Start usefulness aggregation cron job (with optional credit distribution)
+  startUsefulnessAggregationJob(usefulnessAggregator, incentiveDistribution);
 
   // Run aggregation immediately on startup
   try {
