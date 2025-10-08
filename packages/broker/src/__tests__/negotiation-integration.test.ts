@@ -52,7 +52,7 @@ describe('Negotiation Integration Tests', () => {
     db = await setupTestDatabase();
 
     // Apply migrations
-    await applyMigration(db, '003_add_credit_system.sql');
+    await applyMigration(db, '009_add_credit_ledger.sql');
     await applyMigration(db, '004_add_negotiation_sessions.sql');
 
     // Initialize services

@@ -56,14 +56,14 @@ describe.skipIf(!process.env.DATABASE_URL)('Agent Registration with Credits', ()
   afterAll(async () => {
     if (!process.env.DATABASE_URL || !db) return;
 
-    // Cleanup test data
+    // Cleanup test data (capabilities uses agent_id FK, others use agent_did)
+    await db.query('DELETE FROM capabilities WHERE agent_id = (SELECT id FROM agents WHERE did = $1)', [testDID]);
     await db.query('DELETE FROM credit_transactions WHERE agent_did = $1', [testDID]);
     await db.query('DELETE FROM credit_accounts WHERE agent_did = $1', [testDID]);
-    await db.query('DELETE FROM capabilities WHERE agent_did = $1', [testDID]);
     await db.query('DELETE FROM agents WHERE did = $1', [testDID]);
 
     await db.disconnect();
-    if (redisClient) await redisClient.disconnect();
+    if (redisClient) await redisClient.close();
   });
 
   it('should create credit account on registration', async () => {

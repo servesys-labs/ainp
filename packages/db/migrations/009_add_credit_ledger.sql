@@ -27,11 +27,11 @@ CREATE TABLE IF NOT EXISTS credit_transactions (
 );
 
 -- Indexes for performance
-CREATE INDEX idx_credit_accounts_balance ON credit_accounts(balance DESC);
-CREATE INDEX idx_credit_tx_agent ON credit_transactions(agent_did, created_at DESC);
-CREATE INDEX idx_credit_tx_intent ON credit_transactions(intent_id) WHERE intent_id IS NOT NULL;
-CREATE INDEX idx_credit_tx_usefulness ON credit_transactions(usefulness_proof_id) WHERE usefulness_proof_id IS NOT NULL;
-CREATE INDEX idx_credit_tx_type ON credit_transactions(tx_type, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_credit_accounts_balance ON credit_accounts(balance DESC);
+CREATE INDEX IF NOT EXISTS idx_credit_tx_agent ON credit_transactions(agent_did, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_credit_tx_intent ON credit_transactions(intent_id) WHERE intent_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_credit_tx_usefulness ON credit_transactions(usefulness_proof_id) WHERE usefulness_proof_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_credit_tx_type ON credit_transactions(tx_type, created_at DESC);
 
 -- Trigger to update updated_at on balance changes
 CREATE OR REPLACE FUNCTION update_credit_account_timestamp()
@@ -42,6 +42,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trg_credit_account_update ON credit_accounts;
 CREATE TRIGGER trg_credit_account_update
 BEFORE UPDATE ON credit_accounts
 FOR EACH ROW EXECUTE FUNCTION update_credit_account_timestamp();

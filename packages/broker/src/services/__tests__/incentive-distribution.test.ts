@@ -36,7 +36,7 @@ describe.skipIf(!process.env.DATABASE_URL)('IncentiveDistributionService', () =>
     }
 
     db = await setupTestDatabase();
-    await applyMigration(db, '003_add_credit_system.sql');
+    await applyMigration(db, '009_add_credit_ledger.sql');
   });
 
   afterAll(async () => {
