@@ -73,4 +73,30 @@ export class WebSocketHandler {
     }
     return false; // Recipient not connected
   }
+
+  /**
+   * Send negotiation event notification to participant
+   */
+  async notifyNegotiationEvent(recipientDid: string, notification: {
+    type: 'negotiation_event';
+    event: 'proposed' | 'counter_proposed' | 'accepted' | 'rejected' | 'settled' | 'expired';
+    negotiation_id: string;
+    intent_id: string;
+    from_did?: string;
+    state: string;
+    current_proposal?: any;
+    round_number?: number;
+    convergence_score?: number;
+    timestamp: number;
+  }): Promise<boolean> {
+    const ws = this.connections.get(recipientDid);
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        '@type': 'NOTIFICATION',
+        ...notification,
+      }));
+      return true;
+    }
+    return false; // Recipient not connected
+  }
 }

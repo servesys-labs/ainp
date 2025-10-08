@@ -5,8 +5,14 @@
 
 import { Router } from 'express';
 import { NegotiationService } from '../services/negotiation';
+import { IncentiveDistributionService } from '../services/incentive-distribution';
+import { WebSocketHandler } from '../websocket/handler';
 
-export function createNegotiationRoutes(negotiationService: NegotiationService): Router {
+export function createNegotiationRoutes(
+  negotiationService: NegotiationService,
+  incentiveDistribution: IncentiveDistributionService,
+  wsHandler?: WebSocketHandler
+): Router {
   const router = Router();
 
   /**
@@ -67,6 +73,26 @@ export function createNegotiationRoutes(negotiationService: NegotiationService):
 
       const session = await negotiationService.propose(id, proposer_did, proposal);
 
+      // Notify the other participant about the new proposal
+      if (wsHandler) {
+        const recipientDid = session.initiator_did === proposer_did
+          ? session.responder_did
+          : session.initiator_did;
+
+        await wsHandler.notifyNegotiationEvent(recipientDid, {
+          type: 'negotiation_event',
+          event: session.state === 'proposed' ? 'proposed' : 'counter_proposed',
+          negotiation_id: session.id,
+          intent_id: session.intent_id,
+          from_did: proposer_did,
+          state: session.state,
+          current_proposal: session.current_proposal,
+          round_number: session.rounds.length,
+          convergence_score: session.convergence_score,
+          timestamp: Date.now()
+        });
+      }
+
       res.json(session);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -101,6 +127,24 @@ export function createNegotiationRoutes(negotiationService: NegotiationService):
 
       const session = await negotiationService.accept(id, acceptor_did);
 
+      // Notify the other participant about acceptance
+      if (wsHandler) {
+        const recipientDid = session.initiator_did === acceptor_did
+          ? session.responder_did
+          : session.initiator_did;
+
+        await wsHandler.notifyNegotiationEvent(recipientDid, {
+          type: 'negotiation_event',
+          event: 'accepted',
+          negotiation_id: session.id,
+          intent_id: session.intent_id,
+          from_did: acceptor_did,
+          state: session.state,
+          current_proposal: session.final_proposal,
+          timestamp: Date.now()
+        });
+      }
+
       res.json(session);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -134,6 +178,23 @@ export function createNegotiationRoutes(negotiationService: NegotiationService):
 
       const session = await negotiationService.reject(id, rejector_did, reason);
 
+      // Notify the other participant about rejection
+      if (wsHandler) {
+        const recipientDid = session.initiator_did === rejector_did
+          ? session.responder_did
+          : session.initiator_did;
+
+        await wsHandler.notifyNegotiationEvent(recipientDid, {
+          type: 'negotiation_event',
+          event: 'rejected',
+          negotiation_id: session.id,
+          intent_id: session.intent_id,
+          from_did: rejector_did,
+          state: session.state,
+          timestamp: Date.now()
+        });
+      }
+
       res.json(session);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -161,6 +222,62 @@ export function createNegotiationRoutes(negotiationService: NegotiationService):
       res.json(session);
     } catch (error) {
       res.status(500).json({ error: String(error) });
+    }
+  });
+
+  /**
+   * POST /api/negotiations/:id/settle - Settle accepted negotiation
+   *
+   * Body:
+   * - validator_did?: string (optional)
+   * - usefulness_proof_id?: string (optional)
+   *
+   * Returns: 200 OK + settlement result
+   * Errors: 404 Not Found, 400 Bad Request, 500 Internal Server Error
+   */
+  router.post('/:id/settle', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { validator_did, usefulness_proof_id } = req.body;
+
+      // Get session before settlement for notification
+      const session = await negotiationService.getSession(id);
+      if (!session) {
+        return res.status(404).json({ error: 'Negotiation not found' });
+      }
+
+      await negotiationService.settle(id, incentiveDistribution, validator_did, usefulness_proof_id);
+
+      // Notify both participants about settlement
+      if (wsHandler) {
+        const notification = {
+          type: 'negotiation_event' as const,
+          event: 'settled' as const,
+          negotiation_id: id,
+          intent_id: session.intent_id,
+          state: 'settled',
+          timestamp: Date.now()
+        };
+
+        await Promise.all([
+          wsHandler.notifyNegotiationEvent(session.initiator_did, notification),
+          wsHandler.notifyNegotiationEvent(session.responder_did, notification)
+        ]);
+      }
+
+      res.json({
+        success: true,
+        message: 'Negotiation settled successfully',
+        negotiation_id: id
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+
+      const statusCode = errorMessage.includes('not found') ? 404 :
+                         errorMessage.includes('Cannot settle') ? 400 :
+                         errorMessage.includes('No credits reserved') ? 400 : 500;
+
+      res.status(statusCode).json({ error: errorMessage });
     }
   });
 

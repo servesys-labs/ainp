@@ -170,7 +170,7 @@ async function main() {
     '/api/negotiations',
     authMiddleware(signatureService), // ✅ Extract DID from plain JSON body
     rateLimitMiddleware(redisClient, 100, true), // ✅ Use DID from x-ainp-did header
-    createNegotiationRoutes(negotiationService)
+    createNegotiationRoutes(negotiationService, incentiveDistribution, wsHandler)
   );
 
   // Mail routes: require auth (inbox/threads access, DID-based rate limiting)
