@@ -8,6 +8,7 @@ import { Request, Response, NextFunction } from 'express';
 import { AINPEnvelope } from '@ainp/core';
 import { AntiFraudService } from '../services/anti-fraud';
 import { CreditService } from '../services/credits';
+import { ContactService } from '../services/contacts';
 import { isFeatureEnabled, FeatureFlag } from '../lib/feature-flags';
 
 function isEmailIntent(envelope: AINPEnvelope): boolean {
@@ -21,7 +22,8 @@ function isEmailIntent(envelope: AINPEnvelope): boolean {
 
 export function emailGuardMiddleware(
   antiFraud: AntiFraudService,
-  credits: CreditService
+  credits: CreditService,
+  contacts?: ContactService
 ) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const envelope = req.body as AINPEnvelope;
@@ -33,6 +35,12 @@ export function emailGuardMiddleware(
     const toDid = envelope.to_did; // Only enforced for direct emails
 
     try {
+      // Check if sender is consented/allowlisted (bypass anti-fraud checks)
+      let isConsented = false;
+      if (toDid && contacts) {
+        isConsented = await contacts.isConsented(toDid, fromDid);
+      }
+
       // Content dedupe (subject/body/headers in semantics)
       const payload: any = envelope.payload;
       const subject = payload?.semantics?.subject || '';
@@ -46,7 +54,8 @@ export function emailGuardMiddleware(
       }
 
       // Optional greylist for first contact (only on direct)
-      if (toDid) {
+      // Skip if sender is consented
+      if (toDid && !isConsented) {
         const greylist = await antiFraud.shouldGreylistFirstContact(fromDid, toDid);
         if (greylist) {
           // Ask sender to retry after delay
@@ -60,7 +69,8 @@ export function emailGuardMiddleware(
       }
 
       // Optional postage for cold email (direct only)
-      if (toDid && isFeatureEnabled(FeatureFlag.EMAIL_POSTAGE_ENABLED)) {
+      // Skip if sender is consented
+      if (toDid && !isConsented && isFeatureEnabled(FeatureFlag.EMAIL_POSTAGE_ENABLED)) {
         const atomic = BigInt(process.env.EMAIL_POSTAGE_AMOUNT_ATOMIC || '1000'); // default 1 credit
         // Spend postage immediately (economic friction)
         await credits.spend(fromDid, atomic, envelope.id, 'email_postage');

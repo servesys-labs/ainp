@@ -25,6 +25,7 @@ import { createIntentRoutes } from './routes/intents';
 import { createDiscoveryRoutes } from './routes/discovery';
 import { createUsefulnessRoutes } from './routes/usefulness';
 import { createNegotiationRoutes } from './routes/negotiation';
+import { createMailRoutes } from './routes/mail';
 import { rateLimitMiddleware } from './middleware/rate-limit';
 import { validateEnvelope, validateProofSubmission } from './middleware/validation';
 import { authMiddleware } from './middleware/auth';
@@ -35,6 +36,8 @@ import { IncentiveDistributionService } from './services/incentive-distribution'
 import { AntiFraudService } from './services/anti-fraud';
 import { replayProtectionMiddleware } from './middleware/replay';
 import { emailGuardMiddleware } from './middleware/email-guard';
+import { MailboxService } from './services/mailbox';
+import { ContactService } from './services/contacts';
 
 const logger = new Logger({ serviceName: 'ainp-broker' });
 
@@ -60,11 +63,15 @@ async function main() {
   const trustService = new TrustService(dbClient);
   const discoveryService = new DiscoveryService(dbClient, embeddingService, redisClient);
   const creditService = new CreditService(dbClient);
+  const mailboxService = new MailboxService(dbClient);
+  const contactService = new ContactService(dbClient);
   const routingService = new RoutingService(
     discoveryService,
     natsClient,
     signatureService,
-    trustService
+    trustService,
+    mailboxService,
+    contactService
   );
   const usefulnessAggregator = new UsefulnessAggregatorService(dbClient);
   const incentiveDistribution = new IncentiveDistributionService(dbClient, creditService);
@@ -134,7 +141,7 @@ async function main() {
     validateEnvelope,                            // ✅ 1. Validate envelope structure
     authMiddleware(signatureService),            // ✅ 2. Extract DID, set x-ainp-did header
     replayProtectionMiddleware(antiFraud),       // ✅ 2b. Replay protection (id + trace)
-    emailGuardMiddleware(antiFraud, creditService), // ✅ 2c. Email anti-fraud (dedupe/postage/greylist)
+    emailGuardMiddleware(antiFraud, creditService, contactService), // ✅ 2c. Email anti-fraud (dedupe/postage/greylist)
     rateLimitMiddleware(redisClient, 100, true), // ✅ 3. DID-based rate limiting
     createIntentRoutes(routingService)
   );
@@ -146,6 +153,14 @@ async function main() {
     authMiddleware(signatureService), // ✅ Extract DID from plain JSON body
     rateLimitMiddleware(redisClient, 100, true), // ✅ Use DID from x-ainp-did header
     createNegotiationRoutes(negotiationService)
+  );
+
+  // Mail routes: require auth (inbox/threads access, DID-based rate limiting)
+  app.use(
+    '/api/mail',
+    authMiddleware(signatureService),
+    rateLimitMiddleware(redisClient, 200, true), // Higher limit for message browsing
+    createMailRoutes(mailboxService)
   );
 
   // Start HTTP server

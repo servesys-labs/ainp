@@ -4,17 +4,22 @@
  */
 
 import { AINPEnvelope, DiscoveryQuery } from '@ainp/core';
+import type { MessageIntent } from '@ainp/core/src/types/intent';
 import { DiscoveryService } from './discovery';
 import { NATSClient } from '../lib/nats-client';
 import { SignatureService } from './signature';
 import { TrustService } from './trust';
+import { MailboxService } from './mailbox';
+import { ContactService } from './contacts';
 
 export class RoutingService {
   constructor(
     private discoveryService: DiscoveryService,
     private natsClient: NATSClient,
     private signatureService: SignatureService,
-    private trustService: TrustService
+    private trustService: TrustService,
+    private mailboxService?: MailboxService,
+    private contactService?: ContactService
   ) {}
 
   /**
@@ -34,6 +39,26 @@ export class RoutingService {
     // Direct routing if to_did is specified
     if (envelope.to_did) {
       await this.natsClient.publishIntent(envelope);
+
+      // Store message in mailbox if it's a MessageIntent
+      if (this.mailboxService && this.isMessageIntent(envelope.payload)) {
+        try {
+          await this.mailboxService.store(envelope, envelope.payload as MessageIntent);
+        } catch (error) {
+          console.error('[RoutingService] Failed to store message:', error);
+          // Don't fail routing if storage fails
+        }
+      }
+
+      // Record interaction in contacts
+      if (this.contactService) {
+        try {
+          await this.contactService.recordInteraction(envelope.to_did, envelope.from_did);
+        } catch (error) {
+          console.error('[RoutingService] Failed to record interaction:', error);
+        }
+      }
+
       return 1;
     }
 
@@ -58,9 +83,39 @@ export class RoutingService {
       };
 
       await this.natsClient.publishIntent(routedEnvelope);
+
+      // Store message in mailbox if it's a MessageIntent
+      if (this.mailboxService && this.isMessageIntent(envelope.payload)) {
+        try {
+          await this.mailboxService.store(routedEnvelope, envelope.payload as MessageIntent);
+        } catch (error) {
+          console.error('[RoutingService] Failed to store message:', error);
+        }
+      }
+
+      // Record interaction in contacts
+      if (this.contactService) {
+        try {
+          await this.contactService.recordInteraction(agent.did, envelope.from_did);
+        } catch (error) {
+          console.error('[RoutingService] Failed to record interaction:', error);
+        }
+      }
     }
 
     return topAgents.length;
+  }
+
+  /**
+   * Check if intent is a MessageIntent
+   */
+  private isMessageIntent(intent: any): boolean {
+    return intent && (
+      intent['@type'] === 'MESSAGE' ||
+      intent['@type'] === 'EMAIL_MESSAGE' ||
+      intent['@type'] === 'CHAT_MESSAGE' ||
+      intent['@type'] === 'NOTIFICATION'
+    );
   }
 
   /**

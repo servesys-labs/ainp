@@ -36,6 +36,9 @@ export enum FeatureFlag {
   EMAIL_POSTAGE_ENABLED = 'EMAIL_POSTAGE_ENABLED',
   EMAIL_CONTENT_DEDUPE_ENABLED = 'EMAIL_CONTENT_DEDUPE_ENABLED',
   EMAIL_GREYLIST_ENABLED = 'EMAIL_GREYLIST_ENABLED',
+
+  // Messaging (Unified Agent-to-Agent Communication)
+  MESSAGING_ENABLED = 'MESSAGING_ENABLED',
 }
 
 /**
@@ -140,6 +143,14 @@ const FEATURE_FLAG_REGISTRY: FeatureFlagConfig[] = [
     defaultValue: false,
     description: 'Enable greylisting for first-contact email (delay initial delivery)',
     environments: ['production', 'preview'],
+  },
+
+  // Messaging
+  {
+    key: FeatureFlag.MESSAGING_ENABLED,
+    defaultValue: true,
+    description: 'Enable unified messaging (inbox, threads, mailbox storage)',
+    environments: ['development', 'preview'], // false in production until launch
   },
 ];
 
