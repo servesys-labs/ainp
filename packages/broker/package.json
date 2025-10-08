@@ -15,10 +15,12 @@
   "dependencies": {
     "@ainp/core": "file:../core",
     "@ainp/sdk": "file:../sdk",
+    "@types/node-cron": "^3.0.11",
     "dotenv": "^17.2.3",
     "express": "^4.18.2",
     "json-canonicalize": "^1.0.6",
     "nats": "^2.19.0",
+    "node-cron": "^4.2.1",
     "openai": "^4.24.1",
     "pg": "^8.11.3",
     "redis": "^4.6.12",

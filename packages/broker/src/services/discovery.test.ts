@@ -82,9 +82,10 @@ describe('Discovery Service', () => {
 
       expect(results).toHaveLength(1);
       expect(results[0].did).toBe('did:key:z123');
+      // Discovery service uses fixed minSimilarity=0.5 for DB search, then filters by min_trust
       expect(mockDbClient.searchAgentsByEmbedding).toHaveBeenCalledWith(
         query.embedding,
-        0.7,
+        0.5,
         50
       );
     });
@@ -103,9 +104,10 @@ describe('Discovery Service', () => {
       await discoveryService.discover(query);
 
       expect(mockEmbeddingService.embed).toHaveBeenCalledWith('search for documents');
+      // Discovery service uses fixed minSimilarity=0.5 for DB search
       expect(mockDbClient.searchAgentsByEmbedding).toHaveBeenCalledWith(
         generatedEmbedding,
-        0.7,
+        0.5,
         50
       );
     });

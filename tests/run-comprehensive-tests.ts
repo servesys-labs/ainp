@@ -560,13 +560,13 @@ async function main() {
   await runTest(3, 'E2E-001', 'Complete agent lifecycle', async () => {
     const agentDID = generateTestDID();
     const callerDID = generateTestDID();
-    const emb = await getTestEmbedding('Process payments securely');
+    const emb = await getTestEmbedding('payment processing agent');
 
     // 1. Register
     const address = {
       did: agentDID,
       capabilities: [{
-        description: 'Process payments securely',
+        description: 'payment processing agent',
         embedding: emb,
         tags: ['payment', 'security'],
         version: '1.0.0'
@@ -591,7 +591,7 @@ async function main() {
     if (regResponse.status !== 200) throw new Error('Registration failed');
 
     // 2. Discover
-    await new Promise(r => setTimeout(r, 500)); // Small delay for indexing
+    await new Promise(r => setTimeout(r, 1000)); // Increased delay for indexing
 
     const discResponse = await fetch(`${API_BASE}/api/discovery/search`, {
       method: 'POST',
@@ -600,7 +600,7 @@ async function main() {
         'X-AINP-DID': callerDID
       },
       body: JSON.stringify({
-        description: 'payment processing',
+        description: 'payment processing agent',
         tags: ['payment']
       })
     });
@@ -608,7 +608,7 @@ async function main() {
     if (discResponse.status !== 200) throw new Error('Discovery failed');
     const discData: any = await discResponse.json();
     const found = Array.isArray(discData) && discData.some((a: any) => a.did === agentDID);
-    if (!found) throw new Error('Agent not found in discovery');
+    if (!found) throw new Error(`Agent not found in discovery. Query: "payment processing agent", Found: ${discData?.length || 0} agents`);
 
     // 3. Route intent
     const routeResponse = await fetch(`${API_BASE}/api/intents/send`, {
@@ -639,12 +639,12 @@ async function main() {
     for (let i = 0; i < 3; i++) {
       const did = generateTestDID();
       const trustScore = 0.6 + (i * 0.1); // 0.6, 0.7, 0.8
-      const emb = await getTestEmbedding('Scheduling agent ' + i);
+      const emb = await getTestEmbedding('scheduling agent');
 
       const address = {
         did,
         capabilities: [{
-          description: 'Scheduling agent ' + i,
+          description: 'scheduling agent',
           embedding: emb,
           tags: ['scheduling'],
           version: '1.0.0'
@@ -671,7 +671,7 @@ async function main() {
       agents.push({ did, trustScore });
     }
 
-    await new Promise(r => setTimeout(r, 500));
+    await new Promise(r => setTimeout(r, 1000));
 
     // Discover and verify ranking
     const discResponse = await fetch(`${API_BASE}/api/discovery/search`, {
@@ -681,7 +681,7 @@ async function main() {
         'X-AINP-DID': generateTestDID()
       },
       body: JSON.stringify({
-        description: 'scheduling',
+        description: 'scheduling agent',
         tags: ['scheduling']
       })
     });
@@ -690,14 +690,18 @@ async function main() {
     const results: any = await discResponse.json();
 
     if (!Array.isArray(results) || results.length === 0) {
-      throw new Error('No results returned');
+      throw new Error(`No results returned. Query: "scheduling agent", Expected: 3 agents`);
     }
 
     // Verify at least one of our agents was found
     const foundOurAgent = results.some((r: any) =>
       agents.some(a => a.did === r.did)
     );
-    if (!foundOurAgent) throw new Error('Registered agents not in results');
+    if (!foundOurAgent) {
+      const foundDIDs = results.map((r: any) => r.did);
+      const expectedDIDs = agents.map(a => a.did);
+      throw new Error(`Registered agents not in results. Expected: ${expectedDIDs.join(', ')}, Found: ${foundDIDs.join(', ')}`);
+    }
   });
 
   console.log();

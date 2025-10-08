@@ -16,15 +16,22 @@ import { SignatureService } from './services/signature';
 import { TrustService } from './services/trust';
 import { DiscoveryService } from './services/discovery';
 import { RoutingService } from './services/routing';
+import { CreditService } from './services/credits';
 import { WebSocketHandler } from './websocket/handler';
 import { DeliveryService } from './websocket/delivery';
 import { createHealthRoutes } from './routes/health';
 import { createAgentRoutes } from './routes/agents';
 import { createIntentRoutes } from './routes/intents';
 import { createDiscoveryRoutes } from './routes/discovery';
+import { createUsefulnessRoutes } from './routes/usefulness';
+import { createNegotiationRoutes } from './routes/negotiation';
 import { rateLimitMiddleware } from './middleware/rate-limit';
 import { validateEnvelope } from './middleware/validation';
 import { authMiddleware } from './middleware/auth';
+import { UsefulnessAggregatorService } from './services/usefulness-aggregator';
+import { startUsefulnessAggregationJob } from './jobs/usefulness-aggregator-job';
+import { NegotiationService } from './services/negotiation';
+import { IncentiveDistributionService } from './services/incentive-distribution';
 
 const logger = new Logger({ serviceName: 'ainp-broker' });
 
@@ -49,12 +56,29 @@ async function main() {
   const signatureService = new SignatureService();
   const trustService = new TrustService(dbClient);
   const discoveryService = new DiscoveryService(dbClient, embeddingService, redisClient);
+  const creditService = new CreditService(dbClient);
   const routingService = new RoutingService(
     discoveryService,
     natsClient,
     signatureService,
     trustService
   );
+  const usefulnessAggregator = new UsefulnessAggregatorService(dbClient);
+  const incentiveDistribution = new IncentiveDistributionService(dbClient, creditService);
+  const negotiationService = new NegotiationService(dbClient, creditService);
+
+  // Start usefulness aggregation cron job
+  startUsefulnessAggregationJob(usefulnessAggregator);
+
+  // Run aggregation immediately on startup
+  try {
+    const updateCount = await usefulnessAggregator.updateCachedScores();
+    logger.info(`[Startup] Updated ${updateCount} usefulness scores`);
+  } catch (error) {
+    logger.error('[Startup] Failed to run initial usefulness aggregation', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
 
   // Initialize WebSocket
   const wsHandler = new WebSocketHandler(signatureService, routingService);
@@ -73,7 +97,7 @@ async function main() {
   app.use(
     '/api/agents',
     rateLimitMiddleware(redisClient, 100, false), // requireDID=false for public endpoints
-    createAgentRoutes(discoveryService)
+    createAgentRoutes(discoveryService, creditService)
   );
 
   // Discovery routes: no envelope validation required (public API, IP-based rate limiting)
@@ -83,6 +107,13 @@ async function main() {
     createDiscoveryRoutes(discoveryService)
   );
 
+  // Usefulness routes: public API for querying scores, IP-based rate limiting
+  app.use(
+    '/api/usefulness',
+    rateLimitMiddleware(redisClient, 100, false),
+    createUsefulnessRoutes(usefulnessAggregator)
+  );
+
   // Intent routes: require envelope validation + auth (security-critical, DID-based rate limiting)
   app.use(
     '/api/intents',
@@ -90,6 +121,15 @@ async function main() {
     validateEnvelope,
     authMiddleware(signatureService),
     createIntentRoutes(routingService)
+  );
+
+  // Negotiation routes: require envelope validation + auth (security-critical, DID-based rate limiting)
+  app.use(
+    '/api/negotiations',
+    rateLimitMiddleware(redisClient, 100, true), // requireDID=true for authenticated endpoints
+    validateEnvelope,
+    authMiddleware(signatureService),
+    createNegotiationRoutes(negotiationService)
   );
 
   // Start HTTP server

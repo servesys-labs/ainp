@@ -13,8 +13,10 @@
   },
   "dependencies": {
     "@ainp/core": "file:../core",
+    "@noble/ed25519": "^3.0.0",
     "eventemitter3": "^5.0.1",
     "json-canonicalize": "^1.0.6",
+    "multiformats": "^13.4.1",
     "uuid": "^9.0.1",
     "ws": "^8.16.0"
   },

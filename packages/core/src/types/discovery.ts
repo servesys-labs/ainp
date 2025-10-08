@@ -8,6 +8,10 @@ export interface SemanticAddress {
   capabilities: Capability[];
   trust: TrustVector;
   credentials?: string[];
+  // Web4 POU-lite: Optional usefulness score for ranking
+  usefulness_score_cached?: number; // 0-100 (30-day rolling average)
+  usefulness_last_updated?: number; // Unix timestamp
+  similarity?: number; // 0-1 (cosine similarity from vector search)
 }
 
 export interface Capability {

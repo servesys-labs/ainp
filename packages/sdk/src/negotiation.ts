@@ -4,7 +4,8 @@
  * Spec: RFC 001-SPEC Section 4
  */
 
-import { NegotiationConstraints, Proposal } from '@ainp/core';
+import { Proposal } from '@ainp/core';
+// TODO: NegotiationConstraints moved to broker service layer in Phase 4
 import { NegotiationError } from './errors';
 import { Logger } from './logger';
 
@@ -138,7 +139,7 @@ export function executeNegotiationRound(
   offer: Proposal,
   target: Proposal,
   round: number,
-  constraints: NegotiationConstraints,
+  constraints: any, // TODO: Type moved to broker in Phase 4
   previousProposal?: Proposal
 ): NegotiationResult {
   // Check max rounds

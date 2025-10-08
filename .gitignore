@@ -38,6 +38,9 @@ temp/
 *.tmp
 # Test artifacts
 .coverage/
+# Keep test fixtures checked in for reproducible tests
+!tests/fixtures/
+!tests/fixtures/*.json
 # Package manager files
 .pnpm-debug.log
 .yarn/install-state.gz

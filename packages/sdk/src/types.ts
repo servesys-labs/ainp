@@ -8,7 +8,7 @@ import {
   AINPIntent,
   SemanticAddress,
   DiscoveryQuery,
-  NegotiationConstraints,
+  // NegotiationConstraints moved to broker in Phase 4
   Proposal,
 } from '@ainp/core';
 
@@ -52,7 +52,7 @@ export interface AdvertiseOptions {
 export interface NegotiateOptions {
   to_did: string;
   proposal: Proposal;
-  constraints?: NegotiationConstraints;
+  constraints?: any; // TODO: Type moved to broker in Phase 4
 }
 
 export interface IntentHandler {

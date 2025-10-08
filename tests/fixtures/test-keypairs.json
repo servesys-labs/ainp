@@ -1,0 +1,32 @@
+[
+  {
+    "role": "test-caller",
+    "did": "did:key:z6MkoSJvBnjUzXHyqUTmRQsNRVNoqAmZ6V5kQC7EiwsFiKWs",
+    "privateKey": "7d8d8eb1d4db37f0e6459ff9cb0b4602c295f29d5846d2777f2bd3d34ed1ecea",
+    "publicKey": "857ad96b168813a40b55af7f3e3763bfe0f7b605fc936893905cd200c74fb0d4"
+  },
+  {
+    "role": "test-calendar-agent",
+    "did": "did:key:z6MkoZEkdRmntcgza19hqCvbzZ7di4ttojSgs6FW59sFNqA3",
+    "privateKey": "ac0d6d2e8acfcba622b66def0654af7ebcb178a28e9caf2d4fe5131c8d5a3ade",
+    "publicKey": "874134afd72c17641d45640ab32856b91e3baab9885e0091fb21f163ca484734"
+  },
+  {
+    "role": "test-email-agent",
+    "did": "did:key:z6Mkg6YvzT7At7oioBqtmwgwXAWEjjHKZKiCEfgYCwm5yStp",
+    "privateKey": "0bd3b08dfe815b2b723b6ba036292cb802b194ec6f97b5f85e1c9785a185a6a9",
+    "publicKey": "186945291dadc77091a1901eaf0ff4864ffe2d3fc6d5395d5c510a20cd05a2c1"
+  },
+  {
+    "role": "test-payment-agent",
+    "did": "did:key:z6MkfxP2hsi6Y8hDoDxu4ZezMKeGtorh7UsPRBzaYMHquvFH",
+    "privateKey": "0df01d54706d24af4a3c2a90b1d605ff81ec4964c633c202ed63aa4ae25482e6",
+    "publicKey": "16516d948ba34532a2fad40fa37d04e1655997d22ebb9f6f7eab6f5362316e50"
+  },
+  {
+    "role": "test-validator",
+    "did": "did:key:z6MkuYVz3AbU12k2Xg13CvyWkjPYYZdouBNKx8ZcjrEJb31p",
+    "privateKey": "7d124dd1a1af1dab84dc579979ac544d563fe11a3d29c465e940fc4ef8e0c399",
+    "publicKey": "e036f7f12b048e28902c1955d36a56a2ea997138fe82878796ed62cec0b5ed37"
+  }
+]

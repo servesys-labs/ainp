@@ -4,9 +4,13 @@
 
 import { Router } from 'express';
 import { DiscoveryService } from '../services/discovery';
+import { CreditService } from '../services/credits';
 import { SemanticAddress } from '@ainp/core';
 
-export function createAgentRoutes(discoveryService: DiscoveryService): Router {
+export function createAgentRoutes(
+  discoveryService: DiscoveryService,
+  creditService: CreditService
+): Router {
   const router = Router();
 
   router.post('/register', async (req, res) => {
@@ -22,9 +26,43 @@ export function createAgentRoutes(discoveryService: DiscoveryService): Router {
         });
       }
 
+      // Register agent in discovery service
       await discoveryService.registerAgent(address, ttl);
 
-      res.json({ status: 'registered', did: address.did });
+      // Create credit account with initial balance (if enabled)
+      const creditEnabled = process.env.CREDIT_LEDGER_ENABLED !== 'false';
+
+      if (creditEnabled) {
+        try {
+          const initialBalance = BigInt(process.env.INITIAL_CREDITS || '1000000');
+          await creditService.createAccount(address.did, initialBalance);
+        } catch (error) {
+          // Log but don't fail registration if credits fail (graceful degradation)
+          console.error('[Credits] Failed to create account:', error);
+        }
+      }
+
+      // Get credit balance for response (if enabled)
+      let credits = null;
+      if (creditEnabled) {
+        try {
+          const account = await creditService.getAccount(address.did);
+          if (account) {
+            credits = {
+              balance: account.balance.toString(),
+              reserved: account.reserved.toString()
+            };
+          }
+        } catch (error) {
+          console.error('[Credits] Failed to fetch account:', error);
+        }
+      }
+
+      res.json({
+        message: 'Agent registered successfully',
+        agent: { did: address.did },
+        credits
+      });
     } catch (error) {
       res.status(500).json({ error: String(error) });
     }
