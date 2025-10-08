@@ -25,15 +25,19 @@ import { createIntentRoutes } from './routes/intents';
 import { createDiscoveryRoutes } from './routes/discovery';
 import { createUsefulnessRoutes } from './routes/usefulness';
 import { createNegotiationRoutes } from './routes/negotiation';
+import { createReputationRoutes } from './routes/reputation';
+import { createReceiptsRoutes } from './routes/receipts';
 import { createPaymentsRoutes } from './routes/payments';
 import { PaymentService } from './services/payment';
 import { CoinbaseCommerceDriver } from './services/payments/coinbase-commerce';
+import { LightningDriver } from './services/payments/lightning';
 import { createMailRoutes } from './routes/mail';
 import { rateLimitMiddleware } from './middleware/rate-limit';
 import { validateEnvelope, validateProofSubmission } from './middleware/validation';
 import { authMiddleware } from './middleware/auth';
 import { UsefulnessAggregatorService } from './services/usefulness-aggregator';
 import { startUsefulnessAggregationJob } from './jobs/usefulness-aggregator-job';
+import { startPouFinalizerJob } from './jobs/pou-finalizer-job';
 import { NegotiationService } from './services/negotiation';
 import { IncentiveDistributionService } from './services/incentive-distribution';
 import { AntiFraudService } from './services/anti-fraud';
@@ -68,14 +72,18 @@ async function main() {
   const creditService = new CreditService(dbClient);
   const usefulnessAggregator = new UsefulnessAggregatorService(dbClient);
   const incentiveDistribution = new IncentiveDistributionService(dbClient, creditService);
-  const negotiationService = new NegotiationService(dbClient, creditService);
+  // Receipt/Reputation services
+  const receiptService = new (require('./services/receipts').ReceiptService)(dbClient);
+  const reputationUpdater = new (require('./services/reputation-updater').ReputationUpdater)(dbClient);
+  const negotiationService = new NegotiationService(dbClient, creditService, receiptService, reputationUpdater);
   const antiFraud = new AntiFraudService(redisClient);
 
   // Note: MailboxService and RoutingService created after WebSocket initialization
   // to enable real-time notifications
 
-  // Start usefulness aggregation cron job (with optional credit distribution)
+  // Start background jobs
   startUsefulnessAggregationJob(usefulnessAggregator, incentiveDistribution);
+  startPouFinalizerJob(dbClient);
 
   // Run aggregation immediately on startup
   try {
@@ -187,7 +195,11 @@ async function main() {
     coinbase: new CoinbaseCommerceDriver(
       process.env.COINBASE_COMMERCE_API_KEY,
       process.env.COINBASE_COMMERCE_WEBHOOK_SECRET
-    )
+    ),
+    lightning: new LightningDriver(
+      process.env.LIGHTNING_NODE_URL,
+      process.env.LIGHTNING_MACAROON
+    ),
   });
   app.use(
     '/api/payments',
@@ -195,6 +207,12 @@ async function main() {
     rateLimitMiddleware(redisClient, 50, true),
     createPaymentsRoutes(paymentService)
   );
+
+  // Reputation routes (read-only)
+  app.use('/api/reputation', createReputationRoutes(dbClient));
+
+  // Receipts routes (read-only)
+  app.use('/api/receipts', createReceiptsRoutes(receiptService));
 
   // Start HTTP server
   const server = app.listen(PORT, () => {

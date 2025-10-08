@@ -1,21 +1,137 @@
 <project_status>
-Project: ainp | Last Update: 2025-10-08 12:26:39 CDT | Data: stale (queue=4; queue>0; local mode)
+Project: ainp | Last Update: 2025-10-08 17:02:30 CDT | Data: stale (queue=2; queue>0; local mode)
 Summary:
 - Phase: Stabilizing Vector RAG — Status snapshot from vector digests + local logs
-Last Digest: agent=Main, task=ainp-phase-2b-credit-distribution, decisions=4, files=3
+Last Digest: agent=Main, task=ainp-negotiation-completion-production-ready, decisions=5, files=5
 Milestones:
-- Done: Added WebSocket notifications for new messages
-- Next: Phase 2C: Discovery integration and end-to-end tests
+- Done: Phase 2A: Enhanced proof validation with duplicate detection, rate limiting, fraud h…
+- Next: Deploy to staging environment
 Next Steps:
-- Phase 2C: Discovery integration and end-to-end tests
-- Optional: Add manual distribution endpoint for admin control
-- Optional: Add distribution history tracking
+- Deploy to staging environment
+- Run E2E negotiation flow test with WebSocket notifications
+- Monitor for 24 hours
 Decisions (recent):
-- MailboxService accepts optional WebSocketHandler for real-time push
-- Server initialization order: WebSocket → MailboxService → RoutingService
+- Phase 2B: Proportional credit distribution based on usefulness scores via cron job
+- Phase 2C: Verified discovery integration, created comprehensive E2E tests
 Activity Snapshot:
-- Components: handler.ts, mailbox.ts, server.ts, mail.test.ts, usefulness-aggregator.ts
+- Components: usefulness-aggregator.ts, incentive-distribution.ts, usefulness-aggregator-job.ts, usefulness-pipeline.test.ts, negotiation.ts
 </project_status>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -18,6 +18,8 @@
 import { Logger } from '@ainp/sdk';
 import { DatabaseClient } from '../lib/db-client';
 import { CreditService } from './credits';
+import { ReceiptService } from './receipts';
+import { ReputationUpdater } from './reputation-updater';
 import { IncentiveDistributionService } from './incentive-distribution';
 import { FeatureFlag, getFeatureFlag } from '../lib/feature-flags';
 import {
@@ -52,7 +54,9 @@ const MAX_ROUNDS_LIMIT = 20;
 export class NegotiationService {
   constructor(
     private dbClient: DatabaseClient,
-    private creditService: CreditService
+    private creditService: CreditService,
+    private receiptService?: ReceiptService,
+    private reputationUpdater?: ReputationUpdater
   ) {}
 
   /**
@@ -541,6 +545,40 @@ export class NegotiationService {
       validator_amount: result.distributed.validator.toString(),
       pool_amount: result.distributed.pool.toString()
     });
+
+    // Write task receipt (best-effort)
+    try {
+      if (this.receiptService) {
+        const receiptId = await this.receiptService.createReceipt({
+          intent_id: session.intent_id,
+          negotiation_id: negotiationId,
+          agent_did: session.responder_did,
+          client_did: session.initiator_did,
+          intent_type: 'NEGOTIATION',
+          metrics: {
+            latency_ms: Math.max(0, Date.now() - session.created_at.getTime()),
+            rounds: session.rounds.length,
+            convergence: session.convergence_score,
+          },
+          amount_atomic: result.total_amount,
+        });
+
+        if (this.reputationUpdater) {
+          await this.reputationUpdater.updateFromReceipt(session.responder_did, {
+            metrics: {
+              latency_ms: Math.max(0, Date.now() - session.created_at.getTime()),
+            },
+            attestations: [
+              { type: 'ACCEPTED', score: 1.0 },
+            ]
+          });
+        }
+
+        logger.info('Task receipt recorded', { negotiation_id: negotiationId, receipt_id: receiptId });
+      }
+    } catch (error) {
+      logger.warn('Failed to record receipt or update reputation', { error });
+    }
   }
 
   /**

@@ -151,5 +151,51 @@ WEB4_POU_DISCOVERY_ENABLED=false      # Disabled in tests (not yet fully tested)
 
 - Check `WEB4_POU_DISCOVERY_ENABLED=true` in `.env`
 - Verify `usefulness_score_cached` column is populated: `SELECT COUNT(*) FROM agents WHERE usefulness_score_cached IS NOT NULL;`
-- Ensure aggregation job has run at least once
-- Check weight sum = 1.0: `SIMILARITY + TRUST + USEFULNESS = 1.0`
+  - Ensure aggregation job has run at least once
+  - Check weight sum = 1.0: `SIMILARITY + TRUST + USEFULNESS = 1.0`
+
+## Anti‑Fraud & Messaging
+
+### Anti‑Fraud (Email facet)
+- **REPLAY_PROTECTION_ENABLED** (default: `true`)
+  - Enable Redis‑backed replay cache for envelope id/trace
+- **EMAIL_CONTENT_DEDUPE_ENABLED** (default: `true`)
+  - Enable content‑hash dedupe window for email intents
+- **EMAIL_DEDUPE_TTL_SECONDS** (default: `86400`)
+  - Dedupe window (seconds)
+- **EMAIL_GREYLIST_ENABLED** (default: `false`)
+  - Delay first‑contact email (returns 425 + Retry‑After)
+- **EMAIL_GREYLIST_DELAY_SECONDS** (default: `300`)
+  - Greylist delay (seconds)
+- **EMAIL_POSTAGE_ENABLED** (default: `false`)
+  - Require small credit spend for cold direct email
+- **EMAIL_POSTAGE_AMOUNT_ATOMIC** (default: `1000`)
+  - Postage cost in atomic units (1000 = 1 credit)
+
+### Messaging
+- **MESSAGING_ENABLED** (default: `true` in dev/preview)
+  - Enable unified mailbox APIs (/api/mail/*)
+
+## Payments (402 + Pluggable Rails)
+
+- **PAYMENTS_ENABLED** (default: `false`)
+  - Enable payments (402 challenges, /api/payments)
+- **COINBASE_COMMERCE_ENABLED** (default: `false`)
+  - Enable Coinbase Commerce provider
+- **LIGHTNING_ENABLED** (default: `false`)
+  - Enable Lightning (L402) provider
+- **USDC_ONCHAIN_ENABLED** (default: `false`)
+  - Enable USDC on‑chain provider
+- **ATOMIC_PER_UNIT** (default: `1000`)
+  - Atomic units per currency unit for provider conversions
+
+## Proof of Usefulness (PoU)
+
+- **POU_FINALIZER_ENABLED** (default: `true`)
+  - Enable background job to finalize task receipts when quorum is met
+- **POU_K** (default: `3`)
+  - Quorum threshold (k)
+- **POU_M** (default: `5`)
+  - Committee size (m) [prototype only; not yet used for selection]
+- **POU_FINALIZER_CRON** (default: `*/1 * * * *`)
+  - Cron schedule for the finalizer job

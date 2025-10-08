@@ -54,6 +54,13 @@ export class MailboxService {
   }
 
   /**
+   * Attach or replace WebSocket handler after construction
+   */
+  setWebSocketHandler(wsHandler: any) {
+    this.wsHandler = wsHandler;
+  }
+
+  /**
    * Store a message in the mailbox
    * @param envelope AINP envelope containing the message
    * @param intent MessageIntent payload

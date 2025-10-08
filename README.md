@@ -1,12 +1,12 @@
 # AI-Native Network Protocol (AINP)
 
-**Phase**: 0.1 Foundation
-**Status**: Development
+**Phase**: 0.3+ Unified Messaging (alpha)
+**Status**: Development / Public Alpha
 **Created**: 2025-10-06
 
 ## Overview
 
-AINP is a semantic communication protocol for AI agents, replacing location-based routing with intent-based semantic routing. This repository contains the Phase 0.1 implementation focused on foundational infrastructure.
+AINP is a semantic communication protocol for AI agents. Messages are typed intents (e.g., MESSAGE, EMAIL_MESSAGE, NEGOTIATE) routed by semantics rather than locations. This repository now includes a unified messaging foundation (inbox/threads), anti‑fraud controls, and pluggable payments (402 challenges) on top of the core infra.
 
 ## Quick Start
 
@@ -33,7 +33,14 @@ cp .env.example .env
 # 4. Install dependencies (when packages are ready)
 npm install
 
-# 5. Verify setup
+# 5. Run migrations (core + messaging + payments)
+docker exec ainp-postgres psql -U ainp -d ainp -c "\i /sql/012_add_messages.sql"
+docker exec ainp-postgres psql -U ainp -d ainp -c "\i /sql/013_add_threads.sql"
+docker exec ainp-postgres psql -U ainp -d ainp -c "\i /sql/014_add_contacts.sql"
+docker exec ainp-postgres psql -U ainp -d ainp -c "\i /sql/015_add_payment_requests.sql"
+docker exec ainp-postgres psql -U ainp -d ainp -c "\i /sql/016_add_payment_receipts.sql"
+
+# 6. Verify setup
 npm run typecheck
 npm test
 ```
@@ -58,7 +65,7 @@ npm test
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## Repository Structure
+## Repository Structure (highlights)
 
 ```
 ainp/
@@ -78,6 +85,13 @@ ainp/
 │           ├── nats.ts              # NATS JetStream client
 │           ├── vector.ts            # pgvector client
 │           └── redis.ts             # Redis cache client
+├── packages/broker/
+│   ├── src/services/mailbox.ts      # Unified message storage service
+│   ├── src/services/contacts.ts     # Consent/allowlist service
+│   ├── src/services/payment.ts      # PaymentService (402 challenges)
+│   ├── src/routes/mail.ts           # /api/mail routes (inbox/threads)
+│   ├── src/routes/payments.ts       # /api/payments routes
+│   └── src/middleware/email-guard.ts# Anti-fraud guard (email facet)
 ├── scripts/
 │   ├── setup-dev.sh                 # Master setup script
 │   ├── init-db.sh                   # PostgreSQL + pgvector init
@@ -96,7 +110,7 @@ ainp/
 |-------------|------|----------------------------------|-------------------------------|
 | PostgreSQL + pgvector | 5432 | Agents, capabilities, trust, vector embeddings | [Schema](packages/db/schema.sql) |
 | NATS        | 4222 | Message bus (intents, results)   | [Client](packages/core/src/nats.ts) |
-| Redis       | 6379 | Caching & rate limiting          | [Client](packages/core/src/redis.ts) |
+| Redis       | 6379 | Caching, rate limit, replay      | [Client](packages/core/src/redis.ts) |
 | Prometheus  | 9090 | Metrics collection               | Optional                      |
 | Grafana     | 3000 | Dashboards                       | Optional (admin/admin)        |
 
@@ -139,7 +153,7 @@ npm run typecheck
 npm test
 ```
 
-## Database Schema
+## Database Schema (selected)
 
 ### Core Tables
 
@@ -147,6 +161,13 @@ npm test
 - **`capabilities`**: Agent capabilities (description, tags, version)
 - **`trust_scores`**: Multi-dimensional reputation
 - **`audit_log`**: Security events
+
+Messaging & Payments tables:
+- **`messages`**: Unified message storage (012_add_messages.sql)
+- **`threads`**: Conversation aggregates (013_add_threads.sql)
+- **`contacts`**: Consent/allowlist (014_add_contacts.sql)
+- **`payment_requests`**: Payment challenges/requests (015_add_payment_requests.sql)
+- **`payment_receipts`**: Provider confirmations (016_add_payment_receipts.sql)
 
 See [schema.sql](packages/db/schema.sql) for full schema.
 
@@ -175,6 +196,14 @@ See [schema.sql](packages/db/schema.sql) for full schema.
 - **[RFC 001 Specification](docs/rfcs/001-SPEC.md)**: Normative protocol specification
 - **[Implementation Guide](docs/rfcs/001-IMPLEMENTATION.md)**: Step-by-step implementation
 - **[Infrastructure Architecture](docs/architecture/INFRASTRUCTURE.md)**: Infrastructure design, scaling, monitoring
+- **[MessageIntent (Unified Messaging)](docs/messaging/MESSAGE_INTENT.md)**
+- **[EmailIntent](docs/email/EMAIL_INTENT.md)** and **[Anti‑Fraud](docs/email/ANTIFRAUD.md)**
+- **[Payments (402 + Rails)](docs/payments/PAYMENTS.md)**
+- **[API Reference](docs/api/REFERENCE.md)**
+- **[Security Model](docs/security/SECURITY_MODEL.md)**, **[Threat Model](docs/security/THREAT_MODEL.md)**
+- **[Messaging Pipeline](docs/architecture/MESSAGING_PIPELINE.md)**, **[Payments Flow](docs/architecture/PAYMENTS_FLOW.md)**
+- **[Migrations Guide](docs/db/MIGRATIONS.md)**
+- **[Conformance Test Kit](docs/conformance/CONFORMANCE.md)**
 
 ## Monitoring
 
@@ -209,7 +238,7 @@ docker-compose -f docker-compose.dev.yml logs -f
 docker-compose -f docker-compose.dev.yml logs -f postgres
 ```
 
-## Security
+## Security & Anti‑Fraud
 
 **Development** (default credentials):
 - PostgreSQL: `ainp:ainp`
@@ -221,6 +250,14 @@ docker-compose -f docker-compose.dev.yml logs -f postgres
 - Enable authentication for NATS
 - Store secrets in vault (HashiCorp Vault, AWS Secrets Manager)
 - Use SSL for PostgreSQL connections
+ 
+Anti‑fraud flags (see docs/FEATURE_FLAGS.md):
+- Replay protection (envelopes) and content dedupe (email)
+- Optional greylist/postage for first‑contact email
+
+Payments (optional):
+- Use 402 challenges for top‑ups or payable endpoints
+- Providers pluggable (Coinbase Commerce scaffold included)
 
 ## Backup & Recovery
 
@@ -302,3 +339,34 @@ Phase 0.1 is foundational infrastructure. Contributions welcome for:
 ---
 
 **Status**: Phase 0.1 infrastructure complete. Ready for Phase 0.2 (Agent SDK + Discovery).
+
+## Examples
+
+Run with ts-node or compile TypeScript:
+
+```
+# Send an EMAIL_MESSAGE to self (generates a DID for the example)
+node -r ts-node/register examples/send_message.ts
+
+# Read inbox (set DID in env)
+DID="did:key:z..." node -r ts-node/register examples/read_inbox.ts
+
+# Create a payment request (402 challenge)
+DID="did:key:z..." node -r ts-node/register examples/payments_402.ts
+
+# Negotiation happy path (set DID and PEER)
+DID="did:key:z..." PEER="did:key:z..." node -r ts-node/register examples/negotiation_flow.ts
+```
+
+## Community & Contributing
+
+- See CONTRIBUTING.md for guidelines
+- See CODE_OF_CONDUCT.md for community standards
+- See SECURITY.md for reporting vulnerabilities
+- See CHANGELOG.md and VERSIONING.md for release details
+- MIT License in LICENSE
+
+## SDKs
+
+- TypeScript SDK: `@ainp/sdk` (in-repo)
+- Python SDK (scaffold): packages/sdk-py (README included)
