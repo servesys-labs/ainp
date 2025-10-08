@@ -5,6 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AINPEnvelope, AINPIntent, ProofSubmissionRequest } from '@ainp/core';
 import { verifyEnvelopeSignature, didToPublicKey } from '@ainp/sdk';
+import { FeatureFlag, getFeatureFlag } from '../lib/feature-flags';
 
 export async function validateEnvelope(req: Request, res: Response, next: NextFunction) {
   const envelope = req.body as AINPEnvelope;
@@ -15,7 +16,7 @@ export async function validateEnvelope(req: Request, res: Response, next: NextFu
   }
 
   // Signature validation with feature flag
-  const enableSigVerification = process.env.SIGNATURE_VERIFICATION_ENABLED !== 'false';
+  const enableSigVerification = getFeatureFlag(FeatureFlag.SIGNATURE_VERIFICATION_ENABLED);
 
   if (enableSigVerification) {
     // Test mode bypass for dummy-sig (backward compatibility)

@@ -30,6 +30,13 @@ export function rateLimitMiddleware(
 
     const count = await redisClient.incrementRateLimit(rateLimitKey, 60);
 
+    // Handle degraded mode (Redis unavailable)
+    if (count === -1) {
+      console.warn('[RateLimit] Redis unavailable - allowing request');
+      res.setHeader('X-RateLimit-Degraded', 'true');
+      return next();
+    }
+
     res.setHeader('X-RateLimit-Limit', maxRequests);
     res.setHeader('X-RateLimit-Remaining', Math.max(0, maxRequests - count));
 

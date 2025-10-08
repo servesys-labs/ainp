@@ -19,6 +19,7 @@ import { Logger } from '@ainp/sdk';
 import { DatabaseClient } from '../lib/db-client';
 import { CreditService } from './credits';
 import { IncentiveDistributionService } from './incentive-distribution';
+import { FeatureFlag, getFeatureFlag } from '../lib/feature-flags';
 import {
   NegotiationSession,
   NegotiationState,
@@ -39,7 +40,7 @@ const logger = new Logger({ serviceName: 'negotiation-service' });
  * Feature flag for negotiation protocol
  */
 // Note: This must be checked dynamically for test mocking
-const isNegotiationEnabled = () => process.env.NEGOTIATION_ENABLED !== 'false';
+const isNegotiationEnabled = () => getFeatureFlag(FeatureFlag.NEGOTIATION_ENABLED);
 
 /**
  * Default negotiation parameters
@@ -317,7 +318,7 @@ export class NegotiationService {
     }
 
     // Phase 4.3: Reserve credits BEFORE updating database
-    const enableCredits = process.env.CREDIT_LEDGER_ENABLED !== 'false';
+    const enableCredits = getFeatureFlag(FeatureFlag.CREDIT_LEDGER_ENABLED);
     let priceInAtomicUnits: bigint | null = null;
 
     if (enableCredits && session.current_proposal?.price) {
@@ -488,7 +489,7 @@ export class NegotiationService {
       throw new Error(`Cannot settle negotiation in state ${session.state}`);
     }
 
-    const enableCredits = process.env.CREDIT_LEDGER_ENABLED !== 'false';
+    const enableCredits = getFeatureFlag(FeatureFlag.CREDIT_LEDGER_ENABLED);
 
     if (!enableCredits) {
       logger.warn('Credit settlement skipped (CREDIT_LEDGER_ENABLED=false)', {

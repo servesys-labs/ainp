@@ -34,6 +34,7 @@ export async function isConnected(client: RedisClientType): Promise<boolean> {
 
 export class RedisClient {
   private client: RedisClientType;
+  private connected: boolean = false;
 
   constructor(url?: string) {
     // Validate REDIS_URL if no url provided
@@ -45,6 +46,7 @@ export class RedisClient {
         reconnectStrategy: (retries) => {
           if (retries > 10) {
             console.error('Redis reconnect attempts exceeded');
+            this.connected = false;
             return new Error('Redis connection failed');
           }
           return Math.min(retries * 100, 3000); // Exponential backoff
@@ -55,6 +57,7 @@ export class RedisClient {
     // Connection error handler
     this.client.on('error', (err) => {
       console.error('Redis client error:', err);
+      this.connected = false;
     });
   }
 
@@ -66,11 +69,13 @@ export class RedisClient {
     for (let i = 0; i < retries; i++) {
       try {
         await this.client.connect();
+        this.connected = true;
         console.log('✅ Redis connected');
         return;
       } catch (err) {
         console.error(`Redis connection attempt ${i + 1}/${retries} failed:`, err);
         if (i === retries - 1) {
+          this.connected = false;
           console.warn('⚠️ Redis unavailable - continuing in degraded mode');
           return; // Don't crash, just warn
         }
@@ -84,6 +89,7 @@ export class RedisClient {
    * @returns true if connected, false otherwise
    */
   async isConnected(): Promise<boolean> {
+    if (!this.connected) return false;
     return isConnected(this.client);
   }
 
@@ -91,32 +97,53 @@ export class RedisClient {
    * Cache discovery result
    */
   async cacheDiscoveryResult(key: string, result: unknown, ttl: number = 300): Promise<void> {
-    await this.client.setEx(key, ttl, JSON.stringify(result));
+    try {
+      if (!this.connected) return;
+      await this.client.setEx(key, ttl, JSON.stringify(result));
+    } catch (err) {
+      console.warn(`[Redis] Failed to cache: ${err}`);
+    }
   }
 
   /**
    * Get cached discovery result
    */
   async getCachedDiscoveryResult<T>(key: string): Promise<T | null> {
-    const result = await this.client.get(key);
-    return result ? JSON.parse(result) : null;
+    try {
+      if (!this.connected) return null;
+      const result = await this.client.get(key);
+      return result ? JSON.parse(result) : null;
+    } catch (err) {
+      console.warn(`[Redis] Failed to get cache: ${err}`);
+      return null;
+    }
   }
 
   /**
    * Increment rate limit counter
+   * @returns count on success, -1 on error (degraded mode)
    */
   async incrementRateLimit(key: string, window: number = 60): Promise<number> {
-    const count = await this.client.incr(key);
-    if (count === 1) {
-      await this.client.expire(key, window);
+    try {
+      if (!this.connected) return -1;
+      const count = await this.client.incr(key);
+      if (count === 1) {
+        await this.client.expire(key, window);
+      }
+      return count;
+    } catch (err) {
+      console.error(`[Redis] Rate limit error: ${err}`);
+      return -1;
     }
-    return count;
   }
 
   /**
    * Close Redis connection
    */
   async close(): Promise<void> {
-    await this.client.quit();
+    if (this.connected) {
+      await this.client.quit();
+      this.connected = false;
+    }
   }
 }
