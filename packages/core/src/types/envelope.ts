@@ -88,6 +88,37 @@ export interface WorkMetrics {
 }
 
 /**
+ * Web4: Proof Submission Request (for POST /api/usefulness/proofs)
+ */
+export interface ProofSubmissionRequest {
+  intent_id?: string;
+  work_type: 'compute' | 'memory' | 'routing' | 'validation' | 'learning';
+  metrics: WorkMetrics;
+  attestations?: string[];
+  trace_id: string;
+  timestamp: number;
+}
+
+/**
+ * Web4: Proof Submission Result
+ */
+export interface ProofSubmissionResult {
+  id: string;
+  usefulness_score: number;
+  created_at: Date;
+}
+
+/**
+ * Validation error for proof submission
+ */
+export class ValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ValidationError';
+  }
+}
+
+/**
  * Calculate usefulness score from proof metrics
  * Default weights: compute 0.4, memory 0.3, routing 0.2, validation 0.1, learning 0.5
  */

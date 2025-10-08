@@ -5,6 +5,8 @@
  */
 
 import { DatabaseClient } from '../lib/db-client';
+import { ProofSubmissionRequest, ProofSubmissionResult, ValidationError } from '@ainp/core';
+import { isFeatureEnabled, FeatureFlag } from '../lib/feature-flags';
 
 export interface UsefulnessAggregateResult {
   agent_did: string;
@@ -128,5 +130,80 @@ export class UsefulnessAggregatorService {
       },
       last_proof_at: row.last_proof_at ? new Date(row.last_proof_at) : null,
     };
+  }
+
+  /**
+   * Submit proof of usefulness work (POST /api/usefulness/proofs)
+   */
+  async submitProof(
+    agentDID: string,
+    proof: ProofSubmissionRequest
+  ): Promise<ProofSubmissionResult> {
+    // Feature flag check
+    if (!isFeatureEnabled(FeatureFlag.USEFULNESS_AGGREGATION_ENABLED)) {
+      throw new Error('Usefulness aggregation is disabled');
+    }
+
+    // Validate agent exists
+    const agentCheck = await this.db.query(
+      'SELECT did FROM agents WHERE did = $1',
+      [agentDID]
+    );
+    if (agentCheck.rows.length === 0) {
+      throw new ValidationError(`Agent not found: ${agentDID}`);
+    }
+
+    // Calculate score
+    const score = this.calculateScore(proof);
+
+    // Insert proof
+    const result = await this.db.query(
+      `INSERT INTO usefulness_proofs (
+        intent_id, agent_did, work_type, metrics,
+        attestations, trace_id, usefulness_score, created_at
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+      RETURNING id, usefulness_score, created_at`,
+      [
+        proof.intent_id || null,
+        agentDID,
+        proof.work_type,
+        JSON.stringify(proof.metrics),
+        proof.attestations || null,
+        proof.trace_id,
+        score
+      ]
+    );
+
+    return {
+      id: result.rows[0].id,
+      usefulness_score: parseFloat(result.rows[0].usefulness_score),
+      created_at: result.rows[0].created_at
+    };
+  }
+
+  private calculateScore(proof: ProofSubmissionRequest): number {
+    const { work_type, metrics } = proof;
+    let score = 0;
+
+    switch (work_type) {
+      case 'compute':
+        score = Math.min(100, (metrics.compute_ms || 0) / 100);
+        break;
+      case 'memory':
+        score = Math.min(100, (metrics.memory_bytes || 0) / (1024 * 1024));
+        break;
+      case 'routing':
+        score = Math.min(100, (metrics.routing_hops || 0) * 10);
+        break;
+      case 'validation':
+        score = Math.min(100, (metrics.validation_checks || 0) * 5);
+        break;
+      case 'learning':
+        score = Math.min(100, (metrics.learning_samples || 0) / 10);
+        break;
+    }
+
+    return Math.max(0, Math.min(100, score));
   }
 }

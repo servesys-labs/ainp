@@ -1,21 +1,269 @@
 <project_status>
-Project: ainp | Last Update: 2025-10-07 22:14:51 CDT | Data: fresh (queue=0)
+Project: ainp | Last Update: 2025-10-08 09:36:57 CDT | Data: stale (queue=1; queue>0; local mode)
 Summary:
-- Phase: Executing — Status snapshot from vector digests + local logs
-Last Digest: agent=Main, task=ainp-phase-1-railway-deployment-infrastructure, decisions=6, files=4
+- Phase: Stabilizing Vector RAG — Status snapshot from vector digests + local logs
+Last Digest: agent=Main, task=ainp-phase-1-railway-deployment-complete, decisions=5, files=4
 Milestones:
-- Done: Launched IE agent for Phase 1C (health check endpoint implementation)
-- Next: Phase 1 COMPLETE - All 6 sub-phases delivered (1B, 1C, 1D, 1E, 1F)
+- Done: Enabled DATABASE_URL for integration tests - went from 47% to 93% pass rate
+- Next: Phase 1 COMPLETE ✅ - Ready for Phase 2 or Phase 3
 Next Steps:
-- Phase 1 COMPLETE - All 6 sub-phases delivered (1B, 1C, 1D, 1E, 1F)
-- Ready for Phase 2: Usefulness Proof Generation & Validation
-- Ready for Phase 3: Frontend UI Dashboard (Next.js + shadcn/ui)
+- Phase 1 COMPLETE ✅ - Ready for Phase 2 or Phase 3
+- Option 1: Phase 2 (Usefulness Proof Generation & Validation)
+- Option 2: Phase 3 (Frontend UI Dashboard with Next.js + shadcn/ui)
 Decisions (recent):
-- Completed Phase 1C with dynamic health checks for db, redis, nats connections
-- Committed Phase 1C changes: 2 files modified, +40 lines, 3 breaking changes
+- Used orchestration framework (RC → CN → IE) to fix negotiation persistence issues
+- Fixed 4 critical bugs: migration references, idempotency, FK cleanup, RedisClient API
 Activity Snapshot:
-- Components: nats-client.ts, health.ts, feature-flags.ts, feature-flags.test.ts, FEATURE_FLAGS.md
+- Components: negotiation.ts, negotiation-integration.test.ts, agents-credits.test.ts, 009_add_credit_ledger.sql, PHASE_0.3_COMPREHENSIVE_PLAN.md
 </project_status>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

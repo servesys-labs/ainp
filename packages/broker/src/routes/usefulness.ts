@@ -5,6 +5,7 @@
 
 import { Router } from 'express';
 import { UsefulnessAggregatorService } from '../services/usefulness-aggregator';
+import { ProofSubmissionRequest, ValidationError } from '@ainp/core';
 
 export function createUsefulnessRoutes(aggregator: UsefulnessAggregatorService): Router {
   const router = Router();
@@ -43,6 +44,41 @@ export function createUsefulnessRoutes(aggregator: UsefulnessAggregatorService):
       });
     } catch (error) {
       res.status(500).json({ error: String(error) });
+    }
+  });
+
+  /**
+   * POST /api/usefulness/proofs
+   * Submit proof of useful work (requires authentication)
+   */
+  router.post('/proofs', async (req, res) => {
+    try {
+      // Extract DID from header (set by authMiddleware)
+      const agentDID = req.headers['x-ainp-did'] as string;
+
+      if (!agentDID) {
+        return res.status(401).json({
+          error: 'MISSING_DID',
+          message: 'Agent DID not found in request headers'
+        });
+      }
+
+      const proof = req.body as ProofSubmissionRequest;
+      const result = await aggregator.submitProof(agentDID, proof);
+
+      res.status(201).json(result);
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(400).json({
+          error: 'VALIDATION_ERROR',
+          message: error.message
+        });
+      }
+
+      res.status(500).json({
+        error: 'INTERNAL_ERROR',
+        message: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 

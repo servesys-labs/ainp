@@ -8,12 +8,18 @@ import { AINPEnvelope } from '@ainp/core';
 
 export function authMiddleware(signatureService: SignatureService) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    // Extract DID from envelope body (for routes that use envelopes)
+    const envelope = req.body as AINPEnvelope;
+
+    if (envelope && envelope.from_did) {
+      // Expose DID via header for downstream handlers
+      req.headers['x-ainp-did'] = envelope.from_did;
+    }
+
     // Skip signature verification in test/development mode
     if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
       return next();
     }
-
-    const envelope = req.body as AINPEnvelope;
 
     const isValid = await signatureService.verifyEnvelope(envelope);
 

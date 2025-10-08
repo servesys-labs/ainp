@@ -26,7 +26,7 @@ import { createDiscoveryRoutes } from './routes/discovery';
 import { createUsefulnessRoutes } from './routes/usefulness';
 import { createNegotiationRoutes } from './routes/negotiation';
 import { rateLimitMiddleware } from './middleware/rate-limit';
-import { validateEnvelope } from './middleware/validation';
+import { validateEnvelope, validateProofSubmission } from './middleware/validation';
 import { authMiddleware } from './middleware/auth';
 import { UsefulnessAggregatorService } from './services/usefulness-aggregator';
 import { startUsefulnessAggregationJob } from './jobs/usefulness-aggregator-job';
@@ -107,11 +107,23 @@ async function main() {
     createDiscoveryRoutes(discoveryService)
   );
 
-  // Usefulness routes: public API for querying scores, IP-based rate limiting
+  // Usefulness routes (mixed security requirements)
+  const usefulnessRouter = createUsefulnessRoutes(usefulnessAggregator);
+
+  // Protected POST /proofs route (requires validation + auth) - must be registered BEFORE the catch-all
+  app.post(
+    '/api/usefulness/proofs',
+    rateLimitMiddleware(redisClient, 100, true), // requireDID=true for authenticated endpoints
+    validateProofSubmission,
+    authMiddleware(signatureService),
+    usefulnessRouter
+  );
+
+  // Public GET routes (no auth required) - catch-all for other usefulness routes
   app.use(
     '/api/usefulness',
     rateLimitMiddleware(redisClient, 100, false),
-    createUsefulnessRoutes(usefulnessAggregator)
+    usefulnessRouter
   );
 
   // Intent routes: require envelope validation + auth (security-critical, DID-based rate limiting)
