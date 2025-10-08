@@ -132,12 +132,12 @@ async function main() {
     createIntentRoutes(routingService)
   );
 
-  // Negotiation routes: require envelope validation + auth (security-critical, DID-based rate limiting)
+  // Negotiation routes: require auth (security-critical, DID-based rate limiting)
+  // Note: Negotiation routes accept plain JSON bodies (not envelopes)
   app.use(
     '/api/negotiations',
-    rateLimitMiddleware(redisClient, 100, true), // requireDID=true for authenticated endpoints
-    validateEnvelope,
-    authMiddleware(signatureService),
+    authMiddleware(signatureService), // ✅ Extract DID from plain JSON body
+    rateLimitMiddleware(redisClient, 100, true), // ✅ Use DID from x-ainp-did header
     createNegotiationRoutes(negotiationService)
   );
 
