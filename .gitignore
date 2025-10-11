@@ -48,9 +48,60 @@ temp/
 .tscache/
 
 # Claude orchestration framework
-.claude/logs/
+.claude/
+.history/
 .envrc
+
+# Large files and directories
+*.log
+*.tmp
+*.temp
+.cache/
+.tmp/
+temp/
+*.pid
+*.seed
+*.pid.lock
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # Railway deployment artifacts
 .railway
 railway.json
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Archive files that shouldn't be committed
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Lock files that might be large
+package-lock.json.backup
+yarn.lock.backup
+pnpm-lock.yaml.backup
