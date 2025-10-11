@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { EmbeddingService } from '../services/embeddings';
+import { EmbeddingService } from '../services/embeddings.js';
 
 export function createDevRoutes(embeddingService: EmbeddingService): Router {
   const router = Router();

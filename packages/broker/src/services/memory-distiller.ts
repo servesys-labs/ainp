@@ -5,11 +5,11 @@
  * stored in Postgres (agent_memories) with embeddings.
  */
 
-import { DatabaseClient } from '../lib/db-client';
-import { EmbeddingService } from './embeddings';
-import { RedisClient } from '../lib/redis-client';
+import { DatabaseClient } from '../lib/db-client.js';
+import { EmbeddingService } from './embeddings.js';
+import { RedisClient } from '../lib/redis-client.js';
 import { MemoryStore } from '@ainp/core';
-import { SummarizationService } from './summarization';
+import { SummarizationService } from './summarization.js';
 
 function decodeEmbeddingBase64ToArray(base64: string): number[] {
   const bytes = Buffer.from(base64, 'base64');

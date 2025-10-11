@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ainp
+  labels:
+    name: ainp
+    app.kubernetes.io/name: ainp
+    app.kubernetes.io/component: infrastructure

@@ -7,8 +7,8 @@
  * Integration: Called by NegotiationService.settle() after work validation.
  */
 
-import { DatabaseClient } from '../lib/db-client';
-import { CreditService } from './credits';
+import { DatabaseClient } from '../lib/db-client.js';
+import { CreditService } from './credits.js';
 import { IncentiveSplit } from '@ainp/core';
 import { Logger } from '@ainp/sdk';
 

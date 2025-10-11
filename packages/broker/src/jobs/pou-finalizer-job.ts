@@ -7,7 +7,7 @@
  */
 
 import cron from 'node-cron';
-import { DatabaseClient } from '../lib/db-client';
+import { DatabaseClient } from '../lib/db-client.js';
 import { Logger } from '@ainp/sdk';
 
 const logger = new Logger({ serviceName: 'pou-finalizer' });

@@ -4,7 +4,7 @@
  */
 
 import { TrustVector } from '@ainp/core';
-import { DatabaseClient } from '../lib/db-client';
+import { DatabaseClient } from '../lib/db-client.js';
 
 export class TrustService {
   constructor(private dbClient: DatabaseClient) {}

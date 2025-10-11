@@ -6,8 +6,8 @@
  * ledger upon confirmed payment.
  */
 
-import { DatabaseClient } from '../lib/db-client';
-import { CreditService } from './credits';
+import { DatabaseClient } from '../lib/db-client.js';
+import { CreditService } from './credits.js';
 
 export type PaymentMethod = 'credits' | 'coinbase' | 'lightning' | 'usdc';
 export type PaymentStatus = 'created' | 'pending' | 'paid' | 'expired' | 'failed' | 'cancelled';

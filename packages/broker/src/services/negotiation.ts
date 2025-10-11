@@ -16,12 +16,12 @@
  */
 
 import { Logger } from '@ainp/sdk';
-import { DatabaseClient } from '../lib/db-client';
-import { CreditService } from './credits';
-import { ReceiptService } from './receipts';
-import { ReputationUpdater } from './reputation-updater';
-import { IncentiveDistributionService } from './incentive-distribution';
-import { FeatureFlag, getFeatureFlag } from '../lib/feature-flags';
+import { DatabaseClient } from '../lib/db-client.js';
+import { CreditService } from './credits.js';
+import { ReceiptService } from './receipts.js';
+import { ReputationUpdater } from './reputation-updater.js';
+import { IncentiveDistributionService } from './incentive-distribution.js';
+import { FeatureFlag, getFeatureFlag } from '../lib/feature-flags.js';
 import {
   NegotiationSession,
   NegotiationState,

@@ -3,9 +3,9 @@
  */
 
 import { Router } from 'express';
-import { SlashingService } from '../services/slashing';
-import { DatabaseClient } from '../lib/db-client';
-import { EmbeddingService } from '../services/embeddings';
+import { SlashingService } from '../services/slashing.js';
+import { DatabaseClient } from '../lib/db-client.js';
+import { EmbeddingService } from '../services/embeddings.js';
 import { MemoryStore } from '@ainp/core';
 
 function requireAdmin(req: any, res: any, next: any) {

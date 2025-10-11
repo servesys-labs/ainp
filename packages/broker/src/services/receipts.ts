@@ -2,8 +2,8 @@
  * ReceiptService - Task receipts and attestations
  */
 
-import { DatabaseClient } from '../lib/db-client';
-import { CommitteeService } from './committee';
+import { DatabaseClient } from '../lib/db-client.js';
+import { CommitteeService } from './committee.js';
 import { extractPublicKey } from '@ainp/sdk';
 import { canonicalize } from 'json-canonicalize';
 import { verify as nodeVerify } from 'crypto';

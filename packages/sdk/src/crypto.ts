@@ -5,8 +5,8 @@
  */
 
 import { createHash, randomBytes } from 'crypto';
-import { SignatureError } from './errors';
-import { Logger } from './logger';
+import { SignatureError } from './errors.js';
+import { Logger } from './logger.js';
 
 const logger = new Logger({ serviceName: 'ainp-crypto' });
 

@@ -3,9 +3,9 @@
  */
 
 import { Router } from 'express';
-import { DatabaseClient } from '../lib/db-client';
-import { RedisClient } from '../lib/redis-client';
-import { NATSClient } from '../lib/nats-client';
+import { DatabaseClient } from '../lib/db-client.js';
+import { RedisClient } from '../lib/redis-client.js';
+import { NATSClient } from '../lib/nats-client.js';
 
 export function createHealthRoutes(
   dbClient: DatabaseClient,

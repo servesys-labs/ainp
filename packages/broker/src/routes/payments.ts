@@ -3,8 +3,8 @@
  */
 
 import { Router } from 'express';
-import { PaymentService, PaymentMethod } from '../services/payment';
-import { FeatureFlag, getFeatureFlag } from '../lib/feature-flags';
+import { PaymentService, PaymentMethod } from '../services/payment.js';
+import { FeatureFlag, getFeatureFlag } from '../lib/feature-flags.js';
 
 export function createPaymentsRoutes(paymentService: PaymentService): Router {
   const router = Router();

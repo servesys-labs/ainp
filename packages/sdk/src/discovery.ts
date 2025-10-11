@@ -5,9 +5,9 @@
  */
 
 import { DiscoveryQuery, SemanticAddress } from '@ainp/core';
-import { DiscoveryError } from './errors';
-import { Logger } from './logger';
-import { DiscoveryMatch } from './types';
+import { DiscoveryError } from './errors.js';
+import { Logger } from './logger.js';
+import { DiscoveryMatch } from './types.js';
 
 const logger = new Logger({ serviceName: 'ainp-discovery' });
 

@@ -3,7 +3,7 @@
  * Tracks peer relationships for anti-fraud bypass and contact management
  */
 
-import { DatabaseClient } from '../lib/db-client';
+import { DatabaseClient } from '../lib/db-client.js';
 
 export type ConsentState = 'unknown' | 'consented' | 'blocked' | 'trusted';
 

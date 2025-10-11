@@ -1,0 +1,62 @@
+# Multi-stage build for AINP Broker
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY packages/broker/package*.json ./packages/broker/
+COPY packages/core/package*.json ./packages/core/
+COPY packages/db/package*.json ./packages/db/
+COPY packages/sdk/package*.json ./packages/sdk/
+
+# Install dependencies
+RUN npm ci --workspace=packages/broker --workspace=packages/core --workspace=packages/db --workspace=packages/sdk
+
+# Copy source code
+COPY packages/ ./packages/
+COPY tsconfig.json ./
+
+# Build TypeScript (Core first, then DB/SDK, then broker)
+RUN npm run build --workspace=packages/core
+RUN npm run build --workspace=packages/db
+RUN npm run build --workspace=packages/sdk
+RUN npm run build --workspace=packages/broker
+
+# Production stage
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install production dependencies only
+COPY package*.json ./
+COPY packages/broker/package*.json ./packages/broker/
+COPY packages/core/package*.json ./packages/core/
+COPY packages/db/package*.json ./packages/db/
+COPY packages/sdk/package*.json ./packages/sdk/
+
+RUN npm ci --workspace=packages/broker --workspace=packages/core --workspace=packages/db --workspace=packages/sdk --omit=dev
+
+# Copy built artifacts
+COPY --from=builder /app/packages/broker/dist ./packages/broker/dist
+COPY --from=builder /app/packages/core/dist ./packages/core/dist
+COPY --from=builder /app/packages/db/dist ./packages/db/dist
+COPY --from=builder /app/packages/sdk/dist ./packages/sdk/dist
+
+# Copy SQL schema for migrations
+COPY packages/db/schema.sql ./packages/db/schema.sql
+COPY packages/db/migrations/ ./packages/db/migrations/
+
+# Create non-root user
+RUN addgroup -g 1001 -S ainp && \
+    adduser -S -u 1001 -G ainp ainp
+
+USER ainp
+
+EXPOSE 3001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3001/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
+
+CMD ["node", "packages/broker/dist/server.js"]

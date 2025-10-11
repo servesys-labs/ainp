@@ -4,7 +4,7 @@
  */
 
 import { Pool, PoolClient } from 'pg'
-import { Logger } from '@ainp/sdk'
+import { Logger } from './logger.js'
 
 const logger = new Logger({ serviceName: 'ainp-core:vector' })
 

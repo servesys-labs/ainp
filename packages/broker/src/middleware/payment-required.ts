@@ -6,8 +6,8 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { PaymentService, PaymentMethod } from '../services/payment';
-import { CreditService } from '../services/credits';
+import { PaymentService, PaymentMethod } from '../services/payment.js';
+import { CreditService } from '../services/credits.js';
 
 export function paymentRequiredMiddleware(
   credits: CreditService,

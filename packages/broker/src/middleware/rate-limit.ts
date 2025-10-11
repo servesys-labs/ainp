@@ -3,7 +3,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { RedisClient } from '../lib/redis-client';
+import { RedisClient } from '../lib/redis-client.js';
 
 export function rateLimitMiddleware(
   redisClient: RedisClient,

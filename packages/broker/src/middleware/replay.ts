@@ -4,7 +4,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { AINPEnvelope } from '@ainp/core';
-import { AntiFraudService } from '../services/anti-fraud';
+import { AntiFraudService } from '../services/anti-fraud.js';
 
 export function replayProtectionMiddleware(antiFraud: AntiFraudService) {
   return async (req: Request, res: Response, next: NextFunction) => {

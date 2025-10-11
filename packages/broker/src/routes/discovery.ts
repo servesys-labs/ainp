@@ -3,12 +3,12 @@
  */
 
 import { Router } from 'express';
-import { DiscoveryService } from '../services/discovery';
+import { DiscoveryService } from '../services/discovery.js';
 import { AINPEnvelope, DiscoveryQuery } from '@ainp/core';
-import { validateEnvelope } from '../middleware/validation';
-import { authMiddleware } from '../middleware/auth';
-import { SignatureService } from '../services/signature';
-import { NATSClient } from '../lib/nats-client';
+import { validateEnvelope } from '../middleware/validation.js';
+import { authMiddleware } from '../middleware/auth.js';
+import { SignatureService } from '../services/signature.js';
+import { NATSClient } from '../lib/nats-client.js';
 import crypto from 'crypto';
 
 export function createDiscoveryRoutes(

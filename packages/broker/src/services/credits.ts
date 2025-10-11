@@ -3,7 +3,7 @@
  * Atomic credit operations with PostgreSQL transactions
  */
 
-import { DatabaseClient } from '../lib/db-client';
+import { DatabaseClient } from '../lib/db-client.js';
 
 export interface CreditAccount {
   agent_did: string;

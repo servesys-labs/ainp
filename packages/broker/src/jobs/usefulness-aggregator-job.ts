@@ -5,8 +5,8 @@
 
 import cron from 'node-cron';
 import { Logger } from '@ainp/sdk';
-import { UsefulnessAggregatorService } from '../services/usefulness-aggregator';
-import { IncentiveDistributionService } from '../services/incentive-distribution';
+import { UsefulnessAggregatorService } from '../services/usefulness-aggregator.js';
+import { IncentiveDistributionService } from '../services/incentive-distribution.js';
 
 const logger = new Logger({ serviceName: 'usefulness-aggregator-job' });
 

@@ -3,8 +3,8 @@
  */
 
 import { AINPEnvelope } from '@ainp/core';
-import { WebSocketHandler } from './handler';
-import { NATSClient } from '../lib/nats-client';
+import { WebSocketHandler } from './handler.js';
+import { NATSClient } from '../lib/nats-client.js';
 
 export class DeliveryService {
   constructor(

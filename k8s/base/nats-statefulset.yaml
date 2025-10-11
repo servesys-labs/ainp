@@ -1,0 +1,123 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ainp-nats
+  namespace: ainp
+  labels:
+    app: ainp-nats
+spec:
+  selector:
+    app: ainp-nats
+  clusterIP: None  # Headless service for StatefulSet
+  ports:
+    - name: client
+      port: 4222
+      targetPort: 4222
+    - name: cluster
+      port: 6222
+      targetPort: 6222
+    - name: monitor
+      port: 8222
+      targetPort: 8222
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ainp-nats-lb
+  namespace: ainp
+  labels:
+    app: ainp-nats
+spec:
+  type: ClusterIP
+  selector:
+    app: ainp-nats
+  ports:
+    - name: client
+      port: 4222
+      targetPort: 4222
+    - name: monitor
+      port: 8222
+      targetPort: 8222
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ainp-nats
+  namespace: ainp
+  labels:
+    app: ainp-nats
+spec:
+  serviceName: ainp-nats
+  replicas: 1  # Single-node for initial deployment
+  selector:
+    matchLabels:
+      app: ainp-nats
+  template:
+    metadata:
+      labels:
+        app: ainp-nats
+    spec:
+      containers:
+        - name: nats
+          image: nats:2.10-alpine
+          ports:
+            - containerPort: 4222
+              name: client
+            - containerPort: 6222
+              name: cluster
+            - containerPort: 8222
+              name: monitor
+          command:
+            - "sh"
+            - "-c"
+            - |
+              nats-server \
+                -js \
+                -sd /data \
+                -m 8222 \
+                --server_name=$(POD_NAME)
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CLUSTER_ADVERTISE
+              value: "$(POD_NAME).ainp-nats.$(POD_NAMESPACE).svc.cluster.local"
+          volumeMounts:
+            - name: nats-data
+              mountPath: /data
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8222
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8222
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+  volumeClaimTemplates:
+    - metadata:
+        name: nats-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: standard-rwo  # GKE standard persistent disk
+        resources:
+          requests:
+            storage: 10Gi

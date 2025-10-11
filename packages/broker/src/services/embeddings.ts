@@ -3,8 +3,8 @@
  * Centralized embedding generation with caching
  */
 
-import { VectorClient } from '../lib/vector-client';
-import { RedisClient } from '../lib/redis-client';
+import { VectorClient } from '../lib/vector-client.js';
+import { RedisClient } from '../lib/redis-client.js';
 import { createHash } from 'crypto';
 
 export class EmbeddingService {

@@ -5,7 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AINPEnvelope, AINPIntent, ProofSubmissionRequest } from '@ainp/core';
 import { verifyEnvelopeSignature, didToPublicKey } from '@ainp/sdk';
-import { FeatureFlag, getFeatureFlag } from '../lib/feature-flags';
+import { FeatureFlag, getFeatureFlag } from '../lib/feature-flags.js';
 
 export async function validateEnvelope(req: Request, res: Response, next: NextFunction) {
   const envelope = req.body as AINPEnvelope;
