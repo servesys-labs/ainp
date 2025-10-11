@@ -1,0 +1,37 @@
+{
+  "name": "@ainp/mcp-bridge",
+  "version": "0.1.0",
+  "description": "MCP (Model Context Protocol) bridge for AINP - enables AI agents to communicate via the AINP network",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "ainp-mcp-server": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ainp",
+    "mcp",
+    "model-context-protocol",
+    "ai-agents",
+    "multi-agent",
+    "llm"
+  ],
+  "author": "AINP Team",
+  "license": "MIT",
+  "dependencies": {
+    "@ainp/sdk": "file:../sdk",
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.7.2"
+  }
+}

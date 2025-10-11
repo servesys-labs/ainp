@@ -23,21 +23,25 @@ import { createHealthRoutes } from './routes/health';
 import { createAgentRoutes } from './routes/agents';
 import { createIntentRoutes } from './routes/intents';
 import { createDiscoveryRoutes } from './routes/discovery';
+import { createDevRoutes } from './routes/dev';
 import { createUsefulnessRoutes } from './routes/usefulness';
 import { createNegotiationRoutes } from './routes/negotiation';
 import { createReputationRoutes } from './routes/reputation';
 import { createReceiptsRoutes } from './routes/receipts';
+import { CommitteeService } from './services/committee';
 import { createPaymentsRoutes } from './routes/payments';
 import { PaymentService } from './services/payment';
 import { CoinbaseCommerceDriver } from './services/payments/coinbase-commerce';
 import { LightningDriver } from './services/payments/lightning';
 import { createMailRoutes } from './routes/mail';
+import { createAdminRoutes } from './routes/admin';
 import { rateLimitMiddleware } from './middleware/rate-limit';
 import { validateEnvelope, validateProofSubmission } from './middleware/validation';
 import { authMiddleware } from './middleware/auth';
 import { UsefulnessAggregatorService } from './services/usefulness-aggregator';
 import { startUsefulnessAggregationJob } from './jobs/usefulness-aggregator-job';
 import { startPouFinalizerJob } from './jobs/pou-finalizer-job';
+import { startMailboxDistillerJob } from './jobs/mailbox-distiller-job';
 import { NegotiationService } from './services/negotiation';
 import { IncentiveDistributionService } from './services/incentive-distribution';
 import { AntiFraudService } from './services/anti-fraud';
@@ -45,6 +49,8 @@ import { replayProtectionMiddleware } from './middleware/replay';
 import { emailGuardMiddleware } from './middleware/email-guard';
 import { MailboxService } from './services/mailbox';
 import { ContactService } from './services/contacts';
+import { MemoryDistillerService } from './services/memory-distiller';
+import { SummarizationService } from './services/summarization';
 
 const logger = new Logger({ serviceName: 'ainp-broker' });
 
@@ -73,7 +79,8 @@ async function main() {
   const usefulnessAggregator = new UsefulnessAggregatorService(dbClient);
   const incentiveDistribution = new IncentiveDistributionService(dbClient, creditService);
   // Receipt/Reputation services
-  const receiptService = new (require('./services/receipts').ReceiptService)(dbClient);
+  const committeeService = new CommitteeService(dbClient);
+  const receiptService = new (require('./services/receipts').ReceiptService)(dbClient, committeeService);
   const reputationUpdater = new (require('./services/reputation-updater').ReputationUpdater)(dbClient);
   const negotiationService = new NegotiationService(dbClient, creditService, receiptService, reputationUpdater);
   const antiFraud = new AntiFraudService(redisClient);
@@ -84,6 +91,10 @@ async function main() {
   // Start background jobs
   startUsefulnessAggregationJob(usefulnessAggregator, incentiveDistribution);
   startPouFinalizerJob(dbClient);
+  // Mailbox → memory distiller (optional)
+  const summarizer = new SummarizationService(OPENAI_API_KEY);
+  const memoryDistiller = new MemoryDistillerService(dbClient, embeddingService, redisClient, summarizer);
+  startMailboxDistillerJob(memoryDistiller);
 
   // Run aggregation immediately on startup
   try {
@@ -141,8 +152,13 @@ async function main() {
   app.use(
     '/api/discovery',
     rateLimitMiddleware(redisClient, 100, false), // requireDID=false for public endpoints
-    createDiscoveryRoutes(discoveryService)
+    createDiscoveryRoutes(discoveryService, signatureService, natsClient)
   );
+
+  // Development-only routes (embedding helper)
+  if (process.env.NODE_ENV !== 'production') {
+    app.use('/api/dev', createDevRoutes(embeddingService));
+  }
 
   // Usefulness routes (mixed security requirements)
   // Pass signatureService and redisClient for route-level middleware
@@ -213,6 +229,9 @@ async function main() {
 
   // Receipts routes (read-only)
   app.use('/api/receipts', createReceiptsRoutes(receiptService));
+
+  // Admin routes (guarded by ADMIN_TOKEN)
+  app.use('/api/admin', createAdminRoutes(new (require('./services/slashing').SlashingService)(dbClient), dbClient, embeddingService));
 
   // Start HTTP server
   const server = app.listen(PORT, () => {

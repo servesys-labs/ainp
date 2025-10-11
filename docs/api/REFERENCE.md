@@ -9,7 +9,7 @@ Content Type
 
 1) Intents
 - POST /api/intents/send
-  - Body: AINPEnvelope with `payload` as a MessageIntent/EmailIntent (or other intent types)
+ - Body: AINPEnvelope with `payload` as a MessageIntent/EmailIntent (or other intent types)
   - Behavior: validateEnvelope → auth → anti‑fraud (email facet) → rate limit → routing → (store in mailbox on delivery)
   - 200 { status: 'routed', agent_count: N }
   - 400/401/409/425/429 on validation/abuse
@@ -18,6 +18,7 @@ Example (direct EMAIL_MESSAGE)
 curl -X POST http://localhost:8080/api/intents/send \
   -H 'Content-Type: application/json' \
   -d '{
+    "version": "0.1.0",
     "id": "env_123",
     "trace_id": "trace_123",
     "from_did": "did:key:z...",
@@ -41,6 +42,25 @@ curl -X POST http://localhost:8080/api/intents/send \
       }
     }
   }'
+
+- Notes
+  - Discovery routing: You may include a top-level `query` object in the request body, or set `to_query` inside the envelope. The broker supports both.
+  - Envelope version: If present, it must be `0.1.0`.
+
+2) Discovery
+- POST /api/discovery/search
+  - Body: DiscoveryQuery
+  - Returns array of SemanticAddress
+- POST /api/discovery/envelope
+  - Body: AINPEnvelope with `msg_type` equal to one of:
+    - `ADVERTISE` with payload `{ address: SemanticAddress, ttl_minutes?: number }`
+    - `DISCOVER` with payload `{ query?: DiscoveryQuery }` or use `envelope.to_query`
+  - Behavior: validateEnvelope → auth → rate limit → discovery action
+  - Returns:
+    - For ADVERTISE: `{ status: 'registered', ttl_minutes }`
+    - For DISCOVER: `{ results: SemanticAddress[] }`
+  - Side effects:
+    - For DISCOVER, the broker also publishes a `DISCOVER_RESULT` envelope addressed to the requester’s DID on the results channel (subject: `ainp.results.{requester}`) for WebSocket delivery.
 
 2) Mailbox
 - GET /api/mail/inbox?limit=&cursor=&label=&unread=true
@@ -84,4 +104,3 @@ curl -X POST http://localhost:8080/api/intents/send \
 Notes
 - Rate limiting: DID-based for authenticated endpoints; header `X-RateLimit-Degraded: true` if Redis is down.
 - Anti‑fraud responses: 409 (duplicate content), 425 (greylist with Retry‑After), 402 (payment required) when enabled.
-

@@ -15,7 +15,7 @@ Semantics
 - email: true
 - from, to, cc, bcc: human-friendly addresses (optional)
 - subject: string
-- body: string (text/markdown)
+- content: string (text/markdown or html). Note: `content` is the canonical field in the codebase; `body` is accepted as a legacy alias by the email guard.
 - attachments: list with content-hash (sha256:…) and size/mime
 - headers: optional key/value
 
@@ -32,4 +32,3 @@ Notes
 - Postage uses CreditService.spend() to debit sender on direct emails (to_did present).
 - For discovery-based fanout, postage is not applied by default.
 - Attachments should be stored out-of-band; include content hash + size for verification.
-

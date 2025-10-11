@@ -44,7 +44,8 @@ export function emailGuardMiddleware(
       // Content dedupe (subject/body/headers in semantics)
       const payload: any = envelope.payload;
       const subject = payload?.semantics?.subject || '';
-      const body = payload?.semantics?.body || '';
+      // Canonical field is `content`; support `body` as legacy alias
+      const body = (payload?.semantics?.content ?? payload?.semantics?.body ?? '') as string;
       const unique = await antiFraud.checkAndMarkContentHash(fromDid, toDid, subject, body);
       if (!unique) {
         return res.status(409).json({
@@ -85,4 +86,3 @@ export function emailGuardMiddleware(
     }
   };
 }
-

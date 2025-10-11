@@ -1,20 +1,43 @@
 /**
  * AINP Envelope Type Definitions
- * Spec: RFC 001-SPEC Section 3.2
+ * Spec: RFC 001-SPEC Section 3.2 (updated for current implementation)
  */
 
 import { AINPIntent } from './intent';
+import type { DiscoveryQuery } from './discovery';
 
 export interface AINPEnvelope {
+  // Protocol
+  version?: string; // RFC suggests MUST "0.1.0"; optional for backward compatibility
   id: string;
   trace_id: string;
   from_did: string;
   to_did?: string;
-  msg_type: 'INTENT' | 'RESULT' | 'ERROR' | 'NEGOTIATE' | 'ACK';
+  /**
+   * Optional semantic query target. If present, broker may route via discovery
+   * without requiring an external query body field.
+   */
+  to_query?: DiscoveryQuery;
+
+  msg_type: 'ADVERTISE' | 'DISCOVER' | 'DISCOVER_RESULT' | 'NEGOTIATE' | 'INTENT' | 'RESULT' | 'ERROR' | 'ACK';
   ttl: number;
   timestamp: number;
   sig: string;
-  payload: AINPIntent | ResultPayload | ErrorPayload | NegotiatePayload;
+  /** Optional QoS parameters (not enforced yet) */
+  qos?: QoSParameters;
+
+  /** Optional capability/attestation references per RFC */
+  capabilities_ref?: string;
+  attestations?: string[];
+
+  payload:
+    | AINPIntent
+    | ResultPayload
+    | ErrorPayload
+    | NegotiatePayload
+    | AdvertisePayload
+    | DiscoverPayload
+    | DiscoverResultPayload;
 }
 
 export interface ResultPayload {
@@ -106,6 +129,37 @@ export interface ProofSubmissionResult {
   id: string;
   usefulness_score: number;
   created_at: Date;
+}
+
+/**
+ * Quality of Service parameters (RFC 001 §3.4)
+ * Currently advisory and not enforced by the broker.
+ */
+export interface QoSParameters {
+  urgency: number;     // 0–1
+  importance: number;  // 0–1
+  reliability?: number; // 0–1
+  max_latency_ms?: number;
+}
+
+/**
+ * Discovery-related payloads for envelope-based APIs
+ */
+export interface AdvertisePayload {
+  // Semantic address to register
+  address: import('./discovery').SemanticAddress;
+  // Time-to-live in minutes for registration (advisory)
+  ttl_minutes?: number;
+}
+
+export interface DiscoverPayload {
+  // Optional query; if omitted, use envelope.to_query
+  query?: import('./discovery').DiscoveryQuery;
+}
+
+export interface DiscoverResultPayload {
+  // Results returned by discovery
+  results: import('./discovery').SemanticAddress[];
 }
 
 /**

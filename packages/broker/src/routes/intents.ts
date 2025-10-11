@@ -13,8 +13,9 @@ export function createIntentRoutes(routingService: RoutingService): Router {
     try {
       // Extract envelope and query from request body
       // Support both formats: root envelope or nested {envelope, query}
-      const envelope = (req.body as any).envelope || req.body as AINPEnvelope;
-      const query = (req.body as any).query;
+      const envelope = (req.body as any).envelope || (req.body as AINPEnvelope);
+      // Support both top-level { query } and envelope.to_query
+      const query = (req.body as any).query || (envelope as any).to_query;
 
       const count = await routingService.routeIntent(envelope, query);
 

@@ -9,7 +9,11 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "typecheck": "npm run typecheck --workspaces",
-    "test": "npm test --workspaces"
+    "test": "npm test --workspaces",
+    "pou:migrate": "bash scripts/pou-migrate.sh",
+    "pou:e2e": "BASE_URL=http://localhost:8080 bash ./test-pou-e2e.sh",
+    "pou:final": "BASE_URL=http://localhost:8080 bash ./test-pou-final.sh",
+    "pou:direct": "BASE_URL=http://localhost:8080 bash ./test-pou-direct.sh"
   },
   "devDependencies": {
     "@types/supertest": "^6.0.3",

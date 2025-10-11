@@ -280,6 +280,7 @@ export class AINPAgent extends EventEmitter {
    */
   private async sendResult(originalEnvelope: AINPEnvelope, result: unknown): Promise<void> {
     const envelope: AINPEnvelope = {
+      version: '0.1.0',
       id: uuidv4(),
       trace_id: originalEnvelope.trace_id,
       from_did: this.config.did,
@@ -306,6 +307,7 @@ export class AINPAgent extends EventEmitter {
     errorMessage: string
   ): Promise<void> {
     const envelope: AINPEnvelope = {
+      version: '0.1.0',
       id: uuidv4(),
       trace_id: originalEnvelope.trace_id,
       from_did: this.config.did,
@@ -331,6 +333,7 @@ export class AINPAgent extends EventEmitter {
     negotiatePayload: unknown
   ): Promise<void> {
     const envelope: AINPEnvelope = {
+      version: '0.1.0',
       id: uuidv4(),
       trace_id: originalEnvelope.trace_id,
       from_did: this.config.did,

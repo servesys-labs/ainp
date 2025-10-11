@@ -13,3 +13,6 @@ export * from './redis';
 // Vector stores (namespaced to avoid conflicts)
 export * as Qdrant from './qdrant';
 export * as Vector from './vector';
+
+// Long-term memory store (pgvector)
+export * from './memory';

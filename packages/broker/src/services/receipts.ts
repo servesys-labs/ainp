@@ -34,12 +34,13 @@ export class ReceiptService {
   constructor(private db: DatabaseClient, private committee?: CommitteeService) {}
 
   async createReceipt(params: ReceiptParams & { k?: number; m?: number }): Promise<string> {
+    const selectionSeed = crypto.randomUUID();
     const res = await this.db.query(
       `INSERT INTO task_receipts (
         intent_id, negotiation_id, agent_did, client_did, intent_type,
         inputs_ref, outputs_ref, metrics, payment_request_id, amount_atomic,
-        k, m, committee
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING id`,
+        k, m, committee, selection_seed
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING id`,
       [
         params.intent_id || null,
         params.negotiation_id || null,
@@ -53,7 +54,8 @@ export class ReceiptService {
         params.amount_atomic ? params.amount_atomic.toString() : null,
         params.k ?? parseInt(process.env.POU_K || '3'),
         params.m ?? parseInt(process.env.POU_M || '5'),
-        JSON.stringify(await this.selectCommittee(params)),
+        JSON.stringify(await this.selectCommittee({ ...params, seed: selectionSeed })),
+        selectionSeed,
       ]
     );
     return res.rows[0].id as string;
@@ -132,13 +134,13 @@ export class ReceiptService {
     return Array.isArray(committee) ? committee : [];
   }
 
-  private async selectCommittee(params: ReceiptParams & { m?: number }): Promise<string[]> {
+  private async selectCommittee(params: ReceiptParams & { m?: number; seed?: string }): Promise<string[]> {
     if (!this.committee) return [];
     const m = params.m ?? parseInt(process.env.POU_M || '5');
     const exclude: string[] = [];
     if (params.agent_did) exclude.push(params.agent_did);
     if (params.client_did) exclude.push(params.client_did);
-    return await this.committee.selectCommittee({ exclude, m });
+    return await this.committee.selectCommittee({ exclude, m, seed: params.seed });
   }
 
   async getReceipt(task_id: string): Promise<any | null> {

@@ -30,3 +30,20 @@ export * from './errors';
 
 // Logger
 export { Logger, LogLevel } from './logger';
+
+// Discovery client helpers (HTTP + signed envelopes)
+export { advertise, discover } from './discovery-client';
+
+// Messaging client helpers (HTTP + signed envelopes)
+export { sendIntent, getInbox, getThread } from './messaging-client';
+export type { SendIntentParams, SendIntentOptions, GetInboxOptions, GetThreadOptions, Message, InboxResponse, Thread } from './messaging-client';
+
+// Credits client helpers (balance, deposits, transactions)
+export { getBalance, depositCredits, getTransactions } from './credits-client';
+export type { GetBalanceOptions, DepositOptions, GetTransactionsOptions, CreditBalance, CreditTransaction } from './credits-client';
+
+// WebSocket results client
+export { ResultsWebSocket } from './results-ws';
+
+// Memory manager (optional Redis-backed)
+export { MemoryManager } from './memory';

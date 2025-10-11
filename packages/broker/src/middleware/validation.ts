@@ -15,6 +15,14 @@ export async function validateEnvelope(req: Request, res: Response, next: NextFu
     return res.status(400).json({ error: 'INVALID_ENVELOPE', message: 'Missing required fields' });
   }
 
+  // Optional protocol version check (tolerant for backward compatibility)
+  if (envelope.version && envelope.version !== '0.1.0') {
+    return res.status(400).json({
+      error: 'UNSUPPORTED_VERSION',
+      message: `Envelope version ${envelope.version} is not supported (expected 0.1.0)`
+    });
+  }
+
   // Signature validation with feature flag
   const enableSigVerification = getFeatureFlag(FeatureFlag.SIGNATURE_VERIFICATION_ENABLED);
 

@@ -23,7 +23,7 @@ export function startPouFinalizerJob(db: DatabaseClient) {
 
   cron.schedule(cronExpr, async () => {
     try {
-      const k = parseInt(process.env.POU_K || '3');
+      const kDefault = parseInt(process.env.POU_K || '3');
       // Find pending receipts
       const pending = await db.query(
         `SELECT id, k FROM task_receipts WHERE status='pending' ORDER BY created_at ASC LIMIT 100`
@@ -31,11 +31,17 @@ export function startPouFinalizerJob(db: DatabaseClient) {
 
       for (const row of pending.rows) {
         const taskId = row.id as string;
-        const quorum = Number(row.k || k);
-        // Count attestations (ACCEPTED or AUDIT_PASS)
+        const quorum = Number(row.k || kDefault);
+        // Count committee-valid attestations only (AUDIT_PASS by committee members)
         const counts = await db.query(
-          `SELECT COUNT(*) AS c FROM task_attestations WHERE task_id=$1 AND type IN ('ACCEPTED','AUDIT_PASS')`,
-          [taskId]
+          `SELECT COUNT(*) AS c FROM task_attestations ta
+           WHERE ta.task_id=$1 AND ta.type='AUDIT_PASS' AND (
+             SELECT $2 = 0 OR EXISTS (
+               SELECT 1 FROM jsonb_array_elements((SELECT committee FROM task_receipts WHERE id=$1)) AS j(d)
+               WHERE j.d::text::jsonb ?| array[replace(ta.by_did, '"','')]
+             )
+           )`,
+          [taskId, 0]
         );
         const c = Number(counts.rows[0].c || 0);
         if (c >= quorum) {
@@ -53,4 +59,3 @@ export function startPouFinalizerJob(db: DatabaseClient) {
 
   logger.info(`[PoU Finalizer] Cron job scheduled (${cronExpr})`);
 }
-
