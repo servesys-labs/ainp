@@ -98,15 +98,15 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 AINP consists of four layers:
 
 ```
-┌─────────────────────────────────────┐
-│   Intent Layer                      │  Semantic exchange (intents)
-├─────────────────────────────────────┤
-│   Negotiation Layer                 │  Multi-agent consensus
-├─────────────────────────────────────┤
-│   Routing Layer                     │  Semantic routing
-├─────────────────────────────────────┤
-│   Substrate Layer                   │  Physical transport (TCP/IP, etc.)
-└─────────────────────────────────────┘
++-----------------------------+
+| Intent Layer                |  Semantic exchange (intents)
++-----------------------------+
+| Negotiation Layer           |  Multi-agent consensus
++-----------------------------+
+| Routing Layer              |  Semantic routing
++-----------------------------+
+| Substrate Layer            |  Physical transport (TCP/IP, etc.)
++-----------------------------+
 ```
 
 Phase 0.1 runs as an overlay network on TCP/IP with WebSocket or HTTP/3 transport.
@@ -193,9 +193,9 @@ QoS parameters enable priority-based routing and resource allocation:
 **Priority Calculation**: Implementations SHOULD calculate message priority as:
 
 ```
-priority = (urgency × w_urgency) + (importance × w_importance) + 
-           (novelty × w_novelty) + (ethicalWeight × w_ethical)
-adjusted_priority = priority + 0.5 × tanh(bid / bid_scale)
+priority = (urgency * w_urgency) + (importance * w_importance) + 
+           (novelty * w_novelty) + (ethicalWeight * w_ethical)
+adjusted_priority = priority + 0.5 * tanh(bid / bid_scale)
 ```
 
 Where `bid_scale` is node-configurable (RECOMMENDED default: 10 credits).
@@ -564,7 +564,7 @@ if convergence_score >= convergence_threshold:
 ## Timeout Behavior
 
 - **Per-round timeout**: If no response within `timeout_per_round_ms`, sender MAY send TIMEOUT message
-- **Overall timeout**: If negotiation exceeds `max_rounds × timeout_per_round_ms`, MUST terminate with TIMEOUT
+- **Overall timeout**: If negotiation exceeds `max_rounds * timeout_per_round_ms`, MUST terminate with TIMEOUT
 
 ## Multi-Party Negotiation
 
@@ -776,7 +776,7 @@ Implementations MUST:
 ## Replay Protection and Delivery Semantics
 
 - Recipients MUST reject duplicate messages with the same `(from_did, id)` seen within `ttl + 60000ms`
-- Implementations MUST allow a clock skew of ±60000ms when validating `timestamp`
+- Implementations MUST allow a clock skew of +/-60000ms when validating `timestamp`
 - At-least-once delivery is RECOMMENDED; senders MUST use UUID v4 `id`s and recipients MUST make intent handling idempotent with respect to `id`
 
 ## Capability Attestations
@@ -796,7 +796,7 @@ Implementations MUST:
 
 Discovery indices SHOULD flag agents with:
 - Trust score < 0.3
-- Capability embeddings >3σ from cluster mean (potential false advertising)
+- Capability embeddings >3 standard deviations from cluster mean (potential false advertising)
 - Success rate < 50% over last 100 intents
 
 ## Discovery Scalability
@@ -908,7 +908,7 @@ Nodes MUST still sign messages, enforce TTLs, and implement replay protection.
 route_success_rate = (intents_delivered_correctly / total_intents_sent) × 100%
 ```
 
-**Target (Phase 0.1)**: ≥95%
+**Target (Phase 0.1)**: >=95%
 
 ## Latency (p95)
 
@@ -919,18 +919,18 @@ route_success_rate = (intents_delivered_correctly / total_intents_sent) × 100%
 ## Negotiation Completion Rate
 
 ```
-negotiation_completion_rate = (negotiations_accepted / total_negotiations) × 100%
+negotiation_completion_rate = (negotiations_accepted / total_negotiations) * 100
 ```
 
-**Target (Phase 0.1)**: ≥80%
+**Target (Phase 0.1)**: >=80%
 
 ## False Route Rate
 
 ```
-false_route_rate = (intents_misrouted / total_intents_sent) × 100%
+false_route_rate = (intents_misrouted / total_intents_sent) * 100
 ```
 
-**Target (Phase 0.1)**: ≤5%
+**Target (Phase 0.1)**: <=5%
 
 ## Abuse Resilience
 
@@ -939,7 +939,7 @@ Detection rate of:
 - Sybil attacks (multiple DIDs from same source)
 - False capability advertising (capability mismatch >0.5 cosine distance)
 
-**Target (Phase 0.1)**: ≥90% detection rate
+**Target (Phase 0.1)**: >=90% detection rate
 
 # IANA Considerations
 
