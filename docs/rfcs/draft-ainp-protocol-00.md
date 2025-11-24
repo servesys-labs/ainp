@@ -23,10 +23,10 @@ pi:
 
 author:
   -
-    ins: AINP Working Group
-    name: AINP Working Group
+    ins: E. Prasad
+    name: E. Prasad
     org: Servesys Labs
-    email: contact@servesys-labs.com
+    email: contact@servsys.com
 
 normative:
   RFC2119:
