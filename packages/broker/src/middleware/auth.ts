@@ -3,7 +3,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { SignatureService } from '../services/signature';
+import { SignatureService } from '../services/signature.js';
 import { AINPEnvelope } from '@ainp/core';
 
 export function authMiddleware(signatureService: SignatureService) {

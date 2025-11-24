@@ -3,7 +3,7 @@
  * Barrel export for all type definitions
  */
 
-export * from './intent';
-export * from './envelope';
-export * from './negotiation';
-export * from './discovery';
+export * from './intent.js';
+export * from './envelope.js';
+export * from './negotiation.js';
+export * from './discovery.js';

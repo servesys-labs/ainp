@@ -6,10 +6,10 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { AINPEnvelope } from '@ainp/core';
-import { AntiFraudService } from '../services/anti-fraud';
-import { CreditService } from '../services/credits';
-import { ContactService } from '../services/contacts';
-import { isFeatureEnabled, FeatureFlag } from '../lib/feature-flags';
+import { AntiFraudService } from '../services/anti-fraud.js';
+import { CreditService } from '../services/credits.js';
+import { ContactService } from '../services/contacts.js';
+import { isFeatureEnabled, FeatureFlag } from '../lib/feature-flags.js';
 
 function isEmailIntent(envelope: AINPEnvelope): boolean {
   const payload: any = envelope?.payload;

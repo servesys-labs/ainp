@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { AINPEnvelope, AINPIntent } from '@ainp/core';
-import { signEnvelope } from './crypto';
+import { signEnvelope } from './crypto.js';
 
 export interface SendIntentOptions {
   baseUrl: string;

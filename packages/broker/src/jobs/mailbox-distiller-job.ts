@@ -4,7 +4,7 @@
 
 import cron from 'node-cron';
 import { Logger } from '@ainp/sdk';
-import { MemoryDistillerService } from '../services/memory-distiller';
+import { MemoryDistillerService } from '../services/memory-distiller.js';
 
 const logger = new Logger({ serviceName: 'mailbox-distiller' });
 

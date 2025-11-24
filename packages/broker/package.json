@@ -1,6 +1,7 @@
 {
   "name": "@ainp/broker",
   "version": "0.1.0",
+  "type": "module",
   "description": "AINP Broker - Discovery and routing service",
   "main": "dist/server.js",
   "types": "dist/server.d.ts",

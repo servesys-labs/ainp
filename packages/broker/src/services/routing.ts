@@ -5,12 +5,12 @@
 
 import { AINPEnvelope, DiscoveryQuery } from '@ainp/core';
 import type { MessageIntent } from '@ainp/core/src/types/intent';
-import { DiscoveryService } from './discovery';
-import { NATSClient } from '../lib/nats-client';
-import { SignatureService } from './signature';
-import { TrustService } from './trust';
-import { MailboxService } from './mailbox';
-import { ContactService } from './contacts';
+import { DiscoveryService } from './discovery.js';
+import { NATSClient } from '../lib/nats-client.js';
+import { SignatureService } from './signature.js';
+import { TrustService } from './trust.js';
+import { MailboxService } from './mailbox.js';
+import { ContactService } from './contacts.js';
 
 export class RoutingService {
   constructor(

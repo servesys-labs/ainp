@@ -4,8 +4,8 @@
  * Spec: RFC 001-SPEC Section 3.1.3
  */
 
-import { InsufficientCreditsError } from './errors';
-import { Logger } from './logger';
+import { InsufficientCreditsError } from './errors.js';
+import { Logger } from './logger.js';
 
 const logger = new Logger({ serviceName: 'ainp-credits' });
 

@@ -2,7 +2,7 @@
  * ReputationUpdater - EWMA updates from receipts to reputation vector and trust_scores
  */
 
-import { DatabaseClient } from '../lib/db-client';
+import { DatabaseClient } from '../lib/db-client.js';
 
 export class ReputationUpdater {
   constructor(private db: DatabaseClient, private alpha: number = 0.2) {}

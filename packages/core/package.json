@@ -1,6 +1,7 @@
 {
   "name": "@ainp/core",
   "version": "0.1.0",
+  "type": "module",
   "description": "Core infrastructure clients for AINP (NATS, pgvector, Redis)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

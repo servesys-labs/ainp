@@ -4,8 +4,8 @@
  */
 
 import { createHash } from 'crypto';
-import { RedisClient } from '../lib/redis-client';
-import { isFeatureEnabled, FeatureFlag } from '../lib/feature-flags';
+import { RedisClient } from '../lib/redis-client.js';
+import { isFeatureEnabled, FeatureFlag } from '../lib/feature-flags.js';
 import { Logger } from '@ainp/sdk';
 
 const logger = new Logger({ serviceName: 'anti-fraud' });

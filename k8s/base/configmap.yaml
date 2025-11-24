@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ainp-config
+  namespace: ainp
+data:
+  # AINP Configuration
+  AINP_VERSION: "0.3.0"
+  NODE_ENV: "production"
+  PORT: "3001"
+
+  # NATS Configuration
+  NATS_URL: "nats://ainp-nats:4222"
+  NATS_CLUSTER_URL: "nats://ainp-nats:6222"
+
+  # Redis Configuration
+  REDIS_URL: "redis://ainp-redis:6379"
+  REDIS_MAX_MEMORY: "512mb"
+  REDIS_POLICY: "allkeys-lru"
+
+  # PostgreSQL Configuration (CloudSQL via proxy)
+  DATABASE_HOST: "127.0.0.1"  # Via Cloud SQL Proxy sidecar
+  DATABASE_PORT: "5432"
+  DATABASE_NAME: "nexus"
+  DATABASE_USER: "nexus_user"
+  DATABASE_SSL: "require"
+
+  # Monitoring
+  PROMETHEUS_PORT: "9090"
+  METRICS_ENABLED: "true"
+
+  # Feature Flags
+  ENABLE_PAYMENTS: "true"
+  ENABLE_USEFULNESS: "true"
+  ENABLE_NEGOTIATION: "true"
+
+  # Performance Tuning
+  MAX_CONNECTIONS: "100"
+  POOL_SIZE: "20"
+  CACHE_TTL_SECONDS: "300"

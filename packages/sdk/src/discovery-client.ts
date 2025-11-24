@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { AINPEnvelope, DiscoveryQuery, SemanticAddress } from '@ainp/core';
-import { signEnvelope } from './crypto';
+import { signEnvelope } from './crypto.js';
 
 export interface AdvertiseOptions {
   baseUrl: string;           // e.g., http://localhost:8080

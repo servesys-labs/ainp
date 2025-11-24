@@ -1,6 +1,7 @@
 {
   "name": "@ainp/sdk",
   "version": "0.1.0",
+  "type": "module",
   "description": "AINP SDK for building agents and clients",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

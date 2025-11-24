@@ -4,8 +4,8 @@
 
 import WebSocket from 'ws';
 import { AINPEnvelope } from '@ainp/core';
-import { SignatureService } from '../services/signature';
-import { RoutingService } from '../services/routing';
+import { SignatureService } from '../services/signature.js';
+import { RoutingService } from '../services/routing.js';
 
 export class WebSocketHandler {
   private connections = new Map<string, WebSocket>();

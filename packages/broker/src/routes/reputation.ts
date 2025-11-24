@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { DatabaseClient } from '../lib/db-client';
+import { DatabaseClient } from '../lib/db-client.js';
 
 export function createReputationRoutes(db: DatabaseClient): Router {
   const router = Router();

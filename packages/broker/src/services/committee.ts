@@ -5,7 +5,7 @@
  * Prototype: choose top-m by trust score, excluding specified DIDs.
  */
 
-import { DatabaseClient } from '../lib/db-client';
+import { DatabaseClient } from '../lib/db-client.js';
 
 export class CommitteeService {
   constructor(private db: DatabaseClient) {}

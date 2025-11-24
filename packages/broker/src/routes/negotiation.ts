@@ -4,9 +4,9 @@
  */
 
 import { Router } from 'express';
-import { NegotiationService } from '../services/negotiation';
-import { IncentiveDistributionService } from '../services/incentive-distribution';
-import { WebSocketHandler } from '../websocket/handler';
+import { NegotiationService } from '../services/negotiation.js';
+import { IncentiveDistributionService } from '../services/incentive-distribution.js';
+import { WebSocketHandler } from '../websocket/handler.js';
 
 export function createNegotiationRoutes(
   negotiationService: NegotiationService,

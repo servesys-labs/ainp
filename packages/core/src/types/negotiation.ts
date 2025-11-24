@@ -8,7 +8,7 @@
  * @see packages/db/migrations/004_add_negotiation_sessions.sql
  */
 
-import { IncentiveSplit } from './envelope';
+import { IncentiveSplit } from './envelope.js';
 
 /**
  * Negotiation state machine states
@@ -135,5 +135,5 @@ export class MaxRoundsExceededError extends Error {
 }
 
 // Re-export IncentiveSplit from envelope for convenience
-// This allows tests to import { IncentiveSplit } from '../types/negotiation'
-export { type IncentiveSplit } from './envelope';
+// This allows tests to import { IncentiveSplit } from '../types/negotiation.js'
+export { type IncentiveSplit } from './envelope.js';

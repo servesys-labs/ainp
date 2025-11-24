@@ -4,9 +4,9 @@
  * Updates agents.usefulness_score_cached for discovery ranking
  */
 
-import { DatabaseClient } from '../lib/db-client';
+import { DatabaseClient } from '../lib/db-client.js';
 import { ProofSubmissionRequest, ProofSubmissionResult, ValidationError } from '@ainp/core';
-import { isFeatureEnabled, FeatureFlag } from '../lib/feature-flags';
+import { isFeatureEnabled, FeatureFlag } from '../lib/feature-flags.js';
 
 export interface UsefulnessAggregateResult {
   agent_did: string;

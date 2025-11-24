@@ -5,7 +5,7 @@
  * or service (e.g., LND/CLN) and expose LNURL/WebLN flows as needed.
  */
 
-import type { PaymentProvider, PaymentRequestRecord, ProviderCreateResponse } from '../payment';
+import type { PaymentProvider, PaymentRequestRecord, ProviderCreateResponse } from '../payment.js';
 
 export class LightningDriver implements PaymentProvider {
   constructor(private endpoint?: string, private apiKey?: string) {}

@@ -4,9 +4,9 @@
  * Spec: RFC 001-SPEC Section 6.1
  */
 
-import { publicKeyToBase58, base58ToPublicKey } from './crypto';
-import { ValidationError } from './errors';
-import { Logger } from './logger';
+import { publicKeyToBase58, base58ToPublicKey } from './crypto.js';
+import { ValidationError } from './errors.js';
+import { Logger } from './logger.js';
 
 // Internal bufferToBase58 for multicodec encoding (encodes full buffer)
 // This is needed because publicKeyToBase58 extracts raw keys

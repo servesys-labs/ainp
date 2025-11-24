@@ -3,8 +3,8 @@
  */
 
 import { Router } from 'express';
-import { DiscoveryService } from '../services/discovery';
-import { CreditService } from '../services/credits';
+import { DiscoveryService } from '../services/discovery.js';
+import { CreditService } from '../services/credits.js';
 import { SemanticAddress } from '@ainp/core';
 
 export function createAgentRoutes(

@@ -3,7 +3,7 @@
  * Handles inbox, threads, read/unread state, and labels
  */
 
-import { DatabaseClient } from '../lib/db-client';
+import { DatabaseClient } from '../lib/db-client.js';
 import { AINPEnvelope } from '@ainp/core';
 import type { MessageIntent, MessageSemantics } from '@ainp/core/src/types/intent';
 import { createHash } from 'crypto';

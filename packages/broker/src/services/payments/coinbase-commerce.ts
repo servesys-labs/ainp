@@ -5,7 +5,7 @@
  * This scaffold does not call the real API; fill in HTTP calls as needed.
  */
 
-import type { PaymentProvider, PaymentRequestRecord, ProviderCreateResponse } from '../payment';
+import type { PaymentProvider, PaymentRequestRecord, ProviderCreateResponse } from '../payment.js';
 
 export class CoinbaseCommerceDriver implements PaymentProvider {
   constructor(private apiKey?: string, private webhookSecret?: string) {}

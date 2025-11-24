@@ -14,18 +14,18 @@ import {
   NegotiateHandler,
   AdvertiseOptions,
   AgentStats,
-} from './types';
-import { signData, verifySignature } from './crypto';
-import { resolveDID, extractPublicKey } from './did';
+} from './types.js';
+import { signData, verifySignature } from './crypto.js';
+import { resolveDID, extractPublicKey } from './did.js';
 import {
   AINPError,
   TimeoutError,
   SignatureError,
   ValidationError,
   createErrorFromPayload,
-} from './errors';
-import { Logger, LogLevel } from './logger';
-import { CreditManager } from './credits';
+} from './errors.js';
+import { Logger, LogLevel } from './logger.js';
+import { CreditManager } from './credits.js';
 import { v4 as uuidv4 } from 'uuid';
 
 // Note: uuid is missing from package.json, will add in next edit

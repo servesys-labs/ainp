@@ -3,8 +3,8 @@
  * Spec: RFC 001-SPEC Section 3.2 (updated for current implementation)
  */
 
-import { AINPIntent } from './intent';
-import type { DiscoveryQuery } from './discovery';
+import { AINPIntent } from './intent.js';
+import type { DiscoveryQuery } from './discovery.js';
 
 export interface AINPEnvelope {
   // Protocol

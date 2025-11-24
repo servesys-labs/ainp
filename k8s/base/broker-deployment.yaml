@@ -1,0 +1,97 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ainp-broker
+  namespace: ainp
+  labels:
+    app: ainp-broker
+spec:
+  type: ClusterIP
+  selector:
+    app: ainp-broker
+  ports:
+    - port: 3001
+      targetPort: 3001
+      name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ainp-broker
+  namespace: ainp
+  labels:
+    app: ainp-broker
+spec:
+  replicas: 2  # Run 2 replicas for HA
+  selector:
+    matchLabels:
+      app: ainp-broker
+  template:
+    metadata:
+      labels:
+        app: ainp-broker
+    spec:
+      serviceAccountName: ainp-broker-sa
+      containers:
+        - name: broker
+          image: gcr.io/singulare-ai/ainp-broker:latest
+          ports:
+            - containerPort: 3001
+              name: http
+          envFrom:
+            - configMapRef:
+                name: ainp-config
+            - secretRef:
+                name: ainp-secrets
+          env:
+            # Override DATABASE_URL to use Cloud SQL proxy
+            - name: DATABASE_URL
+              value: "postgresql://$(DATABASE_USER):$(DATABASE_PASSWORD)@127.0.0.1:5432/$(DATABASE_NAME)?sslmode=disable"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+
+        # Cloud SQL Proxy sidecar for secure CloudSQL connection
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
+          args:
+            - "--structured-logs"
+            - "--port=5432"
+            - "--private-ip"
+            - "singulare-ai:us-central1:nexus-postgres-v2"
+          securityContext:
+            runAsNonRoot: true
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ainp-broker-sa
+  namespace: ainp
+  annotations:
+    iam.gke.io/gcp-service-account: ainp-broker-sa@singulare-ai.iam.gserviceaccount.com

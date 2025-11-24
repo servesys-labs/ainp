@@ -4,7 +4,7 @@
  * Reduces an agent's stake and applies a reputation penalty.
  */
 
-import { DatabaseClient } from '../lib/db-client';
+import { DatabaseClient } from '../lib/db-client.js';
 
 export class SlashingService {
   constructor(private db: DatabaseClient) {}

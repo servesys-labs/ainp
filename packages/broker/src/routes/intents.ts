@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { RoutingService } from '../services/routing';
+import { RoutingService } from '../services/routing.js';
 import { AINPEnvelope, DiscoveryQuery } from '@ainp/core';
 
 export function createIntentRoutes(routingService: RoutingService): Router {

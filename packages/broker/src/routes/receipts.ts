@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { ReceiptService } from '../services/receipts';
+import { ReceiptService } from '../services/receipts.js';
 
 export function createReceiptsRoutes(receipts: ReceiptService): Router {
   const router = Router();

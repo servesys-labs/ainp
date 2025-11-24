@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ainp
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secret.yaml
+  - nats-statefulset.yaml
+  - redis-deployment.yaml
+  - broker-deployment.yaml
+
+images:
+  - name: gcr.io/singulare-ai/ainp-broker
+    newTag: latest

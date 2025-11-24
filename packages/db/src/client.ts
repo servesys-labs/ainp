@@ -4,7 +4,7 @@
  */
 
 import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg'
-import { Logger } from '@ainp/sdk'
+import { Logger } from '@ainp/core'
 
 const logger = new Logger({ serviceName: 'ainp-db:client' })
 

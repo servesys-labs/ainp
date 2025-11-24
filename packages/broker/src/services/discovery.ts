@@ -4,10 +4,10 @@
  */
 
 import { DiscoveryQuery, SemanticAddress } from '@ainp/core';
-import { DatabaseClient } from '../lib/db-client';
-import { EmbeddingService } from './embeddings';
-import { RedisClient } from '../lib/redis-client';
-import { getDiscoveryWeights } from '../lib/feature-flags';
+import { DatabaseClient } from '../lib/db-client.js';
+import { EmbeddingService } from './embeddings.js';
+import { RedisClient } from '../lib/redis-client.js';
+import { getDiscoveryWeights } from '../lib/feature-flags.js';
 import { createHash } from 'crypto';
 
 export class DiscoveryService {

@@ -6,8 +6,8 @@
 
 import { Proposal } from '@ainp/core';
 // TODO: NegotiationConstraints moved to broker service layer in Phase 4
-import { NegotiationError } from './errors';
-import { Logger } from './logger';
+import { NegotiationError } from './errors.js';
+import { Logger } from './logger.js';
 
 const logger = new Logger({ serviceName: 'ainp-negotiation' });
 

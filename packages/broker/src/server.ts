@@ -5,52 +5,55 @@
 
 import 'dotenv/config';
 import express from 'express';
-import WebSocket from 'ws';
+import { WebSocketServer } from 'ws';
 import { Logger } from '@ainp/sdk';
-import { DatabaseClient } from './lib/db-client';
-import { NATSClient } from './lib/nats-client';
-import { RedisClient } from './lib/redis-client';
-import { VectorClient } from './lib/vector-client';
-import { EmbeddingService } from './services/embeddings';
-import { SignatureService } from './services/signature';
-import { TrustService } from './services/trust';
-import { DiscoveryService } from './services/discovery';
-import { RoutingService } from './services/routing';
-import { CreditService } from './services/credits';
-import { WebSocketHandler } from './websocket/handler';
-import { DeliveryService } from './websocket/delivery';
-import { createHealthRoutes } from './routes/health';
-import { createAgentRoutes } from './routes/agents';
-import { createIntentRoutes } from './routes/intents';
-import { createDiscoveryRoutes } from './routes/discovery';
-import { createDevRoutes } from './routes/dev';
-import { createUsefulnessRoutes } from './routes/usefulness';
-import { createNegotiationRoutes } from './routes/negotiation';
-import { createReputationRoutes } from './routes/reputation';
-import { createReceiptsRoutes } from './routes/receipts';
-import { CommitteeService } from './services/committee';
-import { createPaymentsRoutes } from './routes/payments';
-import { PaymentService } from './services/payment';
-import { CoinbaseCommerceDriver } from './services/payments/coinbase-commerce';
-import { LightningDriver } from './services/payments/lightning';
-import { createMailRoutes } from './routes/mail';
-import { createAdminRoutes } from './routes/admin';
-import { rateLimitMiddleware } from './middleware/rate-limit';
-import { validateEnvelope, validateProofSubmission } from './middleware/validation';
-import { authMiddleware } from './middleware/auth';
-import { UsefulnessAggregatorService } from './services/usefulness-aggregator';
-import { startUsefulnessAggregationJob } from './jobs/usefulness-aggregator-job';
-import { startPouFinalizerJob } from './jobs/pou-finalizer-job';
-import { startMailboxDistillerJob } from './jobs/mailbox-distiller-job';
-import { NegotiationService } from './services/negotiation';
-import { IncentiveDistributionService } from './services/incentive-distribution';
-import { AntiFraudService } from './services/anti-fraud';
-import { replayProtectionMiddleware } from './middleware/replay';
-import { emailGuardMiddleware } from './middleware/email-guard';
-import { MailboxService } from './services/mailbox';
-import { ContactService } from './services/contacts';
-import { MemoryDistillerService } from './services/memory-distiller';
-import { SummarizationService } from './services/summarization';
+import { DatabaseClient } from './lib/db-client.js';
+import { NATSClient } from './lib/nats-client.js';
+import { RedisClient } from './lib/redis-client.js';
+import { VectorClient } from './lib/vector-client.js';
+import { EmbeddingService } from './services/embeddings.js';
+import { SignatureService } from './services/signature.js';
+import { TrustService } from './services/trust.js';
+import { DiscoveryService } from './services/discovery.js';
+import { RoutingService } from './services/routing.js';
+import { CreditService } from './services/credits.js';
+import { WebSocketHandler } from './websocket/handler.js';
+import { DeliveryService } from './websocket/delivery.js';
+import { createHealthRoutes } from './routes/health.js';
+import { createAgentRoutes } from './routes/agents.js';
+import { createIntentRoutes } from './routes/intents.js';
+import { createDiscoveryRoutes } from './routes/discovery.js';
+import { createDevRoutes } from './routes/dev.js';
+import { createUsefulnessRoutes } from './routes/usefulness.js';
+import { createNegotiationRoutes } from './routes/negotiation.js';
+import { createReputationRoutes } from './routes/reputation.js';
+import { createReceiptsRoutes } from './routes/receipts.js';
+import { CommitteeService } from './services/committee.js';
+import { createPaymentsRoutes } from './routes/payments.js';
+import { PaymentService } from './services/payment.js';
+import { CoinbaseCommerceDriver } from './services/payments/coinbase-commerce.js';
+import { LightningDriver } from './services/payments/lightning.js';
+import { createMailRoutes } from './routes/mail.js';
+import { createAdminRoutes } from './routes/admin.js';
+import { rateLimitMiddleware } from './middleware/rate-limit.js';
+import { validateEnvelope, validateProofSubmission } from './middleware/validation.js';
+import { authMiddleware } from './middleware/auth.js';
+import { UsefulnessAggregatorService } from './services/usefulness-aggregator.js';
+import { startUsefulnessAggregationJob } from './jobs/usefulness-aggregator-job.js';
+import { startPouFinalizerJob } from './jobs/pou-finalizer-job.js';
+import { startMailboxDistillerJob } from './jobs/mailbox-distiller-job.js';
+import { NegotiationService } from './services/negotiation.js';
+import { IncentiveDistributionService } from './services/incentive-distribution.js';
+import { AntiFraudService } from './services/anti-fraud.js';
+import { replayProtectionMiddleware } from './middleware/replay.js';
+import { emailGuardMiddleware } from './middleware/email-guard.js';
+import { MailboxService } from './services/mailbox.js';
+import { ContactService } from './services/contacts.js';
+import { MemoryDistillerService } from './services/memory-distiller.js';
+import { SummarizationService } from './services/summarization.js';
+import { ReceiptService } from './services/receipts.js';
+import { ReputationUpdater } from './services/reputation-updater.js';
+import { SlashingService } from './services/slashing.js';
 
 const logger = new Logger({ serviceName: 'ainp-broker' });
 
@@ -80,8 +83,8 @@ async function main() {
   const incentiveDistribution = new IncentiveDistributionService(dbClient, creditService);
   // Receipt/Reputation services
   const committeeService = new CommitteeService(dbClient);
-  const receiptService = new (require('./services/receipts').ReceiptService)(dbClient, committeeService);
-  const reputationUpdater = new (require('./services/reputation-updater').ReputationUpdater)(dbClient);
+  const receiptService = new ReceiptService(dbClient, committeeService);
+  const reputationUpdater = new ReputationUpdater(dbClient);
   const negotiationService = new NegotiationService(dbClient, creditService, receiptService, reputationUpdater);
   const antiFraud = new AntiFraudService(redisClient);
 
@@ -231,7 +234,7 @@ async function main() {
   app.use('/api/receipts', createReceiptsRoutes(receiptService));
 
   // Admin routes (guarded by ADMIN_TOKEN)
-  app.use('/api/admin', createAdminRoutes(new (require('./services/slashing').SlashingService)(dbClient), dbClient, embeddingService));
+  app.use('/api/admin', createAdminRoutes(new SlashingService(dbClient), dbClient, embeddingService));
 
   // Start HTTP server
   const server = app.listen(PORT, () => {
@@ -239,7 +242,7 @@ async function main() {
   });
 
   // Attach WebSocket server
-  const wss = new WebSocket.Server({ server });
+  const wss = new WebSocketServer({ server });
 
   wss.on('connection', (ws, req) => {
     const did = req.url?.split('?did=')[1];

@@ -4,8 +4,8 @@
  */
 
 import { Router, Request, Response } from 'express';
-import { MailboxService } from '../services/mailbox';
-import { FeatureFlag, getFeatureFlag } from '../lib/feature-flags';
+import { MailboxService } from '../services/mailbox.js';
+import { FeatureFlag, getFeatureFlag } from '../lib/feature-flags.js';
 
 /**
  * Create mail routes

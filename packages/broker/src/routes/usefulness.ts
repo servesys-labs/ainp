@@ -4,12 +4,12 @@
  */
 
 import { Router } from 'express';
-import { UsefulnessAggregatorService } from '../services/usefulness-aggregator';
-import { SignatureService } from '../services/signature';
-import { RedisClient } from '../lib/redis-client';
-import { validateProofSubmission } from '../middleware/validation';
-import { authMiddleware } from '../middleware/auth';
-import { rateLimitMiddleware } from '../middleware/rate-limit';
+import { UsefulnessAggregatorService } from '../services/usefulness-aggregator.js';
+import { SignatureService } from '../services/signature.js';
+import { RedisClient } from '../lib/redis-client.js';
+import { validateProofSubmission } from '../middleware/validation.js';
+import { authMiddleware } from '../middleware/auth.js';
+import { rateLimitMiddleware } from '../middleware/rate-limit.js';
 import { ProofSubmissionRequest, ValidationError } from '@ainp/core';
 
 /**

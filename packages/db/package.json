@@ -1,6 +1,7 @@
 {
   "name": "@ainp/db",
   "version": "0.1.0",
+  "type": "module",
   "description": "PostgreSQL database client for AINP",
   "main": "dist/client.js",
   "types": "dist/client.d.ts",
