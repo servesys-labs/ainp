@@ -513,10 +513,10 @@ AINP defines six core intent types for Phase 0.1. All intents MUST include:
 Negotiation MUST follow this state machine:
 
 ```
-START → OFFER → COUNTER ↔ COUNTER → ACCEPT
-                  ↓         ↓
+START -> OFFER -> COUNTER <-> COUNTER -> ACCEPT
+                  |         |
                 ABORT     TIMEOUT
-                  ↓         ↓
+                  |         |
                 REJECT    REJECT
 ```
 
@@ -914,7 +914,7 @@ route_success_rate = (intents_delivered_correctly / total_intents_sent) × 100%
 
 95th percentile time from INTENT sent to RESULT received.
 
-**Target (Phase 0.1)**: ≤2000ms
+**Target (Phase 0.1)**: <=2000ms
 
 ## Negotiation Completion Rate
 
