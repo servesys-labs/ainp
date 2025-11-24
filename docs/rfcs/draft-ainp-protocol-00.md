@@ -30,7 +30,6 @@ author:
 
 normative:
   RFC2119:
-  RFC8785:
   RFC8949:
   W3C.DID:
     title: "Decentralized Identifiers (DIDs) v1.0"
@@ -46,6 +45,7 @@ normative:
     target: https://www.w3.org/TR/vc-data-model/
 
 informative:
+  RFC8785:
   Ed25519:
     title: "High-speed high-security signatures"
     author:
@@ -223,7 +223,7 @@ For semantic discovery, agents use capability queries:
 
 ## Signature Format
 
-Messages MUST be signed using Ed25519 with detached signatures in base64 encoding.
+Messages MUST be signed using Ed25519 ({{Ed25519}}) with detached signatures in base64 encoding.
 
 **Signing Process**:
 1. Serialize envelope fields (excluding `sig`) to canonical JSON ({{RFC8785}})
@@ -606,7 +606,7 @@ For intents involving multiple agents (e.g., scheduling a meeting with 5 partici
 
 1. **ADVERTISE**: Agent publishes capabilities to discovery index
 2. **DISCOVER**: Agent queries for matching capabilities
-3. **NEGOTIATE**: Agents negotiate terms (OFFER → COUNTER → ACCEPT)
+3. **NEGOTIATE**: Agents negotiate terms (OFFER -> COUNTER -> ACCEPT)
 4. **INTENT**: Agent sends intent after successful negotiation
 5. **RESULT**: Recipient responds with result
 
@@ -905,7 +905,7 @@ Nodes MUST still sign messages, enforce TTLs, and implement replay protection.
 ## Route Success Rate
 
 ```
-route_success_rate = (intents_delivered_correctly / total_intents_sent) × 100%
+route_success_rate = (intents_delivered_correctly / total_intents_sent) * 100
 ```
 
 **Target (Phase 0.1)**: >=95%
