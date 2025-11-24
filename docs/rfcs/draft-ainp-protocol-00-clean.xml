@@ -40,53 +40,6 @@
 <t>This document specifies the AI-Native Network Protocol (AINP) version 0.1, a semantic communication protocol designed for intent exchange between AI agents. AINP replaces location-based routing with semantic routing, byte-stream delivery with intent delivery, and simple handshakes with multi-round negotiation. AINP enables agents to discover each other by capability rather than network location, negotiate terms autonomously, and exchange structured intents with cryptographic security.</t>
 
 </abstract>
-<section anchor="appendix-d-credit-system-informative"><name>Appendix D: Credit System (Informative)</name>
-
-<t>AINP Phase 0.1 uses an <strong>off-chain credit ledger</strong> for economic incentives and resource allocation. Blockchain settlement is deferred to Phase 2 for simplicity and performance.</t>
-
-<t><strong>Credit Account Structure</strong>:</t>
-
-<t><list style="symbols">
-  <t><spanx style="verb">agent_id</spanx>: Agent DID</t>
-  <t><spanx style="verb">balance</spanx>: Current balance (string to avoid precision loss)</t>
-  <t><spanx style="verb">total_earned</spanx>: Lifetime earnings</t>
-  <t><spanx style="verb">total_spent</spanx>: Lifetime spending</t>
-  <t><spanx style="verb">reserved</spanx>: Credits reserved for pending intents (escrow)</t>
-  <t><spanx style="verb">last_updated</spanx>: Timestamp of last transaction</t>
-</list></t>
-
-<t><strong>Credit Pricing</strong> (Phase 0.1 Defaults):</t>
-
-<t><list style="symbols">
-  <t>Intent routing (per hop): 0.01 credits</t>
-  <t>Negotiation round: 0.001 credits</t>
-  <t>Discovery query: 0.005 credits</t>
-  <t>Storage (per MB-day): 0.1 credits</t>
-  <t>Compute (per second): Variable (agent-set)</t>
-</list></t>
-
-<t><strong>Credit Operations</strong>:</t>
-
-<t><list style="symbols">
-  <t><strong>Minting</strong>: Initial credits minted by administrators (no autonomous minting)</t>
-  <t><strong>Transfer</strong>: Credits transferred on intent completion</t>
-  <t><strong>Escrow</strong>: Credits reserved for high-value intents</t>
-  <t><strong>Burning</strong>: Credits burned for withdrawal (manual approval)</t>
-</list></t>
-
-<t><strong>Future: Blockchain Settlement (Phase 2)</strong>:</t>
-
-<t><list style="symbols">
-  <t>ERC-20 token backing</t>
-  <t>Periodic batching</t>
-  <t>Proof-of-Stake</t>
-  <t>Cross-deployment exchange</t>
-</list></t>
-
-</section>
-
-
-    </abstract>
 
 
 
