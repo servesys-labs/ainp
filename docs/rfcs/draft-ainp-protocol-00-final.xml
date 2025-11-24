@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" version="3" ipr="trust200902" docName="draft-ainp-protocol-00" category="std" consensus="true" tocInclude="true" sortRefs="true" symRefs="true" indexInclude="true" scripts="Common,Greek,Latin" submissionType="IETF" tocDepth="3">
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" version="3" ipr="trust200902" docName="draft-ainp-protocol-00" category="std" consensus="true" tocInclude="true" sortRefs="true" symRefs="true" indexInclude="true" scripts="Common,Latin" submissionType="IETF" tocDepth="3">
   <!-- xml2rfc v2v3 conversion 3.31.0 -->
   <front>
     <title abbrev="AINP Protocol">AI-Native Network Protocol (AINP) for Semantic Agent Communication</title>
@@ -12,7 +12,7 @@
     </author>
     <date month="11" year="2025" day="24"/>
     <area>Internet</area>
-    <workgroup/>
+    <workgroup>Independent Submission</workgroup>
     <keyword>AI agents</keyword>
     <keyword>semantic routing</keyword>
     <keyword>decentralized identity</keyword>
@@ -68,489 +68,276 @@
         <name slugifiedName="name-table-of-contents">Table of Contents</name>
         <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1">
           <li pn="section-toc.1-1.1">
-            <t indent="0" keepWithNext="true" pn="section-toc.1-1.1.1"><xref derivedContent="1" format="counter" sectionFormat="of" target="section-1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-appendix-a-complete-wire-fo">Appendix A: Complete Wire Format Example</xref></t>
-          </li>
-          <li pn="section-toc.1-1.2">
-            <t indent="0" keepWithNext="true" pn="section-toc.1-1.2.1"><xref derivedContent="2" format="counter" sectionFormat="of" target="section-2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-appendix-b-embedding-genera">Appendix B: Embedding Generation</xref></t>
-          </li>
-          <li pn="section-toc.1-1.3">
-            <t indent="0" keepWithNext="true" pn="section-toc.1-1.3.1"><xref derivedContent="3" format="counter" sectionFormat="of" target="section-3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-appendix-c-cosine-similarit">Appendix C: Cosine Similarity for Semantic Routing</xref></t>
-          </li>
-          <li pn="section-toc.1-1.4">
-            <t indent="0" pn="section-toc.1-1.4.1"><xref derivedContent="4" format="counter" sectionFormat="of" target="section-4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-match-if-similarity-thresho">Match if similarity &gt; threshold (e.g., 0.7)</xref></t>
-          </li>
-          <li pn="section-toc.1-1.5">
-            <t indent="0" pn="section-toc.1-1.5.1"><xref derivedContent="5" format="counter" sectionFormat="of" target="section-5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-appendix-d-credit-system-in">Appendix D: Credit System (Informative)</xref></t>
-          </li>
-          <li pn="section-toc.1-1.6">
-            <t indent="0" pn="section-toc.1-1.6.1"><xref derivedContent="6" format="counter" sectionFormat="of" target="section-6"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-introduction">Introduction</xref></t>
-            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.6.2">
-              <li pn="section-toc.1-1.6.2.1">
-                <t indent="0" pn="section-toc.1-1.6.2.1.1"><xref derivedContent="6.1" format="counter" sectionFormat="of" target="section-6.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-terminology">Terminology</xref></t>
-                <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.6.2.1.2">
-                  <li pn="section-toc.1-1.6.2.1.2.1">
-                    <t indent="0" pn="section-toc.1-1.6.2.1.2.1.1"><xref derivedContent="6.1.1" format="counter" sectionFormat="of" target="section-6.1.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-definitions">Definitions</xref></t>
+            <t indent="0" keepWithNext="true" pn="section-toc.1-1.1.1"><xref derivedContent="1" format="counter" sectionFormat="of" target="section-1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-introduction">Introduction</xref></t>
+            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.1.2">
+              <li pn="section-toc.1-1.1.2.1">
+                <t indent="0" keepWithNext="true" pn="section-toc.1-1.1.2.1.1"><xref derivedContent="1.1" format="counter" sectionFormat="of" target="section-1.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-terminology">Terminology</xref></t>
+                <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.1.2.1.2">
+                  <li pn="section-toc.1-1.1.2.1.2.1">
+                    <t indent="0" keepWithNext="true" pn="section-toc.1-1.1.2.1.2.1.1"><xref derivedContent="1.1.1" format="counter" sectionFormat="of" target="section-1.1.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-definitions">Definitions</xref></t>
                   </li>
                 </ul>
+              </li>
+            </ul>
+          </li>
+          <li pn="section-toc.1-1.2">
+            <t indent="0" pn="section-toc.1-1.2.1"><xref derivedContent="2" format="counter" sectionFormat="of" target="section-2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-architecture-overview">Architecture Overview</xref></t>
+          </li>
+          <li pn="section-toc.1-1.3">
+            <t indent="0" pn="section-toc.1-1.3.1"><xref derivedContent="3" format="counter" sectionFormat="of" target="section-3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-wire-format">Wire Format</xref></t>
+            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.3.2">
+              <li pn="section-toc.1-1.3.2.1">
+                <t indent="0" pn="section-toc.1-1.3.2.1.1"><xref derivedContent="3.1" format="counter" sectionFormat="of" target="section-3.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-encoding">Encoding</xref></t>
+              </li>
+              <li pn="section-toc.1-1.3.2.2">
+                <t indent="0" pn="section-toc.1-1.3.2.2.1"><xref derivedContent="3.2" format="counter" sectionFormat="of" target="section-3.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-message-envelope">Message Envelope</xref></t>
+                <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.3.2.2.2">
+                  <li pn="section-toc.1-1.3.2.2.2.1">
+                    <t indent="0" pn="section-toc.1-1.3.2.2.2.1.1"><xref derivedContent="3.2.1" format="counter" sectionFormat="of" target="section-3.2.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-envelope-fields">Envelope Fields</xref></t>
+                  </li>
+                </ul>
+              </li>
+              <li pn="section-toc.1-1.3.2.3">
+                <t indent="0" pn="section-toc.1-1.3.2.3.1"><xref derivedContent="3.3" format="counter" sectionFormat="of" target="section-3.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-message-types">Message Types</xref></t>
+              </li>
+              <li pn="section-toc.1-1.3.2.4">
+                <t indent="0" pn="section-toc.1-1.3.2.4.1"><xref derivedContent="3.4" format="counter" sectionFormat="of" target="section-3.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-quality-of-service-paramete">Quality of Service Parameters</xref></t>
+              </li>
+              <li pn="section-toc.1-1.3.2.5">
+                <t indent="0" pn="section-toc.1-1.3.2.5.1"><xref derivedContent="3.5" format="counter" sectionFormat="of" target="section-3.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-capability-query">Capability Query</xref></t>
+              </li>
+              <li pn="section-toc.1-1.3.2.6">
+                <t indent="0" pn="section-toc.1-1.3.2.6.1"><xref derivedContent="3.6" format="counter" sectionFormat="of" target="section-3.6"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-signature-format">Signature Format</xref></t>
+              </li>
+            </ul>
+          </li>
+          <li pn="section-toc.1-1.4">
+            <t indent="0" pn="section-toc.1-1.4.1"><xref derivedContent="4" format="counter" sectionFormat="of" target="section-4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-semantic-addresses">Semantic Addresses</xref></t>
+            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.4.2">
+              <li pn="section-toc.1-1.4.2.1">
+                <t indent="0" pn="section-toc.1-1.4.2.1.1"><xref derivedContent="4.1" format="counter" sectionFormat="of" target="section-4.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-decentralized-identifiers-d">Decentralized Identifiers (DIDs)</xref></t>
+              </li>
+              <li pn="section-toc.1-1.4.2.2">
+                <t indent="0" pn="section-toc.1-1.4.2.2.1"><xref derivedContent="4.2" format="counter" sectionFormat="of" target="section-4.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-semantic-address-structure">Semantic Address Structure</xref></t>
+              </li>
+            </ul>
+          </li>
+          <li pn="section-toc.1-1.5">
+            <t indent="0" pn="section-toc.1-1.5.1"><xref derivedContent="5" format="counter" sectionFormat="of" target="section-5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-intent-schemas">Intent Schemas</xref></t>
+            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.5.2">
+              <li pn="section-toc.1-1.5.2.1">
+                <t indent="0" pn="section-toc.1-1.5.2.1.1"><xref derivedContent="5.1" format="counter" sectionFormat="of" target="section-5.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-request_meeting-intent">REQUEST_MEETING Intent</xref></t>
+              </li>
+              <li pn="section-toc.1-1.5.2.2">
+                <t indent="0" pn="section-toc.1-1.5.2.2.1"><xref derivedContent="5.2" format="counter" sectionFormat="of" target="section-5.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-approval_request-intent">APPROVAL_REQUEST Intent</xref></t>
+              </li>
+              <li pn="section-toc.1-1.5.2.3">
+                <t indent="0" pn="section-toc.1-1.5.2.3.1"><xref derivedContent="5.3" format="counter" sectionFormat="of" target="section-5.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-submit_info-intent">SUBMIT_INFO Intent</xref></t>
+              </li>
+              <li pn="section-toc.1-1.5.2.4">
+                <t indent="0" pn="section-toc.1-1.5.2.4.1"><xref derivedContent="5.4" format="counter" sectionFormat="of" target="section-5.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-invoice-intent">INVOICE Intent</xref></t>
+              </li>
+              <li pn="section-toc.1-1.5.2.5">
+                <t indent="0" pn="section-toc.1-1.5.2.5.1"><xref derivedContent="5.5" format="counter" sectionFormat="of" target="section-5.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-freeform_note-intent">FREEFORM_NOTE Intent</xref></t>
+              </li>
+              <li pn="section-toc.1-1.5.2.6">
+                <t indent="0" pn="section-toc.1-1.5.2.6.1"><xref derivedContent="5.6" format="counter" sectionFormat="of" target="section-5.6"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-request_service-intent">REQUEST_SERVICE Intent</xref></t>
+              </li>
+            </ul>
+          </li>
+          <li pn="section-toc.1-1.6">
+            <t indent="0" pn="section-toc.1-1.6.1"><xref derivedContent="6" format="counter" sectionFormat="of" target="section-6"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-negotiation-protocol">Negotiation Protocol</xref></t>
+            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.6.2">
+              <li pn="section-toc.1-1.6.2.1">
+                <t indent="0" pn="section-toc.1-1.6.2.1.1"><xref derivedContent="6.1" format="counter" sectionFormat="of" target="section-6.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-negotiation-flow">Negotiation Flow</xref></t>
+              </li>
+              <li pn="section-toc.1-1.6.2.2">
+                <t indent="0" pn="section-toc.1-1.6.2.2.1"><xref derivedContent="6.2" format="counter" sectionFormat="of" target="section-6.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-negotiation-message-structu">Negotiation Message Structure</xref></t>
+              </li>
+              <li pn="section-toc.1-1.6.2.3">
+                <t indent="0" pn="section-toc.1-1.6.2.3.1"><xref derivedContent="6.3" format="counter" sectionFormat="of" target="section-6.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-negotiation-convergence">Negotiation Convergence</xref></t>
+              </li>
+              <li pn="section-toc.1-1.6.2.4">
+                <t indent="0" pn="section-toc.1-1.6.2.4.1"><xref derivedContent="6.4" format="counter" sectionFormat="of" target="section-6.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-timeout-behavior">Timeout Behavior</xref></t>
+              </li>
+              <li pn="section-toc.1-1.6.2.5">
+                <t indent="0" pn="section-toc.1-1.6.2.5.1"><xref derivedContent="6.5" format="counter" sectionFormat="of" target="section-6.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-multi-party-negotiation">Multi-Party Negotiation</xref></t>
               </li>
             </ul>
           </li>
           <li pn="section-toc.1-1.7">
-            <t indent="0" pn="section-toc.1-1.7.1"><xref derivedContent="7" format="counter" sectionFormat="of" target="section-7"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-architecture-overview">Architecture Overview</xref></t>
+            <t indent="0" pn="section-toc.1-1.7.1"><xref derivedContent="7" format="counter" sectionFormat="of" target="section-7"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-protocol-handshake-sequence">Protocol Handshake Sequence</xref></t>
+            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.7.2">
+              <li pn="section-toc.1-1.7.2.1">
+                <t indent="0" pn="section-toc.1-1.7.2.1.1"><xref derivedContent="7.1" format="counter" sectionFormat="of" target="section-7.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-five-step-handshake">Five-Step Handshake</xref></t>
+              </li>
+              <li pn="section-toc.1-1.7.2.2">
+                <t indent="0" pn="section-toc.1-1.7.2.2.1"><xref derivedContent="7.2" format="counter" sectionFormat="of" target="section-7.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-advertise-phase">ADVERTISE Phase</xref></t>
+              </li>
+              <li pn="section-toc.1-1.7.2.3">
+                <t indent="0" pn="section-toc.1-1.7.2.3.1"><xref derivedContent="7.3" format="counter" sectionFormat="of" target="section-7.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-discover-phase">DISCOVER Phase</xref></t>
+              </li>
+              <li pn="section-toc.1-1.7.2.4">
+                <t indent="0" pn="section-toc.1-1.7.2.4.1"><xref derivedContent="7.4" format="counter" sectionFormat="of" target="section-7.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-error-phase">ERROR Phase</xref></t>
+              </li>
+              <li pn="section-toc.1-1.7.2.5">
+                <t indent="0" pn="section-toc.1-1.7.2.5.1"><xref derivedContent="7.5" format="counter" sectionFormat="of" target="section-7.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-offline-intent-queueing">Offline Intent Queueing</xref></t>
+              </li>
+            </ul>
           </li>
           <li pn="section-toc.1-1.8">
-            <t indent="0" pn="section-toc.1-1.8.1"><xref derivedContent="8" format="counter" sectionFormat="of" target="section-8"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-wire-format">Wire Format</xref></t>
+            <t indent="0" pn="section-toc.1-1.8.1"><xref derivedContent="8" format="counter" sectionFormat="of" target="section-8"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-security-considerations">Security Considerations</xref></t>
             <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.8.2">
               <li pn="section-toc.1-1.8.2.1">
-                <t indent="0" pn="section-toc.1-1.8.2.1.1"><xref derivedContent="8.1" format="counter" sectionFormat="of" target="section-8.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-encoding">Encoding</xref></t>
+                <t indent="0" pn="section-toc.1-1.8.2.1.1"><xref derivedContent="8.1" format="counter" sectionFormat="of" target="section-8.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-authentication">Authentication</xref></t>
               </li>
               <li pn="section-toc.1-1.8.2.2">
-                <t indent="0" pn="section-toc.1-1.8.2.2.1"><xref derivedContent="8.2" format="counter" sectionFormat="of" target="section-8.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-message-envelope">Message Envelope</xref></t>
-                <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.8.2.2.2">
-                  <li pn="section-toc.1-1.8.2.2.2.1">
-                    <t indent="0" pn="section-toc.1-1.8.2.2.2.1.1"><xref derivedContent="8.2.1" format="counter" sectionFormat="of" target="section-8.2.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-envelope-fields">Envelope Fields</xref></t>
-                  </li>
-                </ul>
+                <t indent="0" pn="section-toc.1-1.8.2.2.1"><xref derivedContent="8.2" format="counter" sectionFormat="of" target="section-8.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-identity">Identity</xref></t>
               </li>
               <li pn="section-toc.1-1.8.2.3">
-                <t indent="0" pn="section-toc.1-1.8.2.3.1"><xref derivedContent="8.3" format="counter" sectionFormat="of" target="section-8.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-message-types">Message Types</xref></t>
+                <t indent="0" pn="section-toc.1-1.8.2.3.1"><xref derivedContent="8.3" format="counter" sectionFormat="of" target="section-8.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-rate-limiting">Rate Limiting</xref></t>
               </li>
               <li pn="section-toc.1-1.8.2.4">
-                <t indent="0" pn="section-toc.1-1.8.2.4.1"><xref derivedContent="8.4" format="counter" sectionFormat="of" target="section-8.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-quality-of-service-paramete">Quality of Service Parameters</xref></t>
+                <t indent="0" pn="section-toc.1-1.8.2.4.1"><xref derivedContent="8.4" format="counter" sectionFormat="of" target="section-8.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-replay-protection">Replay Protection</xref></t>
               </li>
               <li pn="section-toc.1-1.8.2.5">
-                <t indent="0" pn="section-toc.1-1.8.2.5.1"><xref derivedContent="8.5" format="counter" sectionFormat="of" target="section-8.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-capability-query">Capability Query</xref></t>
+                <t indent="0" pn="section-toc.1-1.8.2.5.1"><xref derivedContent="8.5" format="counter" sectionFormat="of" target="section-8.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-dos-protection">DoS Protection</xref></t>
               </li>
               <li pn="section-toc.1-1.8.2.6">
-                <t indent="0" pn="section-toc.1-1.8.2.6.1"><xref derivedContent="8.6" format="counter" sectionFormat="of" target="section-8.6"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-signature-format">Signature Format</xref></t>
+                <t indent="0" pn="section-toc.1-1.8.2.6.1"><xref derivedContent="8.6" format="counter" sectionFormat="of" target="section-8.6"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-replay-protection-and-deliv">Replay Protection and Delivery Semantics</xref></t>
+              </li>
+              <li pn="section-toc.1-1.8.2.7">
+                <t indent="0" pn="section-toc.1-1.8.2.7.1"><xref derivedContent="8.7" format="counter" sectionFormat="of" target="section-8.7"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-capability-attestations">Capability Attestations</xref></t>
+              </li>
+              <li pn="section-toc.1-1.8.2.8">
+                <t indent="0" pn="section-toc.1-1.8.2.8.1"><xref derivedContent="8.8" format="counter" sectionFormat="of" target="section-8.8"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-timeouts">Timeouts</xref></t>
+              </li>
+              <li pn="section-toc.1-1.8.2.9">
+                <t indent="0" pn="section-toc.1-1.8.2.9.1"><xref derivedContent="8.9" format="counter" sectionFormat="of" target="section-8.9"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-outlier-detection">Outlier Detection</xref></t>
+              </li>
+              <li pn="section-toc.1-1.8.2.10">
+                <t indent="0" pn="section-toc.1-1.8.2.10.1"><xref derivedContent="8.10" format="counter" sectionFormat="of" target="section-8.10"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-discovery-scalability">Discovery Scalability</xref></t>
+              </li>
+              <li pn="section-toc.1-1.8.2.11">
+                <t indent="0" pn="section-toc.1-1.8.2.11.1"><xref derivedContent="8.11" format="counter" sectionFormat="of" target="section-8.11"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-lite-mode-for-resource-cons">Lite Mode for Resource-Constrained Agents</xref></t>
               </li>
             </ul>
           </li>
           <li pn="section-toc.1-1.9">
-            <t indent="0" pn="section-toc.1-1.9.1"><xref derivedContent="9" format="counter" sectionFormat="of" target="section-9"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-semantic-addresses">Semantic Addresses</xref></t>
-            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.9.2">
-              <li pn="section-toc.1-1.9.2.1">
-                <t indent="0" pn="section-toc.1-1.9.2.1.1"><xref derivedContent="9.1" format="counter" sectionFormat="of" target="section-9.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-decentralized-identifiers-d">Decentralized Identifiers (DIDs)</xref></t>
-              </li>
-              <li pn="section-toc.1-1.9.2.2">
-                <t indent="0" pn="section-toc.1-1.9.2.2.1"><xref derivedContent="9.2" format="counter" sectionFormat="of" target="section-9.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-semantic-address-structure">Semantic Address Structure</xref></t>
-              </li>
-            </ul>
+            <t indent="0" pn="section-toc.1-1.9.1"><xref derivedContent="9" format="counter" sectionFormat="of" target="section-9"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-cbor-encoding-optional">CBOR Encoding (Optional)</xref></t>
           </li>
           <li pn="section-toc.1-1.10">
-            <t indent="0" pn="section-toc.1-1.10.1"><xref derivedContent="10" format="counter" sectionFormat="of" target="section-10"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-intent-schemas">Intent Schemas</xref></t>
+            <t indent="0" pn="section-toc.1-1.10.1"><xref derivedContent="10" format="counter" sectionFormat="of" target="section-10"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-extensibility">Extensibility</xref></t>
             <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.10.2">
               <li pn="section-toc.1-1.10.2.1">
-                <t indent="0" pn="section-toc.1-1.10.2.1.1"><xref derivedContent="10.1" format="counter" sectionFormat="of" target="section-10.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-request_meeting-intent">REQUEST_MEETING Intent</xref></t>
+                <t indent="0" pn="section-toc.1-1.10.2.1.1"><xref derivedContent="10.1" format="counter" sectionFormat="of" target="section-10.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-custom-intent-types">Custom Intent Types</xref></t>
               </li>
               <li pn="section-toc.1-1.10.2.2">
-                <t indent="0" pn="section-toc.1-1.10.2.2.1"><xref derivedContent="10.2" format="counter" sectionFormat="of" target="section-10.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-approval_request-intent">APPROVAL_REQUEST Intent</xref></t>
+                <t indent="0" pn="section-toc.1-1.10.2.2.1"><xref derivedContent="10.2" format="counter" sectionFormat="of" target="section-10.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-custom-negotiation-terms">Custom Negotiation Terms</xref></t>
               </li>
               <li pn="section-toc.1-1.10.2.3">
-                <t indent="0" pn="section-toc.1-1.10.2.3.1"><xref derivedContent="10.3" format="counter" sectionFormat="of" target="section-10.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-submit_info-intent">SUBMIT_INFO Intent</xref></t>
+                <t indent="0" pn="section-toc.1-1.10.2.3.1"><xref derivedContent="10.3" format="counter" sectionFormat="of" target="section-10.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-versioning">Versioning</xref></t>
               </li>
               <li pn="section-toc.1-1.10.2.4">
-                <t indent="0" pn="section-toc.1-1.10.2.4.1"><xref derivedContent="10.4" format="counter" sectionFormat="of" target="section-10.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-invoice-intent">INVOICE Intent</xref></t>
-              </li>
-              <li pn="section-toc.1-1.10.2.5">
-                <t indent="0" pn="section-toc.1-1.10.2.5.1"><xref derivedContent="10.5" format="counter" sectionFormat="of" target="section-10.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-freeform_note-intent">FREEFORM_NOTE Intent</xref></t>
-              </li>
-              <li pn="section-toc.1-1.10.2.6">
-                <t indent="0" pn="section-toc.1-1.10.2.6.1"><xref derivedContent="10.6" format="counter" sectionFormat="of" target="section-10.6"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-request_service-intent">REQUEST_SERVICE Intent</xref></t>
+                <t indent="0" pn="section-toc.1-1.10.2.4.1"><xref derivedContent="10.4" format="counter" sectionFormat="of" target="section-10.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-lite-profile-trusted-networ">Lite Profile (Trusted Networks)</xref></t>
               </li>
             </ul>
           </li>
           <li pn="section-toc.1-1.11">
-            <t indent="0" pn="section-toc.1-1.11.1"><xref derivedContent="11" format="counter" sectionFormat="of" target="section-11"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-negotiation-protocol">Negotiation Protocol</xref></t>
+            <t indent="0" pn="section-toc.1-1.11.1"><xref derivedContent="11" format="counter" sectionFormat="of" target="section-11"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-success-metrics">Success Metrics</xref></t>
             <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.11.2">
               <li pn="section-toc.1-1.11.2.1">
-                <t indent="0" pn="section-toc.1-1.11.2.1.1"><xref derivedContent="11.1" format="counter" sectionFormat="of" target="section-11.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-negotiation-flow">Negotiation Flow</xref></t>
+                <t indent="0" pn="section-toc.1-1.11.2.1.1"><xref derivedContent="11.1" format="counter" sectionFormat="of" target="section-11.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-route-success-rate">Route Success Rate</xref></t>
               </li>
               <li pn="section-toc.1-1.11.2.2">
-                <t indent="0" pn="section-toc.1-1.11.2.2.1"><xref derivedContent="11.2" format="counter" sectionFormat="of" target="section-11.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-negotiation-message-structu">Negotiation Message Structure</xref></t>
+                <t indent="0" pn="section-toc.1-1.11.2.2.1"><xref derivedContent="11.2" format="counter" sectionFormat="of" target="section-11.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-latency-p95">Latency (p95)</xref></t>
               </li>
               <li pn="section-toc.1-1.11.2.3">
-                <t indent="0" pn="section-toc.1-1.11.2.3.1"><xref derivedContent="11.3" format="counter" sectionFormat="of" target="section-11.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-negotiation-convergence">Negotiation Convergence</xref></t>
+                <t indent="0" pn="section-toc.1-1.11.2.3.1"><xref derivedContent="11.3" format="counter" sectionFormat="of" target="section-11.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-negotiation-completion-rate">Negotiation Completion Rate</xref></t>
               </li>
               <li pn="section-toc.1-1.11.2.4">
-                <t indent="0" pn="section-toc.1-1.11.2.4.1"><xref derivedContent="11.4" format="counter" sectionFormat="of" target="section-11.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-timeout-behavior">Timeout Behavior</xref></t>
+                <t indent="0" pn="section-toc.1-1.11.2.4.1"><xref derivedContent="11.4" format="counter" sectionFormat="of" target="section-11.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-false-route-rate">False Route Rate</xref></t>
               </li>
               <li pn="section-toc.1-1.11.2.5">
-                <t indent="0" pn="section-toc.1-1.11.2.5.1"><xref derivedContent="11.5" format="counter" sectionFormat="of" target="section-11.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-multi-party-negotiation">Multi-Party Negotiation</xref></t>
+                <t indent="0" pn="section-toc.1-1.11.2.5.1"><xref derivedContent="11.5" format="counter" sectionFormat="of" target="section-11.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-abuse-resilience">Abuse Resilience</xref></t>
               </li>
             </ul>
           </li>
           <li pn="section-toc.1-1.12">
-            <t indent="0" pn="section-toc.1-1.12.1"><xref derivedContent="12" format="counter" sectionFormat="of" target="section-12"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-protocol-handshake-sequence">Protocol Handshake Sequence</xref></t>
-            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.12.2">
-              <li pn="section-toc.1-1.12.2.1">
-                <t indent="0" pn="section-toc.1-1.12.2.1.1"><xref derivedContent="12.1" format="counter" sectionFormat="of" target="section-12.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-five-step-handshake">Five-Step Handshake</xref></t>
-              </li>
-              <li pn="section-toc.1-1.12.2.2">
-                <t indent="0" pn="section-toc.1-1.12.2.2.1"><xref derivedContent="12.2" format="counter" sectionFormat="of" target="section-12.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-advertise-phase">ADVERTISE Phase</xref></t>
-              </li>
-              <li pn="section-toc.1-1.12.2.3">
-                <t indent="0" pn="section-toc.1-1.12.2.3.1"><xref derivedContent="12.3" format="counter" sectionFormat="of" target="section-12.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-discover-phase">DISCOVER Phase</xref></t>
-              </li>
-              <li pn="section-toc.1-1.12.2.4">
-                <t indent="0" pn="section-toc.1-1.12.2.4.1"><xref derivedContent="12.4" format="counter" sectionFormat="of" target="section-12.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-error-phase">ERROR Phase</xref></t>
-              </li>
-              <li pn="section-toc.1-1.12.2.5">
-                <t indent="0" pn="section-toc.1-1.12.2.5.1"><xref derivedContent="12.5" format="counter" sectionFormat="of" target="section-12.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-offline-intent-queueing">Offline Intent Queueing</xref></t>
-              </li>
-            </ul>
+            <t indent="0" pn="section-toc.1-1.12.1"><xref derivedContent="12" format="counter" sectionFormat="of" target="section-12"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-iana-considerations">IANA Considerations</xref></t>
           </li>
           <li pn="section-toc.1-1.13">
-            <t indent="0" pn="section-toc.1-1.13.1"><xref derivedContent="13" format="counter" sectionFormat="of" target="section-13"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-security-considerations">Security Considerations</xref></t>
+            <t indent="0" pn="section-toc.1-1.13.1"><xref derivedContent="13" format="counter" sectionFormat="of" target="section-13"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-references">References</xref></t>
             <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.13.2">
               <li pn="section-toc.1-1.13.2.1">
-                <t indent="0" pn="section-toc.1-1.13.2.1.1"><xref derivedContent="13.1" format="counter" sectionFormat="of" target="section-13.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-authentication">Authentication</xref></t>
+                <t indent="0" pn="section-toc.1-1.13.2.1.1"><xref derivedContent="13.1" format="counter" sectionFormat="of" target="section-13.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-normative-references">Normative References</xref></t>
               </li>
               <li pn="section-toc.1-1.13.2.2">
-                <t indent="0" pn="section-toc.1-1.13.2.2.1"><xref derivedContent="13.2" format="counter" sectionFormat="of" target="section-13.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-identity">Identity</xref></t>
-              </li>
-              <li pn="section-toc.1-1.13.2.3">
-                <t indent="0" pn="section-toc.1-1.13.2.3.1"><xref derivedContent="13.3" format="counter" sectionFormat="of" target="section-13.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-rate-limiting">Rate Limiting</xref></t>
-              </li>
-              <li pn="section-toc.1-1.13.2.4">
-                <t indent="0" pn="section-toc.1-1.13.2.4.1"><xref derivedContent="13.4" format="counter" sectionFormat="of" target="section-13.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-replay-protection">Replay Protection</xref></t>
-              </li>
-              <li pn="section-toc.1-1.13.2.5">
-                <t indent="0" pn="section-toc.1-1.13.2.5.1"><xref derivedContent="13.5" format="counter" sectionFormat="of" target="section-13.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-dos-protection">DoS Protection</xref></t>
-              </li>
-              <li pn="section-toc.1-1.13.2.6">
-                <t indent="0" pn="section-toc.1-1.13.2.6.1"><xref derivedContent="13.6" format="counter" sectionFormat="of" target="section-13.6"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-replay-protection-and-deliv">Replay Protection and Delivery Semantics</xref></t>
-              </li>
-              <li pn="section-toc.1-1.13.2.7">
-                <t indent="0" pn="section-toc.1-1.13.2.7.1"><xref derivedContent="13.7" format="counter" sectionFormat="of" target="section-13.7"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-capability-attestations">Capability Attestations</xref></t>
-              </li>
-              <li pn="section-toc.1-1.13.2.8">
-                <t indent="0" pn="section-toc.1-1.13.2.8.1"><xref derivedContent="13.8" format="counter" sectionFormat="of" target="section-13.8"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-timeouts">Timeouts</xref></t>
-              </li>
-              <li pn="section-toc.1-1.13.2.9">
-                <t indent="0" pn="section-toc.1-1.13.2.9.1"><xref derivedContent="13.9" format="counter" sectionFormat="of" target="section-13.9"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-outlier-detection">Outlier Detection</xref></t>
-              </li>
-              <li pn="section-toc.1-1.13.2.10">
-                <t indent="0" pn="section-toc.1-1.13.2.10.1"><xref derivedContent="13.10" format="counter" sectionFormat="of" target="section-13.10"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-discovery-scalability">Discovery Scalability</xref></t>
-              </li>
-              <li pn="section-toc.1-1.13.2.11">
-                <t indent="0" pn="section-toc.1-1.13.2.11.1"><xref derivedContent="13.11" format="counter" sectionFormat="of" target="section-13.11"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-lite-mode-for-resource-cons">Lite Mode for Resource-Constrained Agents</xref></t>
+                <t indent="0" pn="section-toc.1-1.13.2.2.1"><xref derivedContent="13.2" format="counter" sectionFormat="of" target="section-13.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-informative-references">Informative References</xref></t>
               </li>
             </ul>
           </li>
           <li pn="section-toc.1-1.14">
-            <t indent="0" pn="section-toc.1-1.14.1"><xref derivedContent="14" format="counter" sectionFormat="of" target="section-14"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-cbor-encoding-optional">CBOR Encoding (Optional)</xref></t>
-          </li>
-          <li pn="section-toc.1-1.15">
-            <t indent="0" pn="section-toc.1-1.15.1"><xref derivedContent="15" format="counter" sectionFormat="of" target="section-15"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-extensibility">Extensibility</xref></t>
-            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.15.2">
-              <li pn="section-toc.1-1.15.2.1">
-                <t indent="0" pn="section-toc.1-1.15.2.1.1"><xref derivedContent="15.1" format="counter" sectionFormat="of" target="section-15.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-custom-intent-types">Custom Intent Types</xref></t>
-              </li>
-              <li pn="section-toc.1-1.15.2.2">
-                <t indent="0" pn="section-toc.1-1.15.2.2.1"><xref derivedContent="15.2" format="counter" sectionFormat="of" target="section-15.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-custom-negotiation-terms">Custom Negotiation Terms</xref></t>
-              </li>
-              <li pn="section-toc.1-1.15.2.3">
-                <t indent="0" pn="section-toc.1-1.15.2.3.1"><xref derivedContent="15.3" format="counter" sectionFormat="of" target="section-15.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-versioning">Versioning</xref></t>
-              </li>
-              <li pn="section-toc.1-1.15.2.4">
-                <t indent="0" pn="section-toc.1-1.15.2.4.1"><xref derivedContent="15.4" format="counter" sectionFormat="of" target="section-15.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-lite-profile-trusted-networ">Lite Profile (Trusted Networks)</xref></t>
-              </li>
-            </ul>
-          </li>
-          <li pn="section-toc.1-1.16">
-            <t indent="0" pn="section-toc.1-1.16.1"><xref derivedContent="16" format="counter" sectionFormat="of" target="section-16"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-success-metrics">Success Metrics</xref></t>
-            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.16.2">
-              <li pn="section-toc.1-1.16.2.1">
-                <t indent="0" pn="section-toc.1-1.16.2.1.1"><xref derivedContent="16.1" format="counter" sectionFormat="of" target="section-16.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-route-success-rate">Route Success Rate</xref></t>
-              </li>
-              <li pn="section-toc.1-1.16.2.2">
-                <t indent="0" pn="section-toc.1-1.16.2.2.1"><xref derivedContent="16.2" format="counter" sectionFormat="of" target="section-16.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-latency-p95">Latency (p95)</xref></t>
-              </li>
-              <li pn="section-toc.1-1.16.2.3">
-                <t indent="0" pn="section-toc.1-1.16.2.3.1"><xref derivedContent="16.3" format="counter" sectionFormat="of" target="section-16.3"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-negotiation-completion-rate">Negotiation Completion Rate</xref></t>
-              </li>
-              <li pn="section-toc.1-1.16.2.4">
-                <t indent="0" pn="section-toc.1-1.16.2.4.1"><xref derivedContent="16.4" format="counter" sectionFormat="of" target="section-16.4"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-false-route-rate">False Route Rate</xref></t>
-              </li>
-              <li pn="section-toc.1-1.16.2.5">
-                <t indent="0" pn="section-toc.1-1.16.2.5.1"><xref derivedContent="16.5" format="counter" sectionFormat="of" target="section-16.5"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-abuse-resilience">Abuse Resilience</xref></t>
-              </li>
-            </ul>
-          </li>
-          <li pn="section-toc.1-1.17">
-            <t indent="0" pn="section-toc.1-1.17.1"><xref derivedContent="17" format="counter" sectionFormat="of" target="section-17"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-iana-considerations">IANA Considerations</xref></t>
-          </li>
-          <li pn="section-toc.1-1.18">
-            <t indent="0" pn="section-toc.1-1.18.1"><xref derivedContent="18" format="counter" sectionFormat="of" target="section-18"/>. <xref derivedContent="" format="title" sectionFormat="of" target="name-references">References</xref></t>
-            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.18.2">
-              <li pn="section-toc.1-1.18.2.1">
-                <t indent="0" pn="section-toc.1-1.18.2.1.1"><xref derivedContent="18.1" format="counter" sectionFormat="of" target="section-18.1"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-normative-references">Normative References</xref></t>
-              </li>
-              <li pn="section-toc.1-1.18.2.2">
-                <t indent="0" pn="section-toc.1-1.18.2.2.1"><xref derivedContent="18.2" format="counter" sectionFormat="of" target="section-18.2"/>.  <xref derivedContent="" format="title" sectionFormat="of" target="name-informative-references">Informative References</xref></t>
-              </li>
-            </ul>
-          </li>
-          <li pn="section-toc.1-1.19">
-            <t indent="0" pn="section-toc.1-1.19.1"><xref derivedContent="19" format="counter" sectionFormat="of" target="section-19"/>. References</t>
-            <ul bare="true" empty="true" indent="2" spacing="compact" pn="section-toc.1-1.19.2">
-              <li pn="section-toc.1-1.19.2.1">
-                <t indent="0" pn="section-toc.1-1.19.2.1.1"><xref derivedContent="19.1" format="counter" sectionFormat="of" target="section-19.1"/>.  Normative References</t>
-              </li>
-              <li pn="section-toc.1-1.19.2.2">
-                <t indent="0" pn="section-toc.1-1.19.2.2.1"><xref derivedContent="19.2" format="counter" sectionFormat="of" target="section-19.2"/>.  Informative References</t>
-              </li>
-            </ul>
-          </li>
-          <li pn="section-toc.1-1.20">
-            <t indent="0" pn="section-toc.1-1.20.1"><xref derivedContent="" format="none" sectionFormat="of" target="section-appendix.a"/>Author's Address</t>
+            <t indent="0" pn="section-toc.1-1.14.1"><xref derivedContent="" format="none" sectionFormat="of" target="section-appendix.a"/><xref derivedContent="" format="title" sectionFormat="of" target="name-authors-address">Author's Address</xref></t>
           </li>
         </ul>
       </section>
     </toc>
   </front>
   <middle>
-    <section anchor="appendix-a-complete-wire-format-example" numbered="true" removeInRFC="false" toc="include" pn="section-1">
-      <name slugifiedName="name-appendix-a-complete-wire-fo">Appendix A: Complete Wire Format Example</name>
-      <t indent="0" pn="section-1-1">Complete example of INTENT message:</t>
-      <t indent="0" pn="section-1-2"><tt>json
-{
-  "version": "0.1.0",
-  "msg_type": "INTENT",
-  "id": "770e8400-e29b-41d4-a716-446655440002",
-  "timestamp": 1728259400000,
-  "ttl": 30000,
-  "trace_id": "trace-ghi789",
-  "from_did": "did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK",
-  "to_did": "did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH",
-  "schema": "https://ainp.dev/schemas/intents/request-meeting/v1",
-  "qos": {
-    "urgency": 0.7,
-    "importance": 0.8,
-    "novelty": 0.1,
-    "ethicalWeight": 0.5,
-    "bid": 5
-  },
-  "sig": "base64signature...",
-  "payload": {
-    "@context": "https://ainp.dev/contexts/meeting/v1",
-    "@type": "RequestMeeting",
-    "version": "1.0.0",
-    "embedding": {
-      "b64": "CCC/QwAAPkM...",
-      "dim": 1536,
-      "dtype": "f32",
-      "model": "openai:text-embedding-3-small"
-    },
-    "semantics": {
-      "participants": [
-        "did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK",
-        "did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH"
-      ],
-      "duration_minutes": 30,
-      "preferred_times": ["2025-10-07T14:00:00Z", "2025-10-07T15:00:00Z"],
-      "location": "virtual",
-      "constraints": {
-        "timezone": "America/Los_Angeles",
-        "max_latency_ms": 5000,
-        "min_notice_hours": 24
-      }
-    },
-    "budget": {
-      "max_credits": 10,
-      "max_rounds": 5,
-      "timeout_ms": 30000
-    }
-  }
-}
-</tt></t>
-    </section>
-    <section anchor="appendix-b-embedding-generation" numbered="true" removeInRFC="false" toc="include" pn="section-2">
-      <name slugifiedName="name-appendix-b-embedding-genera">Appendix B: Embedding Generation</name>
-      <t indent="0" pn="section-2-1"><strong>Recommended Model</strong>: OpenAI <tt>text-embedding-3-small</tt> (example). Any provider MAY be used if <tt>Embedding</tt> contract is satisfied.</t>
-      <t indent="0" pn="section-2-2">```python
-import openai
-import base64
-import struct</t>
-      <t indent="0" pn="section-2-3">def generate_embedding(text: str) -&gt; dict:
-    response = openai.embeddings.create(
-        model="text-embedding-3-small",
-        input=text
-    )
-    embedding = response.data[0].embedding  # List of 1536 floats</t>
-      <artwork align="left" pn="section-2-4">
-# Encode as float32 array
-float32_bytes = struct.pack(f'{len(embedding)}f', *embedding)
-
-# Base64 encode
-b64 = base64.b64encode(float32_bytes).decode('utf-8')
-return {
-    "b64": b64,
-    "dim": len(embedding),
-    "dtype": "f32",
-    "model": "openai:text-embedding-3-small"
-} ```
-</artwork>
-      <t indent="0" pn="section-2-5"><strong>Embedding Model Registry</strong>: Implementations MAY use different embedding models:</t>
-      <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-2-6">
-        <li pn="section-2-6.1">
-          <t indent="0" pn="section-2-6.1.1"><strong>OpenAI</strong>: <tt>openai:text-embedding-3-small</tt> (1536-dim, default)</t>
-        </li>
-        <li pn="section-2-6.2">
-          <t indent="0" pn="section-2-6.2.1"><strong>OpenAI Large</strong>: <tt>openai:text-embedding-3-large</tt> (3072-dim)</t>
-        </li>
-        <li pn="section-2-6.3">
-          <t indent="0" pn="section-2-6.3.1"><strong>Sentence Transformers</strong>: <tt>sentence-transformers:all-MiniLM-L6-v2</tt> (384-dim)</t>
-        </li>
-        <li pn="section-2-6.4">
-          <t indent="0" pn="section-2-6.4.1"><strong>Custom</strong>: <tt>https://models.example.com/my-embedder/v1</tt></t>
-        </li>
-      </ul>
-    </section>
-    <section anchor="appendix-c-cosine-similarity-for-semantic-routing" numbered="true" removeInRFC="false" toc="include" pn="section-3">
-      <name slugifiedName="name-appendix-c-cosine-similarit">Appendix C: Cosine Similarity for Semantic Routing</name>
-      <t indent="0" pn="section-3-1">Discovery indices SHOULD use cosine similarity for matching capability queries:</t>
-      <t indent="0" pn="section-3-2">```python
-import numpy as np</t>
-      <t indent="0" pn="section-3-3">def cosine_similarity(embedding_a: np.ndarray, embedding_b: np.ndarray) -&gt; float:
-    return np.dot(embedding_a, embedding_b) / (
-        np.linalg.norm(embedding_a) * np.linalg.norm(embedding_b)
-    )</t>
-    </section>
-    <section anchor="match-if-similarity-threshold-eg-07" numbered="true" removeInRFC="false" toc="include" pn="section-4">
-      <name slugifiedName="name-match-if-similarity-thresho">Match if similarity &gt; threshold (e.g., 0.7)</name>
-      <t indent="0" pn="section-4-1">similarity = cosine_similarity(query_embedding, capability_embedding)
-if similarity &gt;= 0.7:
-    return agent
-```</t>
-    </section>
-    <section anchor="appendix-d-credit-system-informative" numbered="true" removeInRFC="false" toc="include" pn="section-5">
-      <name slugifiedName="name-appendix-d-credit-system-in">Appendix D: Credit System (Informative)</name>
-      <t indent="0" pn="section-5-1">AINP Phase 0.1 uses an <strong>off-chain credit ledger</strong> for economic incentives and resource allocation. Blockchain settlement is deferred to Phase 2 for simplicity and performance.</t>
-      <t indent="0" pn="section-5-2"><strong>Credit Account Structure</strong>:</t>
-      <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-5-3">
-        <li pn="section-5-3.1">
-          <t indent="0" pn="section-5-3.1.1"><tt>agent_id</tt>: Agent DID</t>
-        </li>
-        <li pn="section-5-3.2">
-          <t indent="0" pn="section-5-3.2.1"><tt>balance</tt>: Current balance (string to avoid precision loss)</t>
-        </li>
-        <li pn="section-5-3.3">
-          <t indent="0" pn="section-5-3.3.1"><tt>total_earned</tt>: Lifetime earnings</t>
-        </li>
-        <li pn="section-5-3.4">
-          <t indent="0" pn="section-5-3.4.1"><tt>total_spent</tt>: Lifetime spending</t>
-        </li>
-        <li pn="section-5-3.5">
-          <t indent="0" pn="section-5-3.5.1"><tt>reserved</tt>: Credits reserved for pending intents (escrow)</t>
-        </li>
-        <li pn="section-5-3.6">
-          <t indent="0" pn="section-5-3.6.1"><tt>last_updated</tt>: Timestamp of last transaction</t>
-        </li>
-      </ul>
-      <t indent="0" pn="section-5-4"><strong>Credit Pricing</strong> (Phase 0.1 Defaults):</t>
-      <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-5-5">
-        <li pn="section-5-5.1">
-          <t indent="0" pn="section-5-5.1.1">Intent routing (per hop): 0.01 credits</t>
-        </li>
-        <li pn="section-5-5.2">
-          <t indent="0" pn="section-5-5.2.1">Negotiation round: 0.001 credits</t>
-        </li>
-        <li pn="section-5-5.3">
-          <t indent="0" pn="section-5-5.3.1">Discovery query: 0.005 credits</t>
-        </li>
-        <li pn="section-5-5.4">
-          <t indent="0" pn="section-5-5.4.1">Storage (per MB-day): 0.1 credits</t>
-        </li>
-        <li pn="section-5-5.5">
-          <t indent="0" pn="section-5-5.5.1">Compute (per second): Variable (agent-set)</t>
-        </li>
-      </ul>
-      <t indent="0" pn="section-5-6"><strong>Credit Operations</strong>:</t>
-      <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-5-7">
-        <li pn="section-5-7.1">
-          <t indent="0" pn="section-5-7.1.1"><strong>Minting</strong>: Initial credits minted by administrators (no autonomous minting)</t>
-        </li>
-        <li pn="section-5-7.2">
-          <t indent="0" pn="section-5-7.2.1"><strong>Transfer</strong>: Credits transferred on intent completion</t>
-        </li>
-        <li pn="section-5-7.3">
-          <t indent="0" pn="section-5-7.3.1"><strong>Escrow</strong>: Credits reserved for high-value intents</t>
-        </li>
-        <li pn="section-5-7.4">
-          <t indent="0" pn="section-5-7.4.1"><strong>Burning</strong>: Credits burned for withdrawal (manual approval)</t>
-        </li>
-      </ul>
-      <t indent="0" pn="section-5-8"><strong>Future: Blockchain Settlement (Phase 2)</strong>:</t>
-      <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-5-9">
-        <li pn="section-5-9.1">
-          <t indent="0" pn="section-5-9.1.1">ERC-20 token backing</t>
-        </li>
-        <li pn="section-5-9.2">
-          <t indent="0" pn="section-5-9.2.1">Periodic batching</t>
-        </li>
-        <li pn="section-5-9.3">
-          <t indent="0" pn="section-5-9.3.1">Proof-of-Stake</t>
-        </li>
-        <li pn="section-5-9.4">
-          <t indent="0" pn="section-5-9.4.1">Cross-deployment exchange</t>
-        </li>
-      </ul>
-    </section>
-    <section anchor="introduction" numbered="true" removeInRFC="false" toc="include" pn="section-6">
+    <section anchor="introduction" numbered="true" removeInRFC="false" toc="include" pn="section-1">
       <name slugifiedName="name-introduction">Introduction</name>
-      <t indent="0" pn="section-6-1">Traditional network protocols (TCP/IP, HTTP, SMTP) were designed for reliable byte stream delivery between machines. AINP represents a paradigm shift: it is designed for semantic intent delivery between AI agents, with built-in understanding, negotiation, and adaptation.</t>
-      <t indent="0" pn="section-6-2">AINP Phase 0.1 provides:
+      <t indent="0" pn="section-1-1">Traditional network protocols (TCP/IP, HTTP, SMTP) were designed for reliable byte stream delivery between machines. AINP represents a paradigm shift: it is designed for semantic intent delivery between AI agents, with built-in understanding, negotiation, and adaptation.</t>
+      <t indent="0" pn="section-1-2">AINP Phase 0.1 provides:
 - Wire format specification (JSON-LD + CBOR)
 - Message envelope structure with cryptographic signatures
 - Intent schemas for common agent interactions
 - Semantic address format with Decentralized Identifiers (DIDs)
 - Negotiation protocol for multi-agent consensus
 - Discovery and routing mechanisms</t>
-      <section anchor="terminology" numbered="true" removeInRFC="false" toc="include" pn="section-6.1">
+      <section anchor="terminology" numbered="true" removeInRFC="false" toc="include" pn="section-1.1">
         <name slugifiedName="name-terminology">Terminology</name>
-        <t indent="0" pn="section-6.1-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119" format="default" sectionFormat="of" derivedContent="RFC2119"/>.</t>
-        <section anchor="definitions" numbered="true" removeInRFC="false" toc="include" pn="section-6.1.1">
+        <t indent="0" pn="section-1.1-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119" format="default" sectionFormat="of" derivedContent="RFC2119"/>.</t>
+        <section anchor="definitions" numbered="true" removeInRFC="false" toc="include" pn="section-1.1.1">
           <name slugifiedName="name-definitions">Definitions</name>
-          <t indent="0" pn="section-6.1.1-1"><strong>Agent</strong>: An autonomous software entity capable of semantic understanding and intent exchange</t>
-          <t indent="0" pn="section-6.1.1-2"><strong>Intent</strong>: A semantic representation of an agent's goal, including embeddings and structured semantics</t>
-          <t indent="0" pn="section-6.1.1-3"><strong>Semantic Address</strong>: An identity-based address using DIDs and capability descriptors</t>
-          <t indent="0" pn="section-6.1.1-4"><strong>Negotiation</strong>: Multi-round protocol for establishing consensus on resources, terms, and capabilities</t>
-          <t indent="0" pn="section-6.1.1-5"><strong>Capability</strong>: A semantic description of what an agent can do, including natural language and embeddings</t>
-          <t indent="0" pn="section-6.1.1-6"><strong>Trust Vector</strong>: Multi-dimensional reputation score tracking reliability, honesty, competence, and timeliness</t>
+          <t indent="0" pn="section-1.1.1-1"><strong>Agent</strong>: An autonomous software entity capable of semantic understanding and intent exchange</t>
+          <t indent="0" pn="section-1.1.1-2"><strong>Intent</strong>: A semantic representation of an agent's goal, including embeddings and structured semantics</t>
+          <t indent="0" pn="section-1.1.1-3"><strong>Semantic Address</strong>: An identity-based address using DIDs and capability descriptors</t>
+          <t indent="0" pn="section-1.1.1-4"><strong>Negotiation</strong>: Multi-round protocol for establishing consensus on resources, terms, and capabilities</t>
+          <t indent="0" pn="section-1.1.1-5"><strong>Capability</strong>: A semantic description of what an agent can do, including natural language and embeddings</t>
+          <t indent="0" pn="section-1.1.1-6"><strong>Trust Vector</strong>: Multi-dimensional reputation score tracking reliability, honesty, competence, and timeliness</t>
         </section>
       </section>
     </section>
-    <section anchor="architecture-overview" numbered="true" removeInRFC="false" toc="include" pn="section-7">
+    <section anchor="architecture-overview" numbered="true" removeInRFC="false" toc="include" pn="section-2">
       <name slugifiedName="name-architecture-overview">Architecture Overview</name>
-      <t indent="0" pn="section-7-1">AINP consists of four layers:</t>
-      <t indent="0" pn="section-7-2"><tt>
-┌─────────────────────────────────────┐
-│   Intent Layer                      │  Semantic exchange (intents)
-├─────────────────────────────────────┤
-│   Negotiation Layer                 │  Multi-agent consensus
-├─────────────────────────────────────┤
-│   Routing Layer                     │  Semantic routing
-├─────────────────────────────────────┤
-│   Substrate Layer                   │  Physical transport (TCP/IP, etc.)
-└─────────────────────────────────────┘
+      <t indent="0" pn="section-2-1">AINP consists of four layers:</t>
+      <t indent="0" pn="section-2-2"><tt>
++-----------------------------+
+| Intent Layer                |  Semantic exchange (intents)
++-----------------------------+
+| Negotiation Layer           |  Multi-agent consensus
++-----------------------------+
+| Routing Layer              |  Semantic routing
++-----------------------------+
+| Substrate Layer            |  Physical transport (TCP/IP, etc.)
++-----------------------------+
 </tt></t>
-      <t indent="0" pn="section-7-3">Phase 0.1 runs as an overlay network on TCP/IP with WebSocket or HTTP/3 transport.</t>
+      <t indent="0" pn="section-2-3">Phase 0.1 runs as an overlay network on TCP/IP with WebSocket or HTTP/3 transport.</t>
     </section>
-    <section anchor="wire-format" numbered="true" removeInRFC="false" toc="include" pn="section-8">
+    <section anchor="wire-format" numbered="true" removeInRFC="false" toc="include" pn="section-3">
       <name slugifiedName="name-wire-format">Wire Format</name>
-      <section anchor="encoding" numbered="true" removeInRFC="false" toc="include" pn="section-8.1">
+      <section anchor="encoding" numbered="true" removeInRFC="false" toc="include" pn="section-3.1">
         <name slugifiedName="name-encoding">Encoding</name>
-        <t indent="0" pn="section-8.1-1">AINP messages MUST support both:
+        <t indent="0" pn="section-3.1-1">AINP messages MUST support both:
 - <strong>JSON-LD</strong>: Human-readable, linked data format with <tt>@context</tt> for semantic interoperability
 - <strong>CBOR</strong>: Binary encoding (<xref target="RFC8949" format="default" sectionFormat="of" derivedContent="RFC8949"/>) for efficient transmission</t>
-        <t indent="0" pn="section-8.1-2">Implementations SHOULD negotiate encoding during handshake. JSON-LD is the default for Phase 0.1.</t>
+        <t indent="0" pn="section-3.1-2">Implementations SHOULD negotiate encoding during handshake. JSON-LD is the default for Phase 0.1.</t>
       </section>
-      <section anchor="message-envelope" numbered="true" removeInRFC="false" toc="include" pn="section-8.2">
+      <section anchor="message-envelope" numbered="true" removeInRFC="false" toc="include" pn="section-3.2">
         <name slugifiedName="name-message-envelope">Message Envelope</name>
-        <t indent="0" pn="section-8.2-1">All AINP messages MUST be wrapped in an envelope structure:</t>
-        <t indent="0" pn="section-8.2-2"><tt>json
+        <t indent="0" pn="section-3.2-1">All AINP messages MUST be wrapped in an envelope structure:</t>
+        <t indent="0" pn="section-3.2-2"><tt>json
 {
   "version": "0.1.0",
   "msg_type": "INTENT",
@@ -572,82 +359,82 @@ if similarity &gt;= 0.7:
   "sig": "base64signature..."
 }
 </tt></t>
-        <section anchor="envelope-fields" numbered="true" removeInRFC="false" toc="include" pn="section-8.2.1">
+        <section anchor="envelope-fields" numbered="true" removeInRFC="false" toc="include" pn="section-3.2.1">
           <name slugifiedName="name-envelope-fields">Envelope Fields</name>
-          <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-8.2.1-1">
-            <li pn="section-8.2.1-1.1">
-              <t indent="0" pn="section-8.2.1-1.1.1"><tt>version</tt> (string, REQUIRED): Protocol version, MUST be "0.1.0"</t>
+          <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-3.2.1-1">
+            <li pn="section-3.2.1-1.1">
+              <t indent="0" pn="section-3.2.1-1.1.1"><tt>version</tt> (string, REQUIRED): Protocol version, MUST be "0.1.0"</t>
             </li>
-            <li pn="section-8.2.1-1.2">
-              <t indent="0" pn="section-8.2.1-1.2.1"><tt>msg_type</tt> (string, REQUIRED): Message type (see <xref target="msg-types" format="default" sectionFormat="of" derivedContent="Section 8.3"/>)</t>
+            <li pn="section-3.2.1-1.2">
+              <t indent="0" pn="section-3.2.1-1.2.1"><tt>msg_type</tt> (string, REQUIRED): Message type (see <xref target="msg-types" format="default" sectionFormat="of" derivedContent="Section 3.3"/>)</t>
             </li>
-            <li pn="section-8.2.1-1.3">
-              <t indent="0" pn="section-8.2.1-1.3.1"><tt>id</tt> (string, REQUIRED): UUID v4 for message identification</t>
+            <li pn="section-3.2.1-1.3">
+              <t indent="0" pn="section-3.2.1-1.3.1"><tt>id</tt> (string, REQUIRED): UUID v4 for message identification</t>
             </li>
-            <li pn="section-8.2.1-1.4">
-              <t indent="0" pn="section-8.2.1-1.4.1"><tt>timestamp</tt> (number, REQUIRED): Unix epoch milliseconds</t>
+            <li pn="section-3.2.1-1.4">
+              <t indent="0" pn="section-3.2.1-1.4.1"><tt>timestamp</tt> (number, REQUIRED): Unix epoch milliseconds</t>
             </li>
-            <li pn="section-8.2.1-1.5">
-              <t indent="0" pn="section-8.2.1-1.5.1"><tt>ttl</tt> (number, REQUIRED): Time-to-live in milliseconds</t>
+            <li pn="section-3.2.1-1.5">
+              <t indent="0" pn="section-3.2.1-1.5.1"><tt>ttl</tt> (number, REQUIRED): Time-to-live in milliseconds</t>
             </li>
-            <li pn="section-8.2.1-1.6">
-              <t indent="0" pn="section-8.2.1-1.6.1"><tt>trace_id</tt> (string, REQUIRED): Distributed tracing UUID for thread tracking</t>
+            <li pn="section-3.2.1-1.6">
+              <t indent="0" pn="section-3.2.1-1.6.1"><tt>trace_id</tt> (string, REQUIRED): Distributed tracing UUID for thread tracking</t>
             </li>
-            <li pn="section-8.2.1-1.7">
-              <t indent="0" pn="section-8.2.1-1.7.1"><tt>from_did</tt> (string, REQUIRED): Sender DID (<xref target="W3C.DID" format="default" sectionFormat="of" derivedContent="W3C.DID"/>)</t>
+            <li pn="section-3.2.1-1.7">
+              <t indent="0" pn="section-3.2.1-1.7.1"><tt>from_did</tt> (string, REQUIRED): Sender DID (<xref target="W3C.DID" format="default" sectionFormat="of" derivedContent="W3C.DID"/>)</t>
             </li>
-            <li pn="section-8.2.1-1.8">
-              <t indent="0" pn="section-8.2.1-1.8.1"><tt>to_did</tt> (string, OPTIONAL): Recipient DID (for direct addressing)</t>
+            <li pn="section-3.2.1-1.8">
+              <t indent="0" pn="section-3.2.1-1.8.1"><tt>to_did</tt> (string, OPTIONAL): Recipient DID (for direct addressing)</t>
             </li>
-            <li pn="section-8.2.1-1.9">
-              <t indent="0" pn="section-8.2.1-1.9.1"><tt>to_query</tt> (object, OPTIONAL): Semantic query (alternative to <tt>to_did</tt>, see <xref target="capability-query" format="default" sectionFormat="of" derivedContent="Section 8.5"/>)</t>
+            <li pn="section-3.2.1-1.9">
+              <t indent="0" pn="section-3.2.1-1.9.1"><tt>to_query</tt> (object, OPTIONAL): Semantic query (alternative to <tt>to_did</tt>, see <xref target="capability-query" format="default" sectionFormat="of" derivedContent="Section 3.5"/>)</t>
             </li>
-            <li pn="section-8.2.1-1.10">
-              <t indent="0" pn="section-8.2.1-1.10.1"><tt>schema</tt> (string, REQUIRED): JSON-LD context URI</t>
+            <li pn="section-3.2.1-1.10">
+              <t indent="0" pn="section-3.2.1-1.10.1"><tt>schema</tt> (string, REQUIRED): JSON-LD context URI</t>
             </li>
-            <li pn="section-8.2.1-1.11">
-              <t indent="0" pn="section-8.2.1-1.11.1"><tt>qos</tt> (object, REQUIRED): Quality of Service parameters (see <xref target="qos" format="default" sectionFormat="of" derivedContent="Section 8.4"/>)</t>
+            <li pn="section-3.2.1-1.11">
+              <t indent="0" pn="section-3.2.1-1.11.1"><tt>qos</tt> (object, REQUIRED): Quality of Service parameters (see <xref target="qos" format="default" sectionFormat="of" derivedContent="Section 3.4"/>)</t>
             </li>
-            <li pn="section-8.2.1-1.12">
-              <t indent="0" pn="section-8.2.1-1.12.1"><tt>payload</tt> (object, OPTIONAL): Application payload (intent, negotiation, etc.)</t>
+            <li pn="section-3.2.1-1.12">
+              <t indent="0" pn="section-3.2.1-1.12.1"><tt>payload</tt> (object, OPTIONAL): Application payload (intent, negotiation, etc.)</t>
             </li>
-            <li pn="section-8.2.1-1.13">
-              <t indent="0" pn="section-8.2.1-1.13.1"><tt>sig</tt> (string, REQUIRED): Ed25519 signature in base64 encoding</t>
+            <li pn="section-3.2.1-1.13">
+              <t indent="0" pn="section-3.2.1-1.13.1"><tt>sig</tt> (string, REQUIRED): Ed25519 signature in base64 encoding</t>
             </li>
           </ul>
         </section>
       </section>
-      <section anchor="msg-types" numbered="true" removeInRFC="false" toc="include" pn="section-8.3">
+      <section anchor="msg-types" numbered="true" removeInRFC="false" toc="include" pn="section-3.3">
         <name slugifiedName="name-message-types">Message Types</name>
-        <t indent="0" pn="section-8.3-1">AINP defines the following message types:</t>
-        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-8.3-2">
-          <li pn="section-8.3-2.1">
-            <t indent="0" pn="section-8.3-2.1.1"><tt>ADVERTISE</tt>: Publish capabilities to discovery index</t>
+        <t indent="0" pn="section-3.3-1">AINP defines the following message types:</t>
+        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-3.3-2">
+          <li pn="section-3.3-2.1">
+            <t indent="0" pn="section-3.3-2.1.1"><tt>ADVERTISE</tt>: Publish capabilities to discovery index</t>
           </li>
-          <li pn="section-8.3-2.2">
-            <t indent="0" pn="section-8.3-2.2.1"><tt>DISCOVER</tt>: Query for agents by capability</t>
+          <li pn="section-3.3-2.2">
+            <t indent="0" pn="section-3.3-2.2.1"><tt>DISCOVER</tt>: Query for agents by capability</t>
           </li>
-          <li pn="section-8.3-2.3">
-            <t indent="0" pn="section-8.3-2.3.1"><tt>DISCOVER_RESULT</tt>: Discovery results</t>
+          <li pn="section-3.3-2.3">
+            <t indent="0" pn="section-3.3-2.3.1"><tt>DISCOVER_RESULT</tt>: Discovery results</t>
           </li>
-          <li pn="section-8.3-2.4">
-            <t indent="0" pn="section-8.3-2.4.1"><tt>NEGOTIATE</tt>: Multi-round negotiation</t>
+          <li pn="section-3.3-2.4">
+            <t indent="0" pn="section-3.3-2.4.1"><tt>NEGOTIATE</tt>: Multi-round negotiation</t>
           </li>
-          <li pn="section-8.3-2.5">
-            <t indent="0" pn="section-8.3-2.5.1"><tt>INTENT</tt>: Send intent payload</t>
+          <li pn="section-3.3-2.5">
+            <t indent="0" pn="section-3.3-2.5.1"><tt>INTENT</tt>: Send intent payload</t>
           </li>
-          <li pn="section-8.3-2.6">
-            <t indent="0" pn="section-8.3-2.6.1"><tt>RESULT</tt>: Response with optional proof</t>
+          <li pn="section-3.3-2.6">
+            <t indent="0" pn="section-3.3-2.6.1"><tt>RESULT</tt>: Response with optional proof</t>
           </li>
-          <li pn="section-8.3-2.7">
-            <t indent="0" pn="section-8.3-2.7.1"><tt>ERROR</tt>: Error response</t>
+          <li pn="section-3.3-2.7">
+            <t indent="0" pn="section-3.3-2.7.1"><tt>ERROR</tt>: Error response</t>
           </li>
         </ul>
       </section>
-      <section anchor="qos" numbered="true" removeInRFC="false" toc="include" pn="section-8.4">
+      <section anchor="qos" numbered="true" removeInRFC="false" toc="include" pn="section-3.4">
         <name slugifiedName="name-quality-of-service-paramete">Quality of Service Parameters</name>
-        <t indent="0" pn="section-8.4-1">QoS parameters enable priority-based routing and resource allocation:</t>
-        <t indent="0" pn="section-8.4-2"><tt>json
+        <t indent="0" pn="section-3.4-1">QoS parameters enable priority-based routing and resource allocation:</t>
+        <t indent="0" pn="section-3.4-2"><tt>json
 {
   "urgency": 0.7,        // 0-1, time sensitivity
   "importance": 0.8,     // 0-1, impact magnitude
@@ -656,23 +443,23 @@ if similarity &gt;= 0.7:
   "bid": 5               // Token amount or credits (non-negative)
 }
 </tt></t>
-        <t indent="0" pn="section-8.4-3"><strong>Priority Calculation</strong>: Implementations SHOULD calculate message priority as:</t>
-        <t indent="0" pn="section-8.4-4"><tt>
-priority = (urgency × w_urgency) + (importance × w_importance) + 
-           (novelty × w_novelty) + (ethicalWeight × w_ethical)
-adjusted_priority = priority + 0.5 × tanh(bid / bid_scale)
+        <t indent="0" pn="section-3.4-3"><strong>Priority Calculation</strong>: Implementations SHOULD calculate message priority as:</t>
+        <t indent="0" pn="section-3.4-4"><tt>
+priority = (urgency * w_urgency) + (importance * w_importance) + 
+           (novelty * w_novelty) + (ethicalWeight * w_ethical)
+adjusted_priority = priority + 0.5 * tanh(bid / bid_scale)
 </tt></t>
-        <t indent="0" pn="section-8.4-5">Where <tt>bid_scale</tt> is node-configurable (RECOMMENDED default: 10 credits).</t>
-        <t indent="0" pn="section-8.4-6"><strong>Default Weights</strong>:
+        <t indent="0" pn="section-3.4-5">Where <tt>bid_scale</tt> is node-configurable (RECOMMENDED default: 10 credits).</t>
+        <t indent="0" pn="section-3.4-6"><strong>Default Weights</strong>:
 - <tt>w_urgency = 0.3</tt>
 - <tt>w_importance = 0.3</tt>
 - <tt>w_novelty = 0.2</tt>
 - <tt>w_ethical = 0.2</tt></t>
       </section>
-      <section anchor="capability-query" numbered="true" removeInRFC="false" toc="include" pn="section-8.5">
+      <section anchor="capability-query" numbered="true" removeInRFC="false" toc="include" pn="section-3.5">
         <name slugifiedName="name-capability-query">Capability Query</name>
-        <t indent="0" pn="section-8.5-1">For semantic discovery, agents use capability queries:</t>
-        <t indent="0" pn="section-8.5-2"><tt>json
+        <t indent="0" pn="section-3.5-1">For semantic discovery, agents use capability queries:</t>
+        <t indent="0" pn="section-3.5-2"><tt>json
 {
   "description": "Find agents who can schedule meetings",
   "embedding": "base64-encoded Float32Array[1536]",
@@ -683,16 +470,16 @@ adjusted_priority = priority + 0.5 × tanh(bid / bid_scale)
 }
 </tt></t>
       </section>
-      <section anchor="signature-format" numbered="true" removeInRFC="false" toc="include" pn="section-8.6">
+      <section anchor="signature-format" numbered="true" removeInRFC="false" toc="include" pn="section-3.6">
         <name slugifiedName="name-signature-format">Signature Format</name>
-        <t indent="0" pn="section-8.6-1">Messages MUST be signed using Ed25519 (<xref target="Ed25519"/>) with detached signatures in base64 encoding.</t>
-        <t indent="0" pn="section-8.6-2"><strong>Signing Process</strong>:
+        <t indent="0" pn="section-3.6-1">Messages MUST be signed using Ed25519 (<xref target="Ed25519"/>) with detached signatures in base64 encoding.</t>
+        <t indent="0" pn="section-3.6-2"><strong>Signing Process</strong>:
 1. Serialize envelope fields (excluding <tt>sig</tt>) to canonical JSON (<xref target="RFC8785" format="default" sectionFormat="of" derivedContent="RFC8785"/>)
 2. Compute SHA-256 hash of canonical JSON
 3. Sign hash with Ed25519 private key
 4. Encode signature as base64
 5. Add <tt>sig</tt> field to envelope</t>
-        <t indent="0" pn="section-8.6-3"><strong>Verification Process</strong>:
+        <t indent="0" pn="section-3.6-3"><strong>Verification Process</strong>:
 1. Extract <tt>sig</tt> field
 2. Remove <tt>sig</tt> from envelope
 3. Serialize remaining fields to canonical JSON (<xref target="RFC8785" format="default" sectionFormat="of" derivedContent="RFC8785"/>)
@@ -700,18 +487,18 @@ adjusted_priority = priority + 0.5 × tanh(bid / bid_scale)
 5. Verify signature using Ed25519 public key from <tt>from_did</tt></t>
       </section>
     </section>
-    <section anchor="semantic-addresses" numbered="true" removeInRFC="false" toc="include" pn="section-9">
+    <section anchor="semantic-addresses" numbered="true" removeInRFC="false" toc="include" pn="section-4">
       <name slugifiedName="name-semantic-addresses">Semantic Addresses</name>
-      <section anchor="decentralized-identifiers-dids" numbered="true" removeInRFC="false" toc="include" pn="section-9.1">
+      <section anchor="decentralized-identifiers-dids" numbered="true" removeInRFC="false" toc="include" pn="section-4.1">
         <name slugifiedName="name-decentralized-identifiers-d">Decentralized Identifiers (DIDs)</name>
-        <t indent="0" pn="section-9.1-1">Agents MUST have a DID conforming to <xref target="W3C.DID" format="default" sectionFormat="of" derivedContent="W3C.DID"/>.</t>
-        <t indent="0" pn="section-9.1-2"><strong>Supported DID Methods</strong> (Phase 0.1):
+        <t indent="0" pn="section-4.1-1">Agents MUST have a DID conforming to <xref target="W3C.DID" format="default" sectionFormat="of" derivedContent="W3C.DID"/>.</t>
+        <t indent="0" pn="section-4.1-2"><strong>Supported DID Methods</strong> (Phase 0.1):
 - <tt>did:key:</tt> - Self-certified cryptographic keys
 - <tt>did:web:</tt> - Web-based identifiers</t>
       </section>
-      <section anchor="semantic-address-structure" numbered="true" removeInRFC="false" toc="include" pn="section-9.2">
+      <section anchor="semantic-address-structure" numbered="true" removeInRFC="false" toc="include" pn="section-4.2">
         <name slugifiedName="name-semantic-address-structure">Semantic Address Structure</name>
-        <t indent="0" pn="section-9.2-1"><tt>json
+        <t indent="0" pn="section-4.2-1"><tt>json
 {
   "did": "did:key:z6Mk...",
   "capabilities": [
@@ -744,17 +531,17 @@ adjusted_priority = priority + 0.5 × tanh(bid / bid_scale)
 </tt></t>
       </section>
     </section>
-    <section anchor="intent-schemas" numbered="true" removeInRFC="false" toc="include" pn="section-10">
+    <section anchor="intent-schemas" numbered="true" removeInRFC="false" toc="include" pn="section-5">
       <name slugifiedName="name-intent-schemas">Intent Schemas</name>
-      <t indent="0" pn="section-10-1">AINP defines six core intent types for Phase 0.1. All intents MUST include:
+      <t indent="0" pn="section-5-1">AINP defines six core intent types for Phase 0.1. All intents MUST include:
 - JSON-LD <tt>@context</tt> for semantic interoperability
 - Embedding (Embedding object; base64 Float32Array inside <tt>b64</tt>)
 - Budget constraints
 - Semantic payload</t>
-      <section anchor="requestmeeting-intent" numbered="true" removeInRFC="false" toc="include" pn="section-10.1">
+      <section anchor="requestmeeting-intent" numbered="true" removeInRFC="false" toc="include" pn="section-5.1">
         <name slugifiedName="name-request_meeting-intent">REQUEST_MEETING Intent</name>
-        <t indent="0" pn="section-10.1-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/request-meeting/v1</tt></t>
-        <t indent="0" pn="section-10.1-2"><tt>json
+        <t indent="0" pn="section-5.1-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/request-meeting/v1</tt></t>
+        <t indent="0" pn="section-5.1-2"><tt>json
 {
   "@context": "https://ainp.dev/contexts/meeting/v1",
   "@type": "RequestMeeting",
@@ -784,10 +571,10 @@ adjusted_priority = priority + 0.5 × tanh(bid / bid_scale)
 }
 </tt></t>
       </section>
-      <section anchor="approvalrequest-intent" numbered="true" removeInRFC="false" toc="include" pn="section-10.2">
+      <section anchor="approvalrequest-intent" numbered="true" removeInRFC="false" toc="include" pn="section-5.2">
         <name slugifiedName="name-approval_request-intent">APPROVAL_REQUEST Intent</name>
-        <t indent="0" pn="section-10.2-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/approval-request/v1</tt></t>
-        <t indent="0" pn="section-10.2-2"><tt>json
+        <t indent="0" pn="section-5.2-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/approval-request/v1</tt></t>
+        <t indent="0" pn="section-5.2-2"><tt>json
 {
   "@context": "https://ainp.dev/contexts/approval/v1",
   "@type": "ApprovalRequest",
@@ -815,10 +602,10 @@ adjusted_priority = priority + 0.5 × tanh(bid / bid_scale)
 }
 </tt></t>
       </section>
-      <section anchor="submitinfo-intent" numbered="true" removeInRFC="false" toc="include" pn="section-10.3">
+      <section anchor="submitinfo-intent" numbered="true" removeInRFC="false" toc="include" pn="section-5.3">
         <name slugifiedName="name-submit_info-intent">SUBMIT_INFO Intent</name>
-        <t indent="0" pn="section-10.3-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/submit-info/v1</tt></t>
-        <t indent="0" pn="section-10.3-2"><tt>json
+        <t indent="0" pn="section-5.3-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/submit-info/v1</tt></t>
+        <t indent="0" pn="section-5.3-2"><tt>json
 {
   "@context": "https://ainp.dev/contexts/submit-info/v1",
   "@type": "SubmitInfo",
@@ -846,10 +633,10 @@ adjusted_priority = priority + 0.5 × tanh(bid / bid_scale)
 }
 </tt></t>
       </section>
-      <section anchor="invoice-intent" numbered="true" removeInRFC="false" toc="include" pn="section-10.4">
+      <section anchor="invoice-intent" numbered="true" removeInRFC="false" toc="include" pn="section-5.4">
         <name slugifiedName="name-invoice-intent">INVOICE Intent</name>
-        <t indent="0" pn="section-10.4-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/invoice/v1</tt></t>
-        <t indent="0" pn="section-10.4-2"><tt>json
+        <t indent="0" pn="section-5.4-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/invoice/v1</tt></t>
+        <t indent="0" pn="section-5.4-2"><tt>json
 {
   "@context": "https://ainp.dev/contexts/invoice/v1",
   "@type": "Invoice",
@@ -884,10 +671,10 @@ adjusted_priority = priority + 0.5 × tanh(bid / bid_scale)
 }
 </tt></t>
       </section>
-      <section anchor="freeformnote-intent" numbered="true" removeInRFC="false" toc="include" pn="section-10.5">
+      <section anchor="freeformnote-intent" numbered="true" removeInRFC="false" toc="include" pn="section-5.5">
         <name slugifiedName="name-freeform_note-intent">FREEFORM_NOTE Intent</name>
-        <t indent="0" pn="section-10.5-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/freeform-note/v1</tt></t>
-        <t indent="0" pn="section-10.5-2"><tt>json
+        <t indent="0" pn="section-5.5-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/freeform-note/v1</tt></t>
+        <t indent="0" pn="section-5.5-2"><tt>json
 {
   "@context": "https://ainp.dev/contexts/freeform/v1",
   "@type": "FreeformNote",
@@ -919,10 +706,10 @@ adjusted_priority = priority + 0.5 × tanh(bid / bid_scale)
 }
 </tt></t>
       </section>
-      <section anchor="requestservice-intent" numbered="true" removeInRFC="false" toc="include" pn="section-10.6">
+      <section anchor="requestservice-intent" numbered="true" removeInRFC="false" toc="include" pn="section-5.6">
         <name slugifiedName="name-request_service-intent">REQUEST_SERVICE Intent</name>
-        <t indent="0" pn="section-10.6-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/request-service/v1</tt></t>
-        <t indent="0" pn="section-10.6-2"><tt>json
+        <t indent="0" pn="section-5.6-1"><strong>Schema URI</strong>: <tt>https://ainp.dev/schemas/intents/request-service/v1</tt></t>
+        <t indent="0" pn="section-5.6-2"><tt>json
 {
   "@context": "https://ainp.dev/contexts/service/v1",
   "@type": "RequestService",
@@ -961,22 +748,22 @@ adjusted_priority = priority + 0.5 × tanh(bid / bid_scale)
 </tt></t>
       </section>
     </section>
-    <section anchor="negotiation-protocol" numbered="true" removeInRFC="false" toc="include" pn="section-11">
+    <section anchor="negotiation-protocol" numbered="true" removeInRFC="false" toc="include" pn="section-6">
       <name slugifiedName="name-negotiation-protocol">Negotiation Protocol</name>
-      <section anchor="negotiation-flow" numbered="true" removeInRFC="false" toc="include" pn="section-11.1">
+      <section anchor="negotiation-flow" numbered="true" removeInRFC="false" toc="include" pn="section-6.1">
         <name slugifiedName="name-negotiation-flow">Negotiation Flow</name>
-        <t indent="0" pn="section-11.1-1">Negotiation MUST follow this state machine:</t>
-        <t indent="0" pn="section-11.1-2"><tt>
-START → OFFER → COUNTER ↔ COUNTER → ACCEPT
-                  ↓         ↓
+        <t indent="0" pn="section-6.1-1">Negotiation MUST follow this state machine:</t>
+        <t indent="0" pn="section-6.1-2"><tt>
+START -&gt; OFFER -&gt; COUNTER &lt;-&gt; COUNTER -&gt; ACCEPT
+                  |         |
                 ABORT     TIMEOUT
-                  ↓         ↓
+                  |         |
                 REJECT    REJECT
 </tt></t>
       </section>
-      <section anchor="negotiation-message-structure" numbered="true" removeInRFC="false" toc="include" pn="section-11.2">
+      <section anchor="negotiation-message-structure" numbered="true" removeInRFC="false" toc="include" pn="section-6.2">
         <name slugifiedName="name-negotiation-message-structu">Negotiation Message Structure</name>
-        <t indent="0" pn="section-11.2-1"><tt>json
+        <t indent="0" pn="section-6.2-1"><tt>json
 {
   "negotiation_id": "uuid",
   "round": 1,
@@ -995,7 +782,7 @@ START → OFFER → COUNTER ↔ COUNTER → ACCEPT
   }
 }
 </tt></t>
-        <t indent="0" pn="section-11.2-2"><strong>Negotiation Phases</strong>:
+        <t indent="0" pn="section-6.2-2"><strong>Negotiation Phases</strong>:
 - <tt>OFFER</tt>: Initial offer
 - <tt>COUNTER</tt>: Counter-offer
 - <tt>ACCEPT</tt>: Accept proposal
@@ -1003,30 +790,30 @@ START → OFFER → COUNTER ↔ COUNTER → ACCEPT
 - <tt>ABORT</tt>: Abort negotiation
 - <tt>TIMEOUT</tt>: Timeout occurred</t>
       </section>
-      <section anchor="negotiation-convergence" numbered="true" removeInRFC="false" toc="include" pn="section-11.3">
+      <section anchor="negotiation-convergence" numbered="true" removeInRFC="false" toc="include" pn="section-6.3">
         <name slugifiedName="name-negotiation-convergence">Negotiation Convergence</name>
-        <t indent="0" pn="section-11.3-1">Implementations MAY auto-accept proposals when convergence threshold is met:</t>
-        <t indent="0" pn="section-11.3-2">```
+        <t indent="0" pn="section-6.3-1">Implementations MAY auto-accept proposals when convergence threshold is met:</t>
+        <t indent="0" pn="section-6.3-2">```
 convergence_score = 1 - (abs(offer.price - counter.price) / max(offer.price, counter.price))</t>
-        <t indent="0" pn="section-11.3-3">if convergence_score &gt;= convergence_threshold:
+        <t indent="0" pn="section-6.3-3">if convergence_score &gt;= convergence_threshold:
   auto_accept()
 ```</t>
       </section>
-      <section anchor="timeout-behavior" numbered="true" removeInRFC="false" toc="include" pn="section-11.4">
+      <section anchor="timeout-behavior" numbered="true" removeInRFC="false" toc="include" pn="section-6.4">
         <name slugifiedName="name-timeout-behavior">Timeout Behavior</name>
-        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-11.4-1">
-          <li pn="section-11.4-1.1">
-            <t indent="0" pn="section-11.4-1.1.1"><strong>Per-round timeout</strong>: If no response within <tt>timeout_per_round_ms</tt>, sender MAY send TIMEOUT message</t>
+        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-6.4-1">
+          <li pn="section-6.4-1.1">
+            <t indent="0" pn="section-6.4-1.1.1"><strong>Per-round timeout</strong>: If no response within <tt>timeout_per_round_ms</tt>, sender MAY send TIMEOUT message</t>
           </li>
-          <li pn="section-11.4-1.2">
-            <t indent="0" pn="section-11.4-1.2.1"><strong>Overall timeout</strong>: If negotiation exceeds <tt>max_rounds × timeout_per_round_ms</tt>, MUST terminate with TIMEOUT</t>
+          <li pn="section-6.4-1.2">
+            <t indent="0" pn="section-6.4-1.2.1"><strong>Overall timeout</strong>: If negotiation exceeds <tt>max_rounds * timeout_per_round_ms</tt>, MUST terminate with TIMEOUT</t>
           </li>
         </ul>
       </section>
-      <section anchor="multi-party-negotiation" numbered="true" removeInRFC="false" toc="include" pn="section-11.5">
+      <section anchor="multi-party-negotiation" numbered="true" removeInRFC="false" toc="include" pn="section-6.5">
         <name slugifiedName="name-multi-party-negotiation">Multi-Party Negotiation</name>
-        <t indent="0" pn="section-11.5-1">For intents involving multiple agents (e.g., scheduling a meeting with 5 participants, multi-signature approvals), negotiation MUST support group consensus mechanisms.</t>
-        <t indent="0" pn="section-11.5-2"><strong>Group Proposal Structure</strong>:
+        <t indent="0" pn="section-6.5-1">For intents involving multiple agents (e.g., scheduling a meeting with 5 participants, multi-signature approvals), negotiation MUST support group consensus mechanisms.</t>
+        <t indent="0" pn="section-6.5-2"><strong>Group Proposal Structure</strong>:
 <tt>json
 {
   "negotiation_id": "multi-abc123",
@@ -1042,11 +829,11 @@ convergence_score = 1 - (abs(offer.price - counter.price) / max(offer.price, cou
   }
 }
 </tt></t>
-        <t indent="0" pn="section-11.5-3"><strong>Voting Mechanisms</strong>:
+        <t indent="0" pn="section-6.5-3"><strong>Voting Mechanisms</strong>:
 1. <strong>Unanimous</strong>: All agents must ACCEPT (default for high-stakes)
 2. <strong>Majority</strong>: More than 50% must ACCEPT
 3. <strong>Weighted</strong>: Votes weighted by trust scores</t>
-        <t indent="0" pn="section-11.5-4"><strong>Multi-Party Flow</strong>:
+        <t indent="0" pn="section-6.5-4"><strong>Multi-Party Flow</strong>:
 1. Fan-out: Send NEGOTIATE(OFFER) to all participants
 2. Collection: Each agent responds with individual proposal
 3. Aggregation: Broker aggregates and computes consensus score
@@ -1055,31 +842,31 @@ convergence_score = 1 - (abs(offer.price - counter.price) / max(offer.price, cou
 6. Termination: ABORT after <tt>max_rounds</tt> or timeout if no consensus</t>
       </section>
     </section>
-    <section anchor="protocol-handshake-sequence" numbered="true" removeInRFC="false" toc="include" pn="section-12">
+    <section anchor="protocol-handshake-sequence" numbered="true" removeInRFC="false" toc="include" pn="section-7">
       <name slugifiedName="name-protocol-handshake-sequence">Protocol Handshake Sequence</name>
-      <section anchor="five-step-handshake" numbered="true" removeInRFC="false" toc="include" pn="section-12.1">
+      <section anchor="five-step-handshake" numbered="true" removeInRFC="false" toc="include" pn="section-7.1">
         <name slugifiedName="name-five-step-handshake">Five-Step Handshake</name>
-        <ol spacing="compact" type="1" indent="adaptive" start="1" pn="section-12.1-1"><li pn="section-12.1-1.1" derivedCounter="1.">
-            <t indent="0" pn="section-12.1-1.1.1"><strong>ADVERTISE</strong>: Agent publishes capabilities to discovery index</t>
+        <ol spacing="compact" type="1" indent="adaptive" start="1" pn="section-7.1-1"><li pn="section-7.1-1.1" derivedCounter="1.">
+            <t indent="0" pn="section-7.1-1.1.1"><strong>ADVERTISE</strong>: Agent publishes capabilities to discovery index</t>
           </li>
-          <li pn="section-12.1-1.2" derivedCounter="2.">
-            <t indent="0" pn="section-12.1-1.2.1"><strong>DISCOVER</strong>: Agent queries for matching capabilities</t>
+          <li pn="section-7.1-1.2" derivedCounter="2.">
+            <t indent="0" pn="section-7.1-1.2.1"><strong>DISCOVER</strong>: Agent queries for matching capabilities</t>
           </li>
-          <li pn="section-12.1-1.3" derivedCounter="3.">
-            <t indent="0" pn="section-12.1-1.3.1"><strong>NEGOTIATE</strong>: Agents negotiate terms (OFFER → COUNTER → ACCEPT)</t>
+          <li pn="section-7.1-1.3" derivedCounter="3.">
+            <t indent="0" pn="section-7.1-1.3.1"><strong>NEGOTIATE</strong>: Agents negotiate terms (OFFER -&gt; COUNTER -&gt; ACCEPT)</t>
           </li>
-          <li pn="section-12.1-1.4" derivedCounter="4.">
-            <t indent="0" pn="section-12.1-1.4.1"><strong>INTENT</strong>: Agent sends intent after successful negotiation</t>
+          <li pn="section-7.1-1.4" derivedCounter="4.">
+            <t indent="0" pn="section-7.1-1.4.1"><strong>INTENT</strong>: Agent sends intent after successful negotiation</t>
           </li>
-          <li pn="section-12.1-1.5" derivedCounter="5.">
-            <t indent="0" pn="section-12.1-1.5.1"><strong>RESULT</strong>: Recipient responds with result</t>
+          <li pn="section-7.1-1.5" derivedCounter="5.">
+            <t indent="0" pn="section-7.1-1.5.1"><strong>RESULT</strong>: Recipient responds with result</t>
           </li>
         </ol>
       </section>
-      <section anchor="advertise-phase" numbered="true" removeInRFC="false" toc="include" pn="section-12.2">
+      <section anchor="advertise-phase" numbered="true" removeInRFC="false" toc="include" pn="section-7.2">
         <name slugifiedName="name-advertise-phase">ADVERTISE Phase</name>
-        <t indent="0" pn="section-12.2-1">Agent publishes capabilities to discovery index:</t>
-        <t indent="0" pn="section-12.2-2"><tt>json
+        <t indent="0" pn="section-7.2-1">Agent publishes capabilities to discovery index:</t>
+        <t indent="0" pn="section-7.2-2"><tt>json
 {
   "version": "0.1.0",
   "msg_type": "ADVERTISE",
@@ -1123,10 +910,10 @@ convergence_score = 1 - (abs(offer.price - counter.price) / max(offer.price, cou
 }
 </tt></t>
       </section>
-      <section anchor="discover-phase" numbered="true" removeInRFC="false" toc="include" pn="section-12.3">
+      <section anchor="discover-phase" numbered="true" removeInRFC="false" toc="include" pn="section-7.3">
         <name slugifiedName="name-discover-phase">DISCOVER Phase</name>
-        <t indent="0" pn="section-12.3-1">Agent queries for capabilities:</t>
-        <t indent="0" pn="section-12.3-2"><tt>json
+        <t indent="0" pn="section-7.3-1">Agent queries for capabilities:</t>
+        <t indent="0" pn="section-7.3-2"><tt>json
 {
   "version": "0.1.0",
   "msg_type": "DISCOVER",
@@ -1154,12 +941,12 @@ convergence_score = 1 - (abs(offer.price - counter.price) / max(offer.price, cou
   "sig": "base64signature..."
 }
 </tt></t>
-        <t indent="0" pn="section-12.3-3">Discovery index responds with <tt>DISCOVER_RESULT</tt> containing matching agents with similarity scores, trust ratings, and estimated latency.</t>
+        <t indent="0" pn="section-7.3-3">Discovery index responds with <tt>DISCOVER_RESULT</tt> containing matching agents with similarity scores, trust ratings, and estimated latency.</t>
       </section>
-      <section anchor="error-phase" numbered="true" removeInRFC="false" toc="include" pn="section-12.4">
+      <section anchor="error-phase" numbered="true" removeInRFC="false" toc="include" pn="section-7.4">
         <name slugifiedName="name-error-phase">ERROR Phase</name>
-        <t indent="0" pn="section-12.4-1">On error, agent MUST respond with ERROR message:</t>
-        <t indent="0" pn="section-12.4-2"><tt>json
+        <t indent="0" pn="section-7.4-1">On error, agent MUST respond with ERROR message:</t>
+        <t indent="0" pn="section-7.4-2"><tt>json
 {
   "msg_type": "ERROR",
   "error_code": "TIMEOUT",
@@ -1168,7 +955,7 @@ convergence_score = 1 - (abs(offer.price - counter.price) / max(offer.price, cou
   "retry_after_ms": 5000
 }
 </tt></t>
-        <t indent="0" pn="section-12.4-3"><strong>Standard Error Codes</strong>:
+        <t indent="0" pn="section-7.4-3"><strong>Standard Error Codes</strong>:
 - <tt>INVALID_SIGNATURE</tt>
 - <tt>UNAUTHORIZED</tt>
 - <tt>UNSUPPORTED_SCHEMA</tt>
@@ -1182,15 +969,15 @@ convergence_score = 1 - (abs(offer.price - counter.price) / max(offer.price, cou
 - <tt>AGENT_OFFLINE</tt>
 - <tt>INTERNAL_ERROR</tt></t>
       </section>
-      <section anchor="offline-intent-queueing" numbered="true" removeInRFC="false" toc="include" pn="section-12.5">
+      <section anchor="offline-intent-queueing" numbered="true" removeInRFC="false" toc="include" pn="section-7.5">
         <name slugifiedName="name-offline-intent-queueing">Offline Intent Queueing</name>
-        <t indent="0" pn="section-12.5-1">When recipient agent is offline or unreachable, broker MAY queue intents for later delivery instead of immediately failing.</t>
-        <t indent="0" pn="section-12.5-2"><strong>Queue Behavior</strong>:
+        <t indent="0" pn="section-7.5-1">When recipient agent is offline or unreachable, broker MAY queue intents for later delivery instead of immediately failing.</t>
+        <t indent="0" pn="section-7.5-2"><strong>Queue Behavior</strong>:
 - TTL enforcement: Intent expires after <tt>ttl</tt> milliseconds from original <tt>timestamp</tt>
 - Broker SHOULD send ERROR to sender immediately: <tt>error_code: "AGENT_OFFLINE"</tt>
 - ERROR response SHOULD include <tt>retry_after_ms</tt> field
 - Broker MUST NOT queue intents indefinitely (maximum queue time = <tt>ttl</tt>)</t>
-        <t indent="0" pn="section-12.5-3"><strong>Queue Delivery Protocol</strong>:
+        <t indent="0" pn="section-7.5-3"><strong>Queue Delivery Protocol</strong>:
 1. Agent Offline Detection: Broker detects agent offline
 2. Queue Intent: Insert into queue with <tt>expires_at = timestamp + ttl</tt>
 3. Send ERROR: Notify sender with <tt>AGENT_OFFLINE</tt> and <tt>retry_after_ms</tt>
@@ -1200,120 +987,120 @@ convergence_score = 1 - (abs(offer.price - counter.price) / max(offer.price, cou
 7. Expiration Cleanup: Periodically purge expired intents</t>
       </section>
     </section>
-    <section anchor="security-considerations" numbered="true" removeInRFC="false" toc="include" pn="section-13">
+    <section anchor="security-considerations" numbered="true" removeInRFC="false" toc="include" pn="section-8">
       <name slugifiedName="name-security-considerations">Security Considerations</name>
-      <section anchor="authentication" numbered="true" removeInRFC="false" toc="include" pn="section-13.1">
+      <section anchor="authentication" numbered="true" removeInRFC="false" toc="include" pn="section-8.1">
         <name slugifiedName="name-authentication">Authentication</name>
-        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-13.1-1">
-          <li pn="section-13.1-1.1">
-            <t indent="0" pn="section-13.1-1.1.1">All messages MUST be signed with Ed25519</t>
+        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-8.1-1">
+          <li pn="section-8.1-1.1">
+            <t indent="0" pn="section-8.1-1.1.1">All messages MUST be signed with Ed25519</t>
           </li>
-          <li pn="section-13.1-1.2">
-            <t indent="0" pn="section-13.1-1.2.1">Signatures MUST be verifiable using public key from <tt>from_did</tt></t>
+          <li pn="section-8.1-1.2">
+            <t indent="0" pn="section-8.1-1.2.1">Signatures MUST be verifiable using public key from <tt>from_did</tt></t>
           </li>
-          <li pn="section-13.1-1.3">
-            <t indent="0" pn="section-13.1-1.3.1">Unsigned messages MUST be rejected</t>
+          <li pn="section-8.1-1.3">
+            <t indent="0" pn="section-8.1-1.3.1">Unsigned messages MUST be rejected</t>
           </li>
         </ul>
       </section>
-      <section anchor="identity" numbered="true" removeInRFC="false" toc="include" pn="section-13.2">
+      <section anchor="identity" numbered="true" removeInRFC="false" toc="include" pn="section-8.2">
         <name slugifiedName="name-identity">Identity</name>
-        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-13.2-1">
-          <li pn="section-13.2-1.1">
-            <t indent="0" pn="section-13.2-1.1.1">Agents MUST have a valid <xref target="W3C.DID" format="default" sectionFormat="of" derivedContent="W3C.DID"/></t>
+        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-8.2-1">
+          <li pn="section-8.2-1.1">
+            <t indent="0" pn="section-8.2-1.1.1">Agents MUST have a valid <xref target="W3C.DID" format="default" sectionFormat="of" derivedContent="W3C.DID"/></t>
           </li>
-          <li pn="section-13.2-1.2">
-            <t indent="0" pn="section-13.2-1.2.1">DIDs MUST be resolvable to DID documents containing public keys</t>
+          <li pn="section-8.2-1.2">
+            <t indent="0" pn="section-8.2-1.2.1">DIDs MUST be resolvable to DID documents containing public keys</t>
           </li>
         </ul>
       </section>
-      <section anchor="rate-limiting" numbered="true" removeInRFC="false" toc="include" pn="section-13.3">
+      <section anchor="rate-limiting" numbered="true" removeInRFC="false" toc="include" pn="section-8.3">
         <name slugifiedName="name-rate-limiting">Rate Limiting</name>
-        <t indent="0" pn="section-13.3-1">Implementations MUST enforce rate limits:
+        <t indent="0" pn="section-8.3-1">Implementations MUST enforce rate limits:
 - Default: 100 intents per minute per agent
 - Burst: Up to 200 intents in 10-second window
 - Discovery queries: 10 per minute per agent</t>
       </section>
-      <section anchor="replay-protection" numbered="true" removeInRFC="false" toc="include" pn="section-13.4">
+      <section anchor="replay-protection" numbered="true" removeInRFC="false" toc="include" pn="section-8.4">
         <name slugifiedName="name-replay-protection">Replay Protection</name>
-        <t indent="0" pn="section-13.4-1">Recipients MUST reject duplicate messages with the same <tt>(from_did, id)</tt> seen within <tt>ttl + 60000ms</tt>.</t>
+        <t indent="0" pn="section-8.4-1">Recipients MUST reject duplicate messages with the same <tt>(from_did, id)</tt> seen within <tt>ttl + 60000ms</tt>.</t>
       </section>
-      <section anchor="dos-protection" numbered="true" removeInRFC="false" toc="include" pn="section-13.5">
+      <section anchor="dos-protection" numbered="true" removeInRFC="false" toc="include" pn="section-8.5">
         <name slugifiedName="name-dos-protection">DoS Protection</name>
-        <t indent="0" pn="section-13.5-1">Implementations MUST:
+        <t indent="0" pn="section-8.5-1">Implementations MUST:
 - Validate message signatures before processing
 - Enforce TTL (drop expired messages)
 - Limit negotiation rounds (max 10)
 - Reject messages exceeding 1MB payload size
 - Require attachments by reference (URLs) rather than inlining large binaries</t>
       </section>
-      <section anchor="replay-protection-and-delivery-semantics" numbered="true" removeInRFC="false" toc="include" pn="section-13.6">
+      <section anchor="replay-protection-and-delivery-semantics" numbered="true" removeInRFC="false" toc="include" pn="section-8.6">
         <name slugifiedName="name-replay-protection-and-deliv">Replay Protection and Delivery Semantics</name>
-        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-13.6-1">
-          <li pn="section-13.6-1.1">
-            <t indent="0" pn="section-13.6-1.1.1">Recipients MUST reject duplicate messages with the same <tt>(from_did, id)</tt> seen within <tt>ttl + 60000ms</tt></t>
+        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-8.6-1">
+          <li pn="section-8.6-1.1">
+            <t indent="0" pn="section-8.6-1.1.1">Recipients MUST reject duplicate messages with the same <tt>(from_did, id)</tt> seen within <tt>ttl + 60000ms</tt></t>
           </li>
-          <li pn="section-13.6-1.2">
-            <t indent="0" pn="section-13.6-1.2.1">Implementations MUST allow a clock skew of ±60000ms when validating <tt>timestamp</tt></t>
+          <li pn="section-8.6-1.2">
+            <t indent="0" pn="section-8.6-1.2.1">Implementations MUST allow a clock skew of +/-60000ms when validating <tt>timestamp</tt></t>
           </li>
-          <li pn="section-13.6-1.3">
-            <t indent="0" pn="section-13.6-1.3.1">At-least-once delivery is RECOMMENDED; senders MUST use UUID v4 <tt>id</tt>s and recipients MUST make intent handling idempotent with respect to <tt>id</tt></t>
+          <li pn="section-8.6-1.3">
+            <t indent="0" pn="section-8.6-1.3.1">At-least-once delivery is RECOMMENDED; senders MUST use UUID v4 <tt>id</tt>s and recipients MUST make intent handling idempotent with respect to <tt>id</tt></t>
           </li>
         </ul>
       </section>
-      <section anchor="capability-attestations" numbered="true" removeInRFC="false" toc="include" pn="section-13.7">
+      <section anchor="capability-attestations" numbered="true" removeInRFC="false" toc="include" pn="section-8.7">
         <name slugifiedName="name-capability-attestations">Capability Attestations</name>
-        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-13.7-1">
-          <li pn="section-13.7-1.1">
-            <t indent="0" pn="section-13.7-1.1.1">Agents advertising capabilities SHOULD provide Verifiable Credentials (VCs)</t>
+        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-8.7-1">
+          <li pn="section-8.7-1.1">
+            <t indent="0" pn="section-8.7-1.1.1">Agents advertising capabilities SHOULD provide Verifiable Credentials (VCs)</t>
           </li>
-          <li pn="section-13.7-1.2">
-            <t indent="0" pn="section-13.7-1.2.1">VCs MUST conform to <xref target="W3C.VC" format="default" sectionFormat="of" derivedContent="W3C.VC"/></t>
+          <li pn="section-8.7-1.2">
+            <t indent="0" pn="section-8.7-1.2.1">VCs MUST conform to <xref target="W3C.VC" format="default" sectionFormat="of" derivedContent="W3C.VC"/></t>
           </li>
-          <li pn="section-13.7-1.3">
-            <t indent="0" pn="section-13.7-1.3.1">Discovery indices MAY reject advertisements without VCs</t>
+          <li pn="section-8.7-1.3">
+            <t indent="0" pn="section-8.7-1.3.1">Discovery indices MAY reject advertisements without VCs</t>
           </li>
         </ul>
       </section>
-      <section anchor="timeouts" numbered="true" removeInRFC="false" toc="include" pn="section-13.8">
+      <section anchor="timeouts" numbered="true" removeInRFC="false" toc="include" pn="section-8.8">
         <name slugifiedName="name-timeouts">Timeouts</name>
-        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-13.8-1">
-          <li pn="section-13.8-1.1">
-            <t indent="0" pn="section-13.8-1.1.1"><strong>Intent delivery</strong>: 60 seconds default TTL</t>
+        <ul spacing="compact" bare="false" empty="false" indent="3" pn="section-8.8-1">
+          <li pn="section-8.8-1.1">
+            <t indent="0" pn="section-8.8-1.1.1"><strong>Intent delivery</strong>: 60 seconds default TTL</t>
           </li>
-          <li pn="section-13.8-1.2">
-            <t indent="0" pn="section-13.8-1.2.1"><strong>Negotiation per round</strong>: 5 seconds default</t>
+          <li pn="section-8.8-1.2">
+            <t indent="0" pn="section-8.8-1.2.1"><strong>Negotiation per round</strong>: 5 seconds default</t>
           </li>
-          <li pn="section-13.8-1.3">
-            <t indent="0" pn="section-13.8-1.3.1"><strong>Overall negotiation</strong>: 30 seconds default</t>
+          <li pn="section-8.8-1.3">
+            <t indent="0" pn="section-8.8-1.3.1"><strong>Overall negotiation</strong>: 30 seconds default</t>
           </li>
-          <li pn="section-13.8-1.4">
-            <t indent="0" pn="section-13.8-1.4.1"><strong>Discovery query</strong>: 10 seconds default</t>
+          <li pn="section-8.8-1.4">
+            <t indent="0" pn="section-8.8-1.4.1"><strong>Discovery query</strong>: 10 seconds default</t>
           </li>
         </ul>
       </section>
-      <section anchor="outlier-detection" numbered="true" removeInRFC="false" toc="include" pn="section-13.9">
+      <section anchor="outlier-detection" numbered="true" removeInRFC="false" toc="include" pn="section-8.9">
         <name slugifiedName="name-outlier-detection">Outlier Detection</name>
-        <t indent="0" pn="section-13.9-1">Discovery indices SHOULD flag agents with:
+        <t indent="0" pn="section-8.9-1">Discovery indices SHOULD flag agents with:
 - Trust score &lt; 0.3
-- Capability embeddings &gt;3σ from cluster mean (potential false advertising)
+- Capability embeddings &gt;3 standard deviations from cluster mean (potential false advertising)
 - Success rate &lt; 50% over last 100 intents</t>
       </section>
-      <section anchor="discovery-scalability" numbered="true" removeInRFC="false" toc="include" pn="section-13.10">
+      <section anchor="discovery-scalability" numbered="true" removeInRFC="false" toc="include" pn="section-8.10">
         <name slugifiedName="name-discovery-scalability">Discovery Scalability</name>
-        <t indent="0" pn="section-13.10-1"><strong>Phase 0.1 Architecture</strong>: Centralized discovery index using PostgreSQL with pgvector extension for semantic search.</t>
-        <t indent="0" pn="section-13.10-2"><strong>Vector Indexing</strong>: Discovery indices SHOULD use Approximate Nearest Neighbor (ANN) indexing for efficient semantic search at scale.</t>
-        <t indent="0" pn="section-13.10-3"><strong>Recommended Algorithm</strong>: HNSW (Hierarchical Navigable Small World)
+        <t indent="0" pn="section-8.10-1"><strong>Phase 0.1 Architecture</strong>: Centralized discovery index using PostgreSQL with pgvector extension for semantic search.</t>
+        <t indent="0" pn="section-8.10-2"><strong>Vector Indexing</strong>: Discovery indices SHOULD use Approximate Nearest Neighbor (ANN) indexing for efficient semantic search at scale.</t>
+        <t indent="0" pn="section-8.10-3"><strong>Recommended Algorithm</strong>: HNSW (Hierarchical Navigable Small World)
 - <strong>Structure</strong>: Multi-layer graph with hierarchical routing
 - <strong>Parameters</strong>: <tt>m = 16</tt>, <tt>ef_construction = 64</tt>, <tt>ef_search = 40</tt>
 - <strong>Distance Metric</strong>: Cosine similarity
 - <strong>Performance</strong>: ~10ms search latency for 1M agents, ~99% recall</t>
-        <t indent="0" pn="section-13.10-4"><strong>Scaling Strategies</strong>:
+        <t indent="0" pn="section-8.10-4"><strong>Scaling Strategies</strong>:
 1. <strong>Vertical Scaling</strong>: Increase HNSW parameters, use NVMe SSDs, scale PostgreSQL memory
 2. <strong>Horizontal Scaling</strong>: Read replicas, connection pooling (PgBouncer), Redis caching
 3. <strong>Partitioning</strong>: Capability sharding, tag-based routing, geographic partitioning
 4. <strong>Query Optimization</strong>: Pre-filtering, batch queries, approximate search</t>
-        <t indent="0" pn="section-13.10-5"><strong>Performance Benchmarks</strong> (Phase 0.1 targets):</t>
+        <t indent="0" pn="section-8.10-5"><strong>Performance Benchmarks</strong> (Phase 0.1 targets):</t>
         <table align="center" pn="table-1">
           <thead>
             <tr>
@@ -1356,28 +1143,28 @@ convergence_score = 1 - (abs(offer.price - counter.price) / max(offer.price, cou
           </tbody>
         </table>
       </section>
-      <section anchor="lite-mode-for-resource-constrained-agents" numbered="true" removeInRFC="false" toc="include" pn="section-13.11">
+      <section anchor="lite-mode-for-resource-constrained-agents" numbered="true" removeInRFC="false" toc="include" pn="section-8.11">
         <name slugifiedName="name-lite-mode-for-resource-cons">Lite Mode for Resource-Constrained Agents</name>
-        <t indent="0" pn="section-13.11-1">For lightweight agents (e.g., IoT devices, mobile, embedded systems), implementations MAY use a minimal envelope to reduce payload size and processing overhead.</t>
-        <t indent="0" pn="section-13.11-2"><strong>Required Fields</strong>: <tt>version</tt>, <tt>msg_type</tt>, <tt>id</tt>, <tt>timestamp</tt>, <tt>from_did</tt>, <tt>to_did</tt>, <tt>sig</tt></t>
-        <t indent="0" pn="section-13.11-3"><strong>Optional Fields</strong> (MAY be omitted):
+        <t indent="0" pn="section-8.11-1">For lightweight agents (e.g., IoT devices, mobile, embedded systems), implementations MAY use a minimal envelope to reduce payload size and processing overhead.</t>
+        <t indent="0" pn="section-8.11-2"><strong>Required Fields</strong>: <tt>version</tt>, <tt>msg_type</tt>, <tt>id</tt>, <tt>timestamp</tt>, <tt>from_did</tt>, <tt>to_did</tt>, <tt>sig</tt></t>
+        <t indent="0" pn="section-8.11-3"><strong>Optional Fields</strong> (MAY be omitted):
 - <tt>ttl</tt> (default: 60000ms)
 - <tt>trace_id</tt> (no distributed tracing)
 - <tt>to_query</tt> (explicit addressing only)
 - <tt>capabilities_ref</tt> (no VC attestations)
 - <tt>attestations</tt> (trust by DID only)
 - <tt>qos</tt> (default: all 0.5, bid 0)</t>
-        <t indent="0" pn="section-13.11-4"><strong>Lite Mode Constraints</strong>:
+        <t indent="0" pn="section-8.11-4"><strong>Lite Mode Constraints</strong>:
 - Lite mode SHOULD NOT be used for high-stakes intents
 - Agents using lite mode MUST still provide valid Ed25519 signatures
 - Discovery indices MAY reject lite mode advertisements
 - Brokers MAY apply lower trust scores to lite mode agents by default</t>
       </section>
     </section>
-    <section anchor="cbor-encoding-optional" numbered="true" removeInRFC="false" toc="include" pn="section-14">
+    <section anchor="cbor-encoding-optional" numbered="true" removeInRFC="false" toc="include" pn="section-9">
       <name slugifiedName="name-cbor-encoding-optional">CBOR Encoding (Optional)</name>
-      <t indent="0" pn="section-14-1">For efficiency, implementations MAY use CBOR (<xref target="RFC8949" format="default" sectionFormat="of" derivedContent="RFC8949"/>) encoding:</t>
-      <t indent="0" pn="section-14-2"><strong>Key Map (v0.1)</strong>:
+      <t indent="0" pn="section-9-1">For efficiency, implementations MAY use CBOR (<xref target="RFC8949" format="default" sectionFormat="of" derivedContent="RFC8949"/>) encoding:</t>
+      <t indent="0" pn="section-9-2"><strong>Key Map (v0.1)</strong>:
 - 1: version
 - 2: msg_type
 - 3: id
@@ -1393,97 +1180,86 @@ convergence_score = 1 - (abs(offer.price - counter.price) / max(offer.price, cou
 - 13: attestations
 - 14: payload
 - 15: sig</t>
-      <t indent="0" pn="section-14-3">CBOR encoding SHOULD be negotiated during ADVERTISE or DISCOVER phase.</t>
+      <t indent="0" pn="section-9-3">CBOR encoding SHOULD be negotiated during ADVERTISE or DISCOVER phase.</t>
     </section>
-    <section anchor="extensibility" numbered="true" removeInRFC="false" toc="include" pn="section-15">
+    <section anchor="extensibility" numbered="true" removeInRFC="false" toc="include" pn="section-10">
       <name slugifiedName="name-extensibility">Extensibility</name>
-      <section anchor="custom-intent-types" numbered="true" removeInRFC="false" toc="include" pn="section-15.1">
+      <section anchor="custom-intent-types" numbered="true" removeInRFC="false" toc="include" pn="section-10.1">
         <name slugifiedName="name-custom-intent-types">Custom Intent Types</name>
-        <t indent="0" pn="section-15.1-1">Agents MAY define custom intent types beyond the core set. Custom intents MUST:
+        <t indent="0" pn="section-10.1-1">Agents MAY define custom intent types beyond the core set. Custom intents MUST:
 - Include <tt>@context</tt> with unique URI
 - Include <tt>version</tt> field
 - Include <tt>embedding</tt> field
 - Include <tt>budget</tt> constraints
 - Register schema URI in public registry (future)</t>
       </section>
-      <section anchor="custom-negotiation-terms" numbered="true" removeInRFC="false" toc="include" pn="section-15.2">
+      <section anchor="custom-negotiation-terms" numbered="true" removeInRFC="false" toc="include" pn="section-10.2">
         <name slugifiedName="name-custom-negotiation-terms">Custom Negotiation Terms</name>
-        <t indent="0" pn="section-15.2-1"><tt>Proposal.terms</tt> field allows extensible negotiation parameters. Common extensions:
+        <t indent="0" pn="section-10.2-1"><tt>Proposal.terms</tt> field allows extensible negotiation parameters. Common extensions:
 - <tt>privacy_guarantees</tt>: ZK proof requirements
 - <tt>sla_guarantees</tt>: Service level agreements
 - <tt>data_retention</tt>: Data retention policies</t>
       </section>
-      <section anchor="versioning" numbered="true" removeInRFC="false" toc="include" pn="section-15.3">
+      <section anchor="versioning" numbered="true" removeInRFC="false" toc="include" pn="section-10.3">
         <name slugifiedName="name-versioning">Versioning</name>
-        <t indent="0" pn="section-15.3-1">AINP uses semantic versioning. Breaking changes MUST increment major version. Phase 0.1 is backwards-compatible within 0.x series.</t>
+        <t indent="0" pn="section-10.3-1">AINP uses semantic versioning. Breaking changes MUST increment major version. Phase 0.1 is backwards-compatible within 0.x series.</t>
       </section>
-      <section anchor="lite-profile-trusted-networks" numbered="true" removeInRFC="false" toc="include" pn="section-15.4">
+      <section anchor="lite-profile-trusted-networks" numbered="true" removeInRFC="false" toc="include" pn="section-10.4">
         <name slugifiedName="name-lite-profile-trusted-networ">Lite Profile (Trusted Networks)</name>
-        <t indent="0" pn="section-15.4-1">In trusted or closed-network deployments, the following simplifications are PERMITTED:
+        <t indent="0" pn="section-10.4-1">In trusted or closed-network deployments, the following simplifications are PERMITTED:
 - Omit <tt>capabilities_ref</tt> and <tt>attestations</tt> if peers are pre-authorized
 - Prefer JSON-LD for small payloads; negotiate CBOR for payloads &gt; 4KB
 - Allow <tt>to_query</tt>-only routing within a single administrative domain</t>
-        <t indent="0" pn="section-15.4-2">Nodes MUST still sign messages, enforce TTLs, and implement replay protection.</t>
+        <t indent="0" pn="section-10.4-2">Nodes MUST still sign messages, enforce TTLs, and implement replay protection.</t>
       </section>
     </section>
-    <section anchor="success-metrics" numbered="true" removeInRFC="false" toc="include" pn="section-16">
+    <section anchor="success-metrics" numbered="true" removeInRFC="false" toc="include" pn="section-11">
       <name slugifiedName="name-success-metrics">Success Metrics</name>
-      <section anchor="route-success-rate" numbered="true" removeInRFC="false" toc="include" pn="section-16.1">
+      <section anchor="route-success-rate" numbered="true" removeInRFC="false" toc="include" pn="section-11.1">
         <name slugifiedName="name-route-success-rate">Route Success Rate</name>
-        <t indent="0" pn="section-16.1-1"><tt>
-route_success_rate = (intents_delivered_correctly / total_intents_sent) × 100%
+        <t indent="0" pn="section-11.1-1"><tt>
+route_success_rate = (intents_delivered_correctly / total_intents_sent) * 100
 </tt></t>
-        <t indent="0" pn="section-16.1-2"><strong>Target (Phase 0.1)</strong>: ≥95%</t>
+        <t indent="0" pn="section-11.1-2"><strong>Target (Phase 0.1)</strong>: &gt;=95%</t>
       </section>
-      <section anchor="latency-p95" numbered="true" removeInRFC="false" toc="include" pn="section-16.2">
+      <section anchor="latency-p95" numbered="true" removeInRFC="false" toc="include" pn="section-11.2">
         <name slugifiedName="name-latency-p95">Latency (p95)</name>
-        <t indent="0" pn="section-16.2-1">95th percentile time from INTENT sent to RESULT received.</t>
-        <t indent="0" pn="section-16.2-2"><strong>Target (Phase 0.1)</strong>: ≤2000ms</t>
+        <t indent="0" pn="section-11.2-1">95th percentile time from INTENT sent to RESULT received.</t>
+        <t indent="0" pn="section-11.2-2"><strong>Target (Phase 0.1)</strong>: &lt;=2000ms</t>
       </section>
-      <section anchor="negotiation-completion-rate" numbered="true" removeInRFC="false" toc="include" pn="section-16.3">
+      <section anchor="negotiation-completion-rate" numbered="true" removeInRFC="false" toc="include" pn="section-11.3">
         <name slugifiedName="name-negotiation-completion-rate">Negotiation Completion Rate</name>
-        <t indent="0" pn="section-16.3-1"><tt>
-negotiation_completion_rate = (negotiations_accepted / total_negotiations) × 100%
+        <t indent="0" pn="section-11.3-1"><tt>
+negotiation_completion_rate = (negotiations_accepted / total_negotiations) * 100
 </tt></t>
-        <t indent="0" pn="section-16.3-2"><strong>Target (Phase 0.1)</strong>: ≥80%</t>
+        <t indent="0" pn="section-11.3-2"><strong>Target (Phase 0.1)</strong>: &gt;=80%</t>
       </section>
-      <section anchor="false-route-rate" numbered="true" removeInRFC="false" toc="include" pn="section-16.4">
+      <section anchor="false-route-rate" numbered="true" removeInRFC="false" toc="include" pn="section-11.4">
         <name slugifiedName="name-false-route-rate">False Route Rate</name>
-        <t indent="0" pn="section-16.4-1"><tt>
-false_route_rate = (intents_misrouted / total_intents_sent) × 100%
+        <t indent="0" pn="section-11.4-1"><tt>
+false_route_rate = (intents_misrouted / total_intents_sent) * 100
 </tt></t>
-        <t indent="0" pn="section-16.4-2"><strong>Target (Phase 0.1)</strong>: ≤5%</t>
+        <t indent="0" pn="section-11.4-2"><strong>Target (Phase 0.1)</strong>: &lt;=5%</t>
       </section>
-      <section anchor="abuse-resilience" numbered="true" removeInRFC="false" toc="include" pn="section-16.5">
+      <section anchor="abuse-resilience" numbered="true" removeInRFC="false" toc="include" pn="section-11.5">
         <name slugifiedName="name-abuse-resilience">Abuse Resilience</name>
-        <t indent="0" pn="section-16.5-1">Detection rate of:
+        <t indent="0" pn="section-11.5-1">Detection rate of:
 - DoS attacks (&gt;1000 requests/min from single agent)
 - Sybil attacks (multiple DIDs from same source)
 - False capability advertising (capability mismatch &gt;0.5 cosine distance)</t>
-        <t indent="0" pn="section-16.5-2"><strong>Target (Phase 0.1)</strong>: ≥90% detection rate</t>
+        <t indent="0" pn="section-11.5-2"><strong>Target (Phase 0.1)</strong>: &gt;=90% detection rate</t>
       </section>
     </section>
-    <section anchor="iana-considerations" numbered="true" removeInRFC="false" toc="include" pn="section-17">
+    <section anchor="iana-considerations" numbered="true" removeInRFC="false" toc="include" pn="section-12">
       <name slugifiedName="name-iana-considerations">IANA Considerations</name>
-      <t indent="0" pn="section-17-1">This document has no IANA actions.</t>
-    </section>
-    <section anchor="references" numbered="true" removeInRFC="false" toc="include" pn="section-18">
-      <name slugifiedName="name-references">References</name>
-      <section anchor="normative-references" numbered="true" removeInRFC="false" toc="include" pn="section-18.1">
-        <name slugifiedName="name-normative-references">Normative References</name>
-        <t indent="0" pn="section-18.1-1">See <xref target="sec-normative-references" format="default" sectionFormat="of" derivedContent="Section 19.1"/>.</t>
-      </section>
-      <section anchor="informative-references" numbered="true" removeInRFC="false" toc="include" pn="section-18.2">
-        <name slugifiedName="name-informative-references">Informative References</name>
-        <t indent="0" pn="section-18.2-1">See <xref target="sec-informative-references" format="default" sectionFormat="of" derivedContent="Section 19.2"/>.</t>
-      </section>
+      <t indent="0" pn="section-12-1">This document has no IANA actions.</t>
     </section>
   </middle>
   <back>
-    <references anchor="sec-combined-references" pn="section-19">
-      <name>References</name>
-      <references anchor="sec-normative-references" pn="section-19.1">
-        <name>Normative References</name>
+    <references anchor="sec-combined-references" pn="section-13">
+      <name slugifiedName="name-references">References</name>
+      <references anchor="sec-normative-references" pn="section-13.1">
+        <name slugifiedName="name-normative-references">Normative References</name>
         <reference anchor="RFC2119" quoteTitle="true" target="https://www.rfc-editor.org/rfc/rfc2119" derivedAnchor="RFC2119">
           <front>
             <title>Key words for use in RFCs to Indicate Requirement Levels</title>
@@ -1531,8 +1307,8 @@ false_route_rate = (intents_misrouted / total_intents_sent) × 100%
           </front>
         </reference>
       </references>
-      <references anchor="sec-informative-references" pn="section-19.2">
-        <name>Informative References</name>
+      <references anchor="sec-informative-references" pn="section-13.2">
+        <name slugifiedName="name-informative-references">Informative References</name>
         <reference anchor="RFC8785" quoteTitle="true" target="https://www.rfc-editor.org/rfc/rfc8785" derivedAnchor="RFC8785">
           <front>
             <title>JSON Canonicalization Scheme (JCS)</title>
@@ -1572,7 +1348,7 @@ false_route_rate = (intents_misrouted / total_intents_sent) × 100%
       </references>
     </references>
     <section anchor="authors-addresses" numbered="false" removeInRFC="false" toc="include" pn="section-appendix.a">
-      <name>Author's Address</name>
+      <name slugifiedName="name-authors-address">Author's Address</name>
       <author initials="E. P." surname="Nagulapalli" fullname="Eswara Prasad Nagulapalli">
         <organization showOnFrontPage="true">Servesys Labs</organization>
         <address>
@@ -1582,253 +1358,252 @@ false_route_rate = (intents_misrouted / total_intents_sent) × 100%
     </section>
   </back>
   <!-- ##markdown-source:
-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
-H/d0Z5t/AAA=
+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
+fQAA
 
 -->
 
