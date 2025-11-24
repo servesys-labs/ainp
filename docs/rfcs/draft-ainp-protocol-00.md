@@ -23,8 +23,8 @@ pi:
 
 author:
   -
-    ins: E. Prasad
-    name: E. Prasad
+    ins: E. P. Nagulapalli
+    name: Eswara Prasad Nagulapalli
     org: Servesys Labs
     email: contact@servsys.com
 
