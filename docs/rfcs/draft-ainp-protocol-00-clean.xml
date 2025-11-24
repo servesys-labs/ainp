@@ -40,11 +40,6 @@
 <t>This document specifies the AI-Native Network Protocol (AINP) version 0.1, a semantic communication protocol designed for intent exchange between AI agents. AINP replaces location-based routing with semantic routing, byte-stream delivery with intent delivery, and simple handshakes with multi-round negotiation. AINP enables agents to discover each other by capability rather than network location, negotiate terms autonomously, and exchange structured intents with cryptographic security.</t>
 
 </abstract>
-</abstract>
-    return agent
-```</t>
-
-</section>
 <section anchor="appendix-d-credit-system-informative"><name>Appendix D: Credit System (Informative)</name>
 
 <t>AINP Phase 0.1 uses an <strong>off-chain credit ledger</strong> for economic incentives and resource allocation. Blockchain settlement is deferred to Phase 2 for simplicity and performance.</t>
